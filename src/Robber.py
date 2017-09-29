@@ -40,6 +40,7 @@ class Robber(object):
         self.pushToAllGroup('开始报告余量监测...')
 
         timePattern = re.compile('(\d{2}:\d{2})?:\d{2}')
+        availableSpeechListCache = []
         while True:
             availableSpeechList = []
             speechList = self.spider.fetchSpeechList()
@@ -49,12 +50,13 @@ class Robber(object):
                            row[2].split(' ')[0] + ' ' + re.findall(timePattern, row[2].split(' ')[1])[0] + '-' + re.findall(timePattern, row[3].split(' ')[1])[0],
                            row[4],
                            str(int(row[5]) - int(row[6]))]
-                if int(tempRow[4]) >= 0:
+                if int(tempRow[4]) > 0:
                     availableSpeechList.append(tempRow)
 
-            if availableSpeechList:
+            if availableSpeechList and len(availableSpeechList) != len(availableSpeechListCache):
                 availableSpeechList.insert(0, ['报告类别', '报告名称', '报告时间', '报告地点', '余量'])
                 self.pushToAllGroup(OutputFormater(availableSpeechList).setHeader('有报告余量！').output())
+                availableSpeechListCache = availableSpeechList
             time.sleep(self.config.refreshSleep)
 
     def robClass(self, classIdList):
