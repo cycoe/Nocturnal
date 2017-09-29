@@ -29,6 +29,8 @@ def cycle():
             pass
         elif argvsParser.parse(command) == argvsParser.login:
             login()
+        elif argvsParser.parse(command) == argvsParser.notifySpeech:
+            notifySpeech()
         else:
             print("\nWrong arguments detected!\n")
 
@@ -55,6 +57,10 @@ def login():
 
 def robAllClass():
     robber.getClassIdList(None)
+
+
+def notifySpeech():
+    robber.notifySpeech()
 
 
 def robClass():

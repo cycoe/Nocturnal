@@ -19,4 +19,5 @@ class UrlBean(object):
         self.leftMenuReferer = "http://graduate.buct.edu.cn:8080/pyxx/leftmenu.aspx"    # 左侧菜单地址
         self.fetchScheduleUrl = "http://graduate.buct.edu.cn:8080/pyxx/pygl/kbcx_xs.aspx"   # 课程表获取地址
         self.englishTestUrl = "http://graduate.buct.edu.cn:8080/pyxx/grgl/djkssq.aspx"  # 英语等级考试地址
+        self.fetchSpeechListUrl = "http://graduate.buct.edu.cn:8080/pyxx/txhdgl/hdlist.aspx"    # 讲座列表获取地址
         self.fetchGradeUrl = "http://jwgl.buct.edu.cn/xscjcx.aspx"  # 成绩获取地址

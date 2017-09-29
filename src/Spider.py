@@ -8,6 +8,7 @@ from src.UrlBean import UrlBean
 
 
 class Spider(object):
+
     def __init__(self):
         self.urlBean = UrlBean()
         self.session = Session()  # 实例化 session 对象
@@ -17,7 +18,8 @@ class Spider(object):
         # self.classifier = Classifier()
         # self.classifier.loadTrainingMat()
 
-        self.remainList = [3, 4, 5, 6, 11, 12]
+        self.classFilter = [3, 4, 5, 6, 11, 12]
+        self.speechFilter = [0, 1, 3, 4, 5, 6, 7]
 
     def formatHeaders(self, referer=None, contentLength=None, originHost=None):
         """
@@ -147,6 +149,12 @@ class Spider(object):
         headers = self.formatHeaders(referer=self.urlBean.englishTestUrl + '?xh=' + self.urlBean.studentID, originHost=self.urlBean.jwglOriginUrl)
         payload = {'xh': self.urlBean.studentID}
         req = Request('POST', self.urlBean.englishTestUrl, headers=headers, data=postData, params=payload)
+        return self.session.prepare_request(req)
+
+    def prepareFetchSpeechList(self):
+        headers = self.formatHeaders(referer=self.urlBean.leftMenuReferer)
+        payload = {'xh': self.urlBean.studentID}
+        req = Request('GET', self.urlBean.fetchSpeechListUrl, headers=headers, params=payload)
         return self.session.prepare_request(req)
 
     # def prepareGetGrade(self):
@@ -368,6 +376,52 @@ class Spider(object):
             return True
         else:
             return True
+
+    def fetchSpeechList(self):
+
+        while True:
+            self.response = self.session.send(self.prepareFetchSpeechList())
+            self.VIEWSTATE = self.getVIEWSTATE()
+            self.EVENTVALIDATION = self.getEVENTVALIDATION()
+            if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
+                break
+            else:
+                print("retrying fetching speech list...")
+
+        print(self.response.url)
+        print('fetched speech list\n')
+
+        return self.formatSpeechList()
+
+    def formatSpeechList(self):
+
+        htmlBody = BeautifulSoup(self.response.text, 'html.parser')
+        tempList = htmlBody.find_all('table', class_='GridBackColor')[1].find_all('tr', nowrap='nowrap')
+        speechList = []
+        for tempRow in tempList:
+            if tempRow.find('img', border='0', alt='我要报名') is not None:
+                checkStatus = 0
+            elif tempRow.find('img', border='0', alt='退选当前课程') is not None:
+                checkStatus = 1
+            else:
+                checkStatus = -1
+
+            if re.search('<a.*id="(.*)?".*><img.*>.*</a>', str(tempRow)):
+                buttonId = re.findall('<a.*id="(.*)?".*><img.*>.*</a>', str(tempRow))[0]
+            else:
+                buttonId = None
+
+            tempRow = tempRow.find_all('td')
+            speechRow = [checkStatus, buttonId]
+            for i in self.speechFilter:
+                item = re.findall('<td.*>(.*)?</td>', str(tempRow[i]))
+                if len(item) == 0:
+                    speechRow.append('')
+                else:
+                    speechRow.append(item[0])
+            speechList.append(speechRow)
+
+        return speechList
 
     def formatClassList(self):
 

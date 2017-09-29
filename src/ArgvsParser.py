@@ -14,6 +14,7 @@ class ArgvsParser(object):
         self.listClass = 3
         self.englishTest = 4
         self.login = 5
+        self.notifySpeech = 6
 
         self.listPattern = re.compile('list=(.*)?')
 
@@ -30,3 +31,5 @@ class ArgvsParser(object):
                 return self.englishTest
             if command == 'login':
                 return self.login
+            if command == 'notifySpeech':
+                return self.notifySpeech
