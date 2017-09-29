@@ -6,8 +6,8 @@ class UrlBean(object):
 
     def __init__(self):
 
-        self.studentID = "2017200532"
-        self.jwglPassword = "19941231"
+        self.studentID = "2017200276"
+        self.jwglPassword = "zhiwen.COM"
         # self.username = #姓名
         # self.major = '0202高分子材料与工程'
 

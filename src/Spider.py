@@ -243,7 +243,7 @@ class Spider(object):
     #     req = Request('POST', self.postClassUrl, headers=headers, params=params, data=postData)
     #     return self.session.prepare_request(req)
 
-    def jwglLogin(self, tryNum=100):
+    def jwglLogin(self):
         """
         教务网登录函数
         tryNum --> 尝试登录的最大次数，防止因递归深度过大导致溢出
@@ -399,20 +399,22 @@ class Spider(object):
         tempList = htmlBody.find_all('table', class_='GridBackColor')[1].find_all('tr', nowrap='nowrap')
         speechList = []
         for tempRow in tempList:
-            if tempRow.find('img', border='0', alt='我要报名') is not None:
-                checkStatus = 0
-            elif tempRow.find('img', border='0', alt='退选当前课程') is not None:
-                checkStatus = 1
-            else:
-                checkStatus = -1
-
-            if re.search('<a.*id="(.*)?".*><img.*>.*</a>', str(tempRow)):
-                buttonId = re.findall('<a.*id="(.*)?".*><img.*>.*</a>', str(tempRow))[0]
-            else:
-                buttonId = None
+            # if tempRow.find('img', border='0', alt='我要报名') is not None:
+            #     checkStatus = 0
+            # elif tempRow.find('img', border='0', alt='退选当前课程') is not None:
+            #     checkStatus = 1
+            # else:
+            #     checkStatus = -1
+            #
+            # if re.search('<a.*id="(.*)?".*><img.*>.*</a>', str(tempRow)):
+            #     buttonId = re.findall('<a.*id="(.*)?".*><img.*>.*</a>', str(tempRow))[0]
+            # else:
+            #     buttonId = None
+            #
+            # speechRow = [checkStatus, buttonId]
 
             tempRow = tempRow.find_all('td')
-            speechRow = [checkStatus, buttonId]
+            speechRow = []
             for i in self.speechFilter:
                 item = re.findall('<td.*>(.*)?</td>', str(tempRow[i]))
                 if len(item) == 0:

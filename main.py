@@ -29,6 +29,8 @@ def cycle():
             pass
         elif argvsParser.parse(command) == argvsParser.login:
             login()
+        elif argvsParser.parse(command) == argvsParser.wechatLogin:
+            wechatLogin()
         elif argvsParser.parse(command) == argvsParser.notifySpeech:
             notifySpeech()
         else:
@@ -45,14 +47,18 @@ def outputWelcome():
 
 
 def outputHelp():
-    print("\nhelp\tprint helps")
-    print("speech\tspeech robbing mode")
-    print("class\tclass robbing mode")
-    print("")
+    print("\nhelp\t\tprint helps")
+    print("speech\t\tspeech robbing mode")
+    print("notifySpeech\tnotification with new speech available")
+    print("class\t\tclass robbing mode\n")
 
 
 def login():
     robber.login()
+
+
+def wechatLogin():
+    robber.wechatLogin()
 
 
 def robAllClass():
