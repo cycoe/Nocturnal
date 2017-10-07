@@ -27,6 +27,8 @@ class Robber(object):
         itchat.auto_login(enableCmdQR=2)
         for wechatGroup in self.config.wechatGroup_:
             self.wechatId_.append(itchat.search_chatrooms(wechatGroup)[0]['UserName'])
+        for wechatUser in self.config.wechatUser_:
+            self.wechatId_.append(itchat.search_friends(wechatUser)[0]['UserName'])
 
     def pushToAllGroup(self, msg):
         for wechatId in self.wechatId_:
