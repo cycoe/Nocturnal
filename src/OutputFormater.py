@@ -4,30 +4,19 @@
 
 class OutputFormater(object):
 
-    def __init__(self, content):
-        self.content = content
-        self.header = ''
-        self.footer = ''
+    def __init__(self):
+        pass
 
-    def setHeader(self, header):
-        self.header = header
-
-        return self
-
-    def setFooter(self, footer):
-        self.footer = footer
-
-        return self
-
-    def output(self):
+    @staticmethod
+    def output(content, header='', footer=''):
         outputContent = ""
-        outputContent += self.header + '\n\n'
-        for row in self.content:
+        outputContent += header + '\n\n'
+        for row in content:
             outputContent += '|'
             for item in range(len(row)):
                 outputContent += ' ' + row[item] + ' |'
             outputContent += '\n'
-        outputContent += '\n' + self.footer
+        outputContent += '\n' + footer
 
         return outputContent
 

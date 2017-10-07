@@ -458,53 +458,6 @@ class Spider(object):
 
         return classList
 
-    # def getPastGrade(self):
-    #     """
-    #     获取历年成绩
-    #     """
-    #     self.response = self.session.send(self.prepareGetGrade(), timeout=5)
-    #     self.response = self.session.send(self.preparePastGrade(), timeout=5)
-    #     gradeMat = self.formatTable(self.response.text)
-    #     gradeMat = [[row[i] for i in range(len(row)) if i in self.remainList] for row in gradeMat]
-    #     self.outputTable(gradeMat, outputPath='grade.md')
-    #
-    # def getPastSchedule(self, xn_, xq_):
-    #     self.response = self.session.send(self.prepareSchedule(), timeout=5)
-    #     self.response = self.session.send(self.preparePastSchedule(xn_, xq_), timeout=5)
-    #     scheduleMat = self.formatTable(self.response.text)
-    #     with open('schedule.md', 'w') as fr:
-    #         fr.write(str(scheduleMat))
-    #         # self.outputTable(scheduleMat, outputPath='schedule.md')
-    #
-    # def getClassList(self):
-    #     self.response = self.session.send(self.prepareClass(), timeout=5)
-    #     self.response = self.session.send(self.prepareGetClass(), timeout=5)
-    #
-    # def outputTable(self, tableMat, outputPath):
-    #     """
-    #     将成绩输出成 md 格式
-    #     """
-    #     tableMat.insert(1, [':------' for i in range(len(tableMat[0]))])
-    #     with open(outputPath, 'w') as fr:
-    #         for row in tableMat:
-    #             fr.write('|')
-    #             for each in row:
-    #                 fr.write(each)
-    #                 fr.write('|')
-    #             fr.write('\n')
-    #
-    # def formatTable(self, tableBody):
-    #     """
-    #     将抓取到的成绩解析成列表
-    #     """
-    #     from bs4 import BeautifulSoup
-    #     import re
-    #     soup = BeautifulSoup(tableBody, 'html.parser')
-    #     return soup.br.table
-    #     tableRow = soup.br.table.find_all('tr')
-    #     tableMat = [i.find_all('td') for i in tableRow]
-    #     return [[each.get_text().strip() for each in row] for row in tableMat]
-
     def clean(self):
         """
         爬取结束关闭会话

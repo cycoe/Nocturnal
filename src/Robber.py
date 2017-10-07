@@ -17,7 +17,7 @@ class Robber(object):
 
         self.loginStatus = False
         self.speechFlag = False
-        self.wechatGroupId_ = []
+        self.wechatId_ = []
 
     def login(self):
         self.spider.jwglLogin()
@@ -26,20 +26,21 @@ class Robber(object):
     def wechatLogin(self):
         itchat.auto_login(enableCmdQR=2)
         for wechatGroup in self.config.wechatGroup_:
-            self.wechatGroupId_.append(itchat.search_chatrooms(wechatGroup)[0]['UserName'])
-    
+            self.wechatId_.append(itchat.search_chatrooms(wechatGroup)[0]['UserName'])
+
     def pushToAllGroup(self, msg):
-        for wechatGroupId in self.wechatGroupId_:
-            itchat.send(msg, toUserName=wechatGroupId)
+        for wechatId in self.wechatId_:
+            itchat.send(msg, toUserName=wechatId)
+            time.sleep(self.config.wechatPushSleep())
 
     def getClassIdList(self, listFile):
         classList = self.spider.fetchClassList()
         print(classList)
 
-    def notifySpeech(self):
+    def notifySpeech(self, therhold=5):
         self.pushToAllGroup('开始报告余量监测...')
 
-        timePattern = re.compile('(\d{2}:\d{2})?:\d{2}')
+        timePattern = re.compile('(\d{1,2}:\d{2})?:\d{2}')
         availableSpeechListCache = []
         while True:
             availableSpeechList = []
@@ -50,13 +51,13 @@ class Robber(object):
                            row[2].split(' ')[0] + ' ' + re.findall(timePattern, row[2].split(' ')[1])[0] + '-' + re.findall(timePattern, row[3].split(' ')[1])[0],
                            row[4],
                            str(int(row[5]) - int(row[6]))]
-                if int(tempRow[4]) > 0:
+                if int(tempRow[4]) >= therhold:
                     availableSpeechList.append(tempRow)
 
             if availableSpeechList and len(availableSpeechList) != len(availableSpeechListCache):
+                availableSpeechListCache = availableSpeechList[:]
                 availableSpeechList.insert(0, ['报告类别', '报告名称', '报告时间', '报告地点', '余量'])
-                self.pushToAllGroup(OutputFormater(availableSpeechList).setHeader('有报告余量！').output())
-                availableSpeechListCache = availableSpeechList
+                self.pushToAllGroup(OutputFormater.output(availableSpeechList, header='有报告余量！'))
             time.sleep(self.config.refreshSleep)
 
     def robClass(self, classIdList):
