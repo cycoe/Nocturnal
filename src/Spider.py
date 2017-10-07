@@ -270,6 +270,7 @@ class Spider(object):
                 for chunk in codeImg:
                     fr.write(chunk)
 
+            self.print_vertify_code()
             self.verCode = input("input verify code:")
             # self.verCode = self.classifier.recognizer("check.gif")  # 识别验证码
 
@@ -299,6 +300,24 @@ class Spider(object):
                 print("\n")
 
         return self
+
+    def print_vertify_code(self):
+        from PIL import Image
+        fullVector = []
+        img = Image.open('check.gif')
+        img = img.convert('RGBA')
+        imgWidth = img.size[0]
+        imgHeight = img.size[1]
+        pixdata = img.load()
+        for j in range(imgHeight):
+            row = ''
+            for i in range(imgWidth):
+                if pixdata[i, j][0] + pixdata[i, j][1] + pixdata[i, j][2] < 3 * 127:
+                    row += '#'
+                else:
+                    row += ' '
+            fullVector.append(row)
+        print('\n'.join(fullVector))
 
     def fetchClassList(self):
 
