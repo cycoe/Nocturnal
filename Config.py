@@ -5,6 +5,9 @@ import random
 
 
 class Config(object):
+    """
+    管理配置的类
+    """
 
     def __init__(self):
         self.refreshSleep = 5   # 刷新的间隔时间

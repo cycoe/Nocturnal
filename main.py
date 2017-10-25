@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from src.Robber import Robber
-from src.ArgvsParser import ArgvsParser
+from modules.Robber import Robber
+from modules.ArgvsParser import ArgvsParser
 
 argvsParser = ArgvsParser()
 robber = Robber()
@@ -15,12 +15,11 @@ def main():
 
 def cycle():
     while True:
-        print(">>> ", end='')
-        command = input('')
+        command = input('>>> ')
         if argvsParser.parse(command) == argvsParser.help:
             outputHelp()
         elif argvsParser.parse(command) == argvsParser.speech:
-            pass
+            robSpeech()
         elif argvsParser.parse(command) == argvsParser.listClass:
             pass
         elif argvsParser.parse(command) == argvsParser.autoClass:
@@ -33,6 +32,8 @@ def cycle():
             wechatLogin()
         elif argvsParser.parse(command) == argvsParser.notifySpeech:
             notifySpeech()
+        elif argvsParser.parse(command) == argvsParser.quit:
+            quit()
         else:
             print("\nWrong arguments detected!\n")
 
@@ -69,12 +70,20 @@ def notifySpeech():
     robber.notifySpeech()
 
 
+def robSpeech():
+    robber.robSpeech()
+
+
 def robClass():
     robber.getClassIdList(argvsParser.listFile)
 
 
 def robEnglish():
     robber.robEnglishTest()
+
+
+def quit():
+    exit(0)
 
 
 if __name__ == "__main__":
