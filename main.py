@@ -3,6 +3,7 @@
 
 from modules.Robber import Robber
 from modules.ArgvsParser import ArgvsParser
+from modules.OutputFormater import OutputFormater
 
 argvsParser = ArgvsParser()
 robber = Robber()
@@ -48,10 +49,14 @@ def outputWelcome():
 
 
 def outputHelp():
-    print("\nhelp\t\tprint helps")
-    print("speech\t\tspeech robbing mode")
-    print("notifySpeech\tnotification with new speech available")
-    print("class\t\tclass robbing mode\n")
+    print(OutputFormater.table([
+        ['command', 'abbr', 'description'],
+        ['help', 'h', 'print helps'],
+        ['login', 'l', 'login web'],
+        ['speech', 's', 'speech robbing mode'],
+        ['class', 'c', 'class robbing mode'],
+        ['quit', 'q', 'quit robber']
+    ], gravity=OutputFormater.center, padding=2))
 
 
 def login():
