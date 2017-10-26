@@ -82,6 +82,7 @@ class Robber(object):
                 print("\nRobbing speech...")
                 self.spider.postSpeech(buttonId)
             if len(buttonId_) < 2:
+                print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
                 print("\nNo speech to rob, dozing...")
                 time.sleep(self.config.refreshSleep())
 
