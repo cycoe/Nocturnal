@@ -447,21 +447,6 @@ class Spider(object):
             else:
                 print("retrying posting speech detail...")
 
-        # prepareBody = self.prepare(referer=self.urlBean.fetchSpeechListUrl + '?xh=' + self.urlBean.userName,
-        #                            originHost=None,
-        #                            method='GET',
-        #                            url='http://graduate.buct.edu.cn:8080/pyxx/txhdgl/hdxxdetail.aspx',
-        #                            data=None,
-        #                            params=None)
-        #
-        # while True:
-        #     self.response = self.session.send(prepareBody)
-        #     if self.response.status_code == 200:
-        #         break
-        #     else:
-        #         print("retrying fetching speech detail...")
-        # self.response = self.session.send(prepareBody)
-
         postData = {
             '__EVENTTARGET': 'lbsq',
             '__EVENTARGUMENT': '',
