@@ -4,6 +4,7 @@
 import re
 import time
 import itchat
+import random
 from modules.Spider import Spider
 from modules.OutputFormater import OutputFormater
 from modules.listUtils import find_all_in_list
@@ -64,11 +65,19 @@ class Robber(object):
                 availableSpeechList.insert(0, ['报告类别', '报告名称', '报告时间', '报告地点', '余量'])
                 # self.pushToAllGroup(OutputFormater.output(availableSpeechList, header='有报告余量！'))
                 print(OutputFormater.output(availableSpeechList, header='有报告余量！'))
-            time.sleep(self.config.refreshSleep)
+            time.sleep(self.config.refreshSleep())
 
     def robSpeech(self):
-        selected_, selectable_ = self.spider.fetchSpeechList()
-        self.spider.postSpeech(selectable_[0][0])
+        while True:
+            selected_, selectable_ = self.spider.fetchSpeechList()
+            buttonId_ = [selectable[0] for selectable in selectable_ if int(selectable[6]) > int(selectable[7])]
+            if buttonId_:
+                buttonId = random.shuffle(buttonId_)[0]
+                print("\nRobbing speech...")
+                self.spider.postSpeech(buttonId)
+            if len(buttonId_) < 2:
+                print("\nNo speech to rob, dozing...")
+                time.sleep(self.config.refreshSleep())
 
     def robClass(self, classIdList):
         for classId in classIdList:

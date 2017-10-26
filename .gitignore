@@ -1,3 +1,8 @@
+############### my ignores #################
+*.html
+password_
+############################################
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -103,6 +108,3 @@ venv.bak/
 
 # mypy
 .mypy_cache/
-
-# html
-*.html

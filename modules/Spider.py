@@ -37,7 +37,7 @@ class Spider(object):
         headers = {
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
             'Accept-Encoding': 'gzip, deflate',
-            'Accept-Language': 'en-US,en;q=0.8,zh-CN;q=0.6,zh;q=0.4,zh-TW;q=0.2',
+            'Accept-Language': 'en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7',
             'Cache-Control': 'max-age=0',
             'Connection': 'keep-alive',
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -116,7 +116,7 @@ class Spider(object):
     #     postData = {
     #         '__VIEWSTATE': self.VIEWSTATE,
     #         '__EVENTVALIDATION': self.EVENTVALIDATION,
-    #         '_ctl0:txtusername': self.urlBean.studentID,
+    #         '_ctl0:txtusername': self.urlBean.userName,
     #         '_ctl0:txtpassword': self.urlBean.jwglPassword,
     #         '_ctl0:txtyzm': self.verCode,
     #         '_ctl0:ImageButton1.x': '43',
@@ -133,7 +133,7 @@ class Spider(object):
     #
     # def prepareFetchClassList(self):
     #     headers = self.formatHeaders(referer=self.urlBean.leftMenuReferer)
-    #     payload = {'xh': self.urlBean.studentID}
+    #     payload = {'xh': self.urlBean.userName}
     #     req = Request('GET', self.urlBean.fetchClassListUrl, headers=headers, params=payload)
     #     return self.session.prepare_request(req)
     #
@@ -148,20 +148,20 @@ class Spider(object):
     #         '__VIEWSTATE': self.VIEWSTATE,
     #         '__EVENTVALIDATION': self.EVENTVALIDATION,
     #     }
-    #     headers = self.formatHeaders(referer=self.urlBean.fetchClassListUrl + '?xh=' + self.urlBean.studentID, originHost=self.urlBean.jwglOriginUrl)
-    #     payload = {'xh': self.urlBean.studentID}
+    #     headers = self.formatHeaders(referer=self.urlBean.fetchClassListUrl + '?xh=' + self.urlBean.userName, originHost=self.urlBean.jwglOriginUrl)
+    #     payload = {'xh': self.urlBean.userName}
     #     req = Request('POST', self.urlBean.fetchClassListUrl, headers=headers, data=postData, params=payload)
     #     return self.session.prepare_request(req)
 
     def prepareFetchSchedule(self):
         headers = self.formatHeaders(referer=self.urlBean.leftMenuReferer)
-        payload = {'xh': self.urlBean.studentID}
+        payload = {'xh': self.urlBean.userName}
         req = Request('GET', self.urlBean.fetchScheduleUrl, headers=headers, params=payload)
         return self.session.prepare_request(req)
 
     def prepareGetEnglishTest(self):
         headers = self.formatHeaders(referer=self.urlBean.leftMenuReferer)
-        payload = {'xh': self.urlBean.studentID}
+        payload = {'xh': self.urlBean.userName}
         req = Request('GET', self.urlBean.englishTestUrl, headers=headers, params=payload)
         return self.session.prepare_request(req)
 
@@ -179,14 +179,14 @@ class Spider(object):
             'WUCpyjhdy:HFfilename': '等级考试确认单',
             'WUCpyjhdy:HFdatatype': '26',
         }
-        headers = self.formatHeaders(referer=self.urlBean.englishTestUrl + '?xh=' + self.urlBean.studentID, originHost=self.urlBean.jwglOriginUrl)
-        payload = {'xh': self.urlBean.studentID}
+        headers = self.formatHeaders(referer=self.urlBean.englishTestUrl + '?xh=' + self.urlBean.userName, originHost=self.urlBean.jwglOriginUrl)
+        payload = {'xh': self.urlBean.userName}
         req = Request('POST', self.urlBean.englishTestUrl, headers=headers, data=postData, params=payload)
         return self.session.prepare_request(req)
 
     def prepareFetchSpeechList(self):
         headers = self.formatHeaders(referer=self.urlBean.leftMenuReferer)
-        payload = {'xh': self.urlBean.studentID}
+        payload = {'xh': self.urlBean.userName}
         req = Request('GET', self.urlBean.fetchSpeechListUrl, headers=headers, params=payload)
         return self.session.prepare_request(req)
 
@@ -194,6 +194,12 @@ class Spider(object):
         """
         登录教务网
         """
+        
+        if self.urlBean.checkUserFile():
+            self.urlBean.readUserInfo()
+        else:
+            self.urlBean.userName = input("\nUserName: ")
+            self.urlBean.password = input("Password: ")
 
         prepareBody = self.prepare(referer=None,
                                    originHost=None,
@@ -237,8 +243,8 @@ class Spider(object):
             postData = {
                 '__VIEWSTATE': self.VIEWSTATE,
                 '__EVENTVALIDATION': self.EVENTVALIDATION,
-                '_ctl0:txtusername': self.urlBean.studentID,
-                '_ctl0:txtpassword': self.urlBean.jwglPassword,
+                '_ctl0:txtusername': self.urlBean.userName,
+                '_ctl0:txtpassword': self.urlBean.password,
                 '_ctl0:txtyzm': verCode,
                 '_ctl0:ImageButton1.x': '43',
                 '_ctl0:ImageButton1.y': '21',
@@ -273,6 +279,7 @@ class Spider(object):
                 print("# login successfully! #")
                 print("#######################")
                 print("\n")
+                self.urlBean.dumpUserInfo()
                 break
             else:
                 print("\n")
@@ -286,7 +293,7 @@ class Spider(object):
 
     def fetchClassList(self):
 
-        params = {'xh': self.urlBean.studentID}
+        params = {'xh': self.urlBean.userName}
         prepareBody = self.prepare(referer=self.urlBean.leftMenuReferer,
                                    originHost=None,
                                    method='GET',
@@ -316,8 +323,8 @@ class Spider(object):
             '__VIEWSTATE': self.VIEWSTATE,
             '__EVENTVALIDATION': self.EVENTVALIDATION,
         }
-        payload = {'xh': self.urlBean.studentID}
-        prepareBody = self.prepare(referer=self.urlBean.fetchClassListUrl + '?xh=' + self.urlBean.studentID,
+        payload = {'xh': self.urlBean.userName}
+        prepareBody = self.prepare(referer=self.urlBean.fetchClassListUrl + '?xh=' + self.urlBean.userName,
                                    originHost=self.urlBean.jwglOriginUrl,
                                    method='POST',
                                    url=self.urlBean.fetchClassListUrl,
@@ -336,7 +343,7 @@ class Spider(object):
 
     def fetchSchedule(self):
 
-        payload = {'xh': self.urlBean.studentID}
+        payload = {'xh': self.urlBean.userName}
         prepareBody = self.prepare(referer=self.urlBean.leftMenuReferer,
                                    originHost=None,
                                    method='GET',
@@ -393,7 +400,7 @@ class Spider(object):
 
     def fetchSpeechList(self):
 
-        payload = {'xh': self.urlBean.studentID}
+        payload = {'xh': self.urlBean.userName}
         prepareBody = self.prepare(referer=self.urlBean.leftMenuReferer,
                                    originHost=None,
                                    method='GET',
@@ -410,7 +417,7 @@ class Spider(object):
             else:
                 print("retrying fetching speech list...")
 
-        print('fetched speech list\n')
+        print('\nfetched speech list...')
 
         return self.formatSpeechList()
 
@@ -423,8 +430,8 @@ class Spider(object):
             '__EVENTVALIDATION': self.EVENTVALIDATION,
             'txtyzm': '',
         }
-        payload = {'xh': self.urlBean.studentID}
-        prepareBody = self.prepare(referer=self.urlBean.fetchSpeechListUrl + '?xh=' + self.urlBean.studentID,
+        payload = {'xh': self.urlBean.userName}
+        prepareBody = self.prepare(referer=self.urlBean.fetchSpeechListUrl + '?xh=' + self.urlBean.userName,
                                    originHost=self.urlBean.jwglOriginUrl,
                                    method='POST',
                                    url=self.urlBean.fetchSpeechListUrl,
@@ -440,11 +447,33 @@ class Spider(object):
             else:
                 print("retrying posting speech detail...")
 
-        prepareBody = self.prepare(referer=self.urlBean.fetchSpeechListUrl + '?xh=' + self.urlBean.studentID,
-                                   originHost=None,
-                                   method='GET',
-                                   url='http://graduate.buct.edu.cn:8080/pyxx/txhdgl/hdxxdetail.aspx',
-                                   data=None,
+        # prepareBody = self.prepare(referer=self.urlBean.fetchSpeechListUrl + '?xh=' + self.urlBean.userName,
+        #                            originHost=None,
+        #                            method='GET',
+        #                            url='http://graduate.buct.edu.cn:8080/pyxx/txhdgl/hdxxdetail.aspx',
+        #                            data=None,
+        #                            params=None)
+        #
+        # while True:
+        #     self.response = self.session.send(prepareBody)
+        #     if self.response.status_code == 200:
+        #         break
+        #     else:
+        #         print("retrying fetching speech detail...")
+        # self.response = self.session.send(prepareBody)
+
+        postData = {
+            '__EVENTTARGET': 'lbsq',
+            '__EVENTARGUMENT': '',
+            '__VIEWSTATE': self.VIEWSTATE,
+            '__EVENTVALIDATION': self.EVENTVALIDATION,
+            'myscrollheight': '0',
+        }
+        prepareBody = self.prepare(referer=self.urlBean.speechDetailUrl,
+                                   originHost=self.urlBean.jwglOriginUrl,
+                                   method='POST',
+                                   url=self.urlBean.speechDetailUrl,
+                                   data=postData,
                                    params=None)
 
         while True:
@@ -452,9 +481,8 @@ class Spider(object):
             if self.response.status_code == 200:
                 break
             else:
-                print("retrying fetching speech detail...")
+                print("retrying posting speech request...")
 
-        print(self.response.text)
         return self
 
     def formatSpeechList(self):
@@ -467,7 +495,7 @@ class Spider(object):
 
         for tempRow in tempSelected_[1:]:
             tempRow = tempRow.find_all('td')
-            buttonId = re.findall('<a.*id="(.*)?".*><img.*>.*</a>', str(tempRow))[0]
+            buttonId = re.findall('<a.*href=".*?\'(.*?)?\'.*".*><img.*>.*</a>', str(tempRow[-2]))[0]
             speechRow = [buttonId]
             for i in self.speechFilter:
                 item = re.findall('<td.*>(.*)?</td>', str(tempRow[i]))
@@ -479,7 +507,7 @@ class Spider(object):
 
         for tempRow in tempSelectable_[1:]:
             tempRow = tempRow.find_all('td')
-            buttonId = re.findall('<a.*id="(.*)?".*><img.*>.*</a>', str(tempRow))[0]
+            buttonId = re.findall('<a.*href=".*?\'(.*?)?\'.*".*><img.*>.*</a>', str(tempRow[-2]))[0]
             speechRow = [buttonId]
             for i in self.speechFilter:
                 item = re.findall('<td.*>(.*)?</td>', str(tempRow[i]))
