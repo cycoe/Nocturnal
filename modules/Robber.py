@@ -68,8 +68,14 @@ class Robber(object):
             time.sleep(self.config.refreshSleep())
 
     def robSpeech(self):
+        originalNum = 0
         while True:
             selected_, selectable_ = self.spider.fetchSpeechList()
+            if len(selected_) > originalNum:
+                originalNum = len(selected_)
+                print(OutputFormater.output(selected_, header="+-------------------+\n" +
+                                                              "| robbed a speech!  |\n" +
+                                                              "+-------------------+\n"))
             buttonId_ = [selectable[0] for selectable in selectable_ if int(selectable[6]) > int(selectable[7])]
             if buttonId_:
                 buttonId = random.shuffle(buttonId_)[0]

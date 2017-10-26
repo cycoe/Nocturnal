@@ -39,11 +39,11 @@ def cycle():
 
 
 def outputWelcome():
-    print("**************************")
-    print("*      Class Robber      *")
-    print("*        by: cycoe       *")
-    print("*    License: MIT 3.0    *")
-    print("**************************")
+    print("+------------------------+")
+    print("|      Class Robber      |")
+    print("|        by: cycoe       |")
+    print("|    License: MIT 3.0    |")
+    print("+------------------------+")
     print("")
 
 
