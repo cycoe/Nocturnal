@@ -79,7 +79,7 @@ class Robber(object):
             buttonId_ = [selectable[0] for selectable in selectable_ if int(selectable[6]) > int(selectable[7])]
             if buttonId_:
                 random.shuffle(buttonId_)
-		buttonId = buttonId_[0]
+                buttonId = buttonId_[0]
                 print("\nRobbing speech...")
                 self.spider.postSpeech(buttonId)
             if len(buttonId_) < 2:
