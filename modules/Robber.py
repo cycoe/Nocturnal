@@ -5,9 +5,11 @@ import re
 import time
 import itchat
 import random
+import threading
 from modules.Spider import Spider
 from modules.OutputFormater import OutputFormater
 from modules.Logger import Logger
+from modules.Mail import Mail
 from modules.listUtils import find_all_in_list
 from Config import Config
 
@@ -104,6 +106,7 @@ class Robber(object):
             if len(selected_) > originalNum:
                 originalNum = len(selected_)
                 print(OutputFormater.output(selected_, header=Logger.log('Robbed a speech!', level=Logger.warning)))
+            threading.Thread(target=Mail.send_mail, args=(OutputFormater.table(selected_, padding=2),)).start()
             buttonId_ = [selectable[0] for selectable in selectable_ if int(selectable[6]) > int(selectable[7])]
             if buttonId_:
                 random.shuffle(buttonId_)
