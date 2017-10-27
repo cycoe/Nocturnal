@@ -4,6 +4,7 @@
 from modules.Robber import Robber
 from modules.ArgvsParser import ArgvsParser
 from modules.OutputFormater import OutputFormater
+from modules.Logger import Logger
 
 argvsParser = ArgvsParser()
 robber = Robber()
@@ -36,16 +37,15 @@ def cycle():
         elif argvsParser.parse(command) == argvsParser.quit:
             quit()
         else:
-            print("\nWrong arguments detected!\n")
+            print(Logger.log('Wrong arguments detected!', level=Logger.error))
 
 
 def outputWelcome():
-    print("+------------------------+")
-    print("|      Class Robber      |")
-    print("|        by: cycoe       |")
-    print("|    License: MIT 3.0    |")
-    print("+------------------------+")
-    print("")
+    print(OutputFormater.table([
+        ['Class Robber'],
+        ['by: cycoe'],
+        ['License: MIT 3.0']
+    ], padding=10, horizontalSpacer=False))
 
 
 def outputHelp():

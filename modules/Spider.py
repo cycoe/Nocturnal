@@ -213,7 +213,7 @@ class Spider(object):
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
                 break
-            Logger.log("retrying fetching login page viewState...", Logger.info)
+            Logger.log("Retrying fetching login page viewState...", Logger.info)
 
         reInput = True
         while True:
@@ -269,28 +269,28 @@ class Spider(object):
                     break
 
             if re.search('用户名不存在', self.response.text):
-                Logger.log('no such a user!', ['cleaning password file'], level=Logger.error)
-                print(OutputFormater.table([['no such a user!'], ['cleaning password file']], padding=2))
+                Logger.log('No such a user!', ['Cleaning password file'], level=Logger.error)
+                print(OutputFormater.table([['No such a user!'], ['Cleaning password file']], padding=2))
                 self.urlBean.cleanUserInfo()
                 reInput = True
 
             elif re.search('密码错误', self.response.text):
-                Logger.log('wrong password!', ['cleaning password file'], level=Logger.error)
-                print(OutputFormater.table([['wrong password!'], ['cleaning password file']], padding=2))
+                Logger.log('Wrong password!', ['Cleaning password file'], level=Logger.error)
+                print(OutputFormater.table([['Wrong password!'], ['Cleaning password file']], padding=2))
                 self.urlBean.cleanUserInfo()
                 reInput = True
 
             elif re.search('请输入验证码', self.response.text):
-                Logger.log('please input vertify code!', ['retrying...'], level=Logger.warning)
-                print(OutputFormater.table([['please input vertify code!'], ['retrying...']], padding=2))
+                Logger.log('Please input vertify code!', ['Retrying...'], level=Logger.warning)
+                print(OutputFormater.table([['Please input vertify code!'], ['Retrying...']], padding=2))
 
             elif re.search('验证码错误', self.response.text):
-                Logger.log('wrong vertify code!', ['retrying...'], level=Logger.warning)
-                print(OutputFormater.table([['wrong vertify code!'], ['retrying...']], padding=2))
+                Logger.log('Wrong vertify code!', ['Retrying...'], level=Logger.warning)
+                print(OutputFormater.table([['Wrong vertify code!'], ['Retrying...']], padding=2))
 
             else:
-                Logger.log('login successfully!', ['userName: ' + self.urlBean.userName, 'password: ' + self.urlBean.password], level=Logger.warning)
-                print(OutputFormater.table([['login successfully!']], padding=2))
+                Logger.log('Login successfully!', ['UserName: ' + self.urlBean.userName, 'Password: ' + self.urlBean.password], level=Logger.warning)
+                print(OutputFormater.table([['Login successfully!']], padding=2))
                 self.urlBean.dumpUserInfo()
                 break
 
@@ -336,10 +336,10 @@ class Spider(object):
         while True:
             self.response = self.session.send(prepareBody)
             if self.response.status_code == 200:
-                print('post class successfully')
+                print('Post class successfully')
                 break
             else:
-                print('retrying...')
+                print('Retrying...')
 
         return self.formatClassList()
 
@@ -358,7 +358,7 @@ class Spider(object):
             if self.response.status_code == 200:
                 break
             else:
-                print("retrying fetching schedule...")
+                print("Retrying fetching schedule...")
 
         soup = BeautifulSoup(self.response.text, 'html.parser')
         with open('schedule.md', 'w') as fr:
@@ -375,17 +375,17 @@ class Spider(object):
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
                 break
             else:
-                print("retrying fetching English test view status...")
+                print("Retrying fetching English test view status...")
 
     def postEnglishTest(self):
 
         while True:
             self.response = self.session.send(self.preparePostEnglishTest())
             if self.response.status_code == 200:
-                print("request english test successfully!")
+                print("Request english test successfully!")
                 break
             else:
-                print("retrying...")
+                print("Retrying...")
 
     def getEnglishTestStatus(self):
 
@@ -417,7 +417,7 @@ class Spider(object):
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
                 break
             else:
-                print(Logger.log('retrying fetching speech list...'))
+                print(Logger.log('Retrying fetching speech list...'))
 
         return self.formatSpeechList()
 
@@ -445,7 +445,7 @@ class Spider(object):
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
                 break
             else:
-                print(Logger.log('retrying posting speech detail...'))
+                print(Logger.log('Retrying posting speech detail...'))
 
         postData = {
             '__EVENTTARGET': 'lbsq',
@@ -466,7 +466,7 @@ class Spider(object):
             if self.response.status_code == 200:
                 break
             else:
-                print(Logger.log('retrying posting speech request...'))
+                print(Logger.log('Retrying posting speech request...'))
 
         return self
 
