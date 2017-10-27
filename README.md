@@ -1,25 +1,23 @@
-## spider for Zhengfang Educational Administration System
+## spider for BUCT postgraduate student system
 
 ### dependencies
-- `python3.6` Env
-- `requests` for spider body
-- `PIL` dealing with image of verification code
-- `Numpy` for matrix and generating feature library
-- `re` for regular expression
-- `BeautifulSoup` for html parser
+| modules | use |
+|---------|-----|
+| `python3.6` | Env |
+| `requests` | for spider body |
+| `PIL` | dealing with image of verification code |
+| `Numpy` | for matrix and generating feature library |
+| `re` | for regular expression |
+| `BeautifulSoup` | for html parser |
+
+### install
+1. install python environment, follow [this](https://www.python.org)
+2. install all requirements with `pip install -r requirements`
+
+### run
+1. change directory to `class_robber/`
+2. `python main.py`
+3. input `help` for usage
 
 ### Statement
 **Just for study**
-
-## 正方教务管理系统爬虫
-
-### 依赖
-- `python3.6` 运行环境
-- `requests` 用于爬虫主体
-- `PIL` 用于验证码图像处理
-- `Numpy` 用于矩阵以及生成特征库
-- `re` 用于正则表达式
-- `BeautifulSoup` 用于 html 解析器
-
-### 声明
-**仅用于学习用途**
