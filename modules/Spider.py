@@ -199,12 +199,6 @@ class Spider(object):
         """
         登录教务网
         """
-        
-        if self.urlBean.checkUserFile():
-            self.urlBean.readUserInfo()
-        else:
-            self.urlBean.userName = input("> UserName: ")
-            self.urlBean.password = input("> Password: ")
 
         prepareBody = self.prepare(referer=None,
                                    originHost=None,
@@ -221,7 +215,15 @@ class Spider(object):
                 break
             Logger.log("retrying fetching login page viewState...", Logger.info)
 
+        reInput = True
         while True:
+            if reInput:
+                if self.urlBean.checkUserFile():
+                    self.urlBean.readUserInfo()
+                else:
+                    self.urlBean.userName = input("> UserName: ")
+                    self.urlBean.password = input("> Password: ")
+                reInput = False
 
             prepareBody = self.prepare(referer=self.urlBean.jwglLoginUrl,
                                        originHost=None,
@@ -266,11 +268,17 @@ class Spider(object):
                 if self.response.status_code == 200:
                     break
 
-            if re.search('密码错误', self.response.text):
-                Logger.log('wrong password!', ['cleaning password file', 'exiting...'], level=Logger.error)
-                print(OutputFormater.table([['wrong password!'], ['cleaning password file'], ['exiting...']], padding=2))
+            if re.search('用户名不存在', self.response.text):
+                Logger.log('no such a user!', ['cleaning password file'], level=Logger.error)
+                print(OutputFormater.table([['no such a user!'], ['cleaning password file']], padding=2))
                 self.urlBean.cleanUserInfo()
-                exit(0)
+                reInput = True
+
+            elif re.search('密码错误', self.response.text):
+                Logger.log('wrong password!', ['cleaning password file'], level=Logger.error)
+                print(OutputFormater.table([['wrong password!'], ['cleaning password file']], padding=2))
+                self.urlBean.cleanUserInfo()
+                reInput = True
 
             elif re.search('请输入验证码', self.response.text):
                 Logger.log('please input vertify code!', ['retrying...'], level=Logger.warning)
