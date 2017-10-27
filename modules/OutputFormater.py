@@ -25,7 +25,7 @@ class OutputFormater(object):
         return outputContent
 
     @staticmethod
-    def table(content, gravity=center, padding=0):
+    def table(content, gravity=center, padding=0, verticalSpacer=True, horizontalSpacer=True):
         if not content:
             return ''
         maxLength_ = [0 for item in content[0]]
@@ -36,6 +36,9 @@ class OutputFormater(object):
         border = '+'
         for maxLength in maxLength_:
             border += '-' * maxLength
+            if verticalSpacer:
+                border += '+'
+        if not verticalSpacer:
             border += '+'
         border += '\n'
 
@@ -51,9 +54,15 @@ class OutputFormater(object):
                     output += ' ' * int(length - len(item) - int((length - len(item)) / 2))
                 elif gravity == 1:
                     output += ' ' * (length - len(item)) + item
+                if verticalSpacer:
+                    output += '|'
+            if not verticalSpacer:
                 output += '|'
             output += '\n'
             output_.append(output)
-        output = border + border.join(output_) + border
+        if horizontalSpacer:
+            output = border + border.join(output_) + border
+        else:
+            output = border + ''.join(output_) + border
 
         return output

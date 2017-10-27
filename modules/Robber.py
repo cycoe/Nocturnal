@@ -7,6 +7,7 @@ import itchat
 import random
 from modules.Spider import Spider
 from modules.OutputFormater import OutputFormater
+from modules.Logger import Logger
 from modules.listUtils import find_all_in_list
 from Config import Config
 
@@ -15,7 +16,6 @@ class Robber(object):
 
     def __init__(self):
         self.spider = Spider()
-        self.config = Config()
 
         self.loginStatus = False
         self.wechatLoginStatus = False
@@ -23,21 +23,21 @@ class Robber(object):
         self.wechatId_ = []
 
     def login(self):
-        self.spider.jwglLogin()
+        self.spider.login()
         self.loginStatus = True
 
     def wechatLogin(self):
         itchat.auto_login(enableCmdQR=2)
-        for wechatGroup in self.config.wechatGroup_:
+        for wechatGroup in Config.wechatGroup_:
             self.wechatId_.append(itchat.search_chatrooms(wechatGroup)[0]['UserName'])
-        for wechatUser in self.config.wechatUser_:
+        for wechatUser in Config.wechatUser_:
             self.wechatId_.append(itchat.search_friends(wechatUser)[0]['UserName'])
         self.wechatLoginStatus = True
 
     def pushToAllGroup(self, msg):
         for wechatId in self.wechatId_:
             itchat.send(msg, toUserName=wechatId)
-            time.sleep(self.config.wechatPushSleep())
+            time.sleep(Config.wechatPushSleep())
 
     def getClassIdList(self, listFile):
         classList = self.spider.fetchClassList()
@@ -65,7 +65,7 @@ class Robber(object):
                 availableSpeechList.insert(0, ['报告类别', '报告名称', '报告时间', '报告地点', '余量'])
                 # self.pushToAllGroup(OutputFormater.output(availableSpeechList, header='有报告余量！'))
                 print(OutputFormater.output(availableSpeechList, header='有报告余量！'))
-            time.sleep(self.config.refreshSleep())
+            time.sleep(Config.refreshSleep())
 
     def robSpeech(self):
         originalNum = 0
@@ -80,12 +80,11 @@ class Robber(object):
             if buttonId_:
                 random.shuffle(buttonId_)
                 buttonId = buttonId_[0]
-                print("\nRobbing speech...")
+                print(Logger.log('Robbing speech...', level=Logger.info))
                 self.spider.postSpeech(buttonId)
             if len(buttonId_) < 2:
-                print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
-                print("\nNo speech to rob, dozing...")
-                time.sleep(self.config.refreshSleep())
+                print(Logger.log('No speech to rob, dozing...', level=Logger.info))
+                time.sleep(Config.refreshSleep())
 
     def robClass(self, classIdList):
         for classId in classIdList:

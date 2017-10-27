@@ -3,16 +3,13 @@
 
 import os
 
+
 class UrlBean(object):
     """
     管理爬虫所需的所有 url 的类
     """
 
     def __init__(self):
-
-        self.userName = "2017200276"
-        self.password = "zhiwen.COM"
-
         self.userFile = 'password_'
 
         self.verifyCodeUrl = "http://graduate.buct.edu.cn:8080/pyxx/PageTemplate/NsoftPage/yzm/IdentifyingCode.aspx"  # 验证码获取地址
@@ -41,3 +38,7 @@ class UrlBean(object):
             fr.write(self.userName)
             fr.write('\n')
             fr.write(self.password)
+
+    def cleanUserInfo(self):
+        if self.checkUserFile():
+            os.remove(self.userFile)

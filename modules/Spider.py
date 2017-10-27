@@ -5,6 +5,8 @@ import re
 from requests import Session, Request, exceptions
 from bs4 import BeautifulSoup
 from modules.UrlBean import UrlBean
+from modules.Logger import Logger
+from modules.OutputFormater import OutputFormater
 
 
 class Spider(object):
@@ -23,6 +25,9 @@ class Spider(object):
 
         self.classFilter = [3, 4, 5, 6, 11, 12]
         self.speechFilter = [0, 1, 3, 4, 5, 6, 7]
+
+        self.buttonPattern = re.compile('<a.*href=".*?\'(.*?)?\'.*".*><img.*>.*</a>')
+        self.removeTd = re.compile('<td.*>(.*)?</td>')
 
     @staticmethod
     def formatHeaders(referer=None, contentLength=None, originHost=None):
@@ -190,7 +195,7 @@ class Spider(object):
         req = Request('GET', self.urlBean.fetchSpeechListUrl, headers=headers, params=payload)
         return self.session.prepare_request(req)
 
-    def jwglLogin(self):
+    def login(self):
         """
         登录教务网
         """
@@ -198,8 +203,8 @@ class Spider(object):
         if self.urlBean.checkUserFile():
             self.urlBean.readUserInfo()
         else:
-            self.urlBean.userName = input("\nUserName: ")
-            self.urlBean.password = input("Password: ")
+            self.urlBean.userName = input("> UserName: ")
+            self.urlBean.password = input("> Password: ")
 
         prepareBody = self.prepare(referer=None,
                                    originHost=None,
@@ -214,7 +219,7 @@ class Spider(object):
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
                 break
-            print("retrying fetching viewState...")
+            Logger.log("retrying fetching login page viewState...", Logger.info)
 
         while True:
 
@@ -230,7 +235,7 @@ class Spider(object):
                 if codeImg.status_code == 200:
                     break
                 else:
-                    print("retrying fetching vertifyCode...")
+                    Logger.log("retrying fetching vertify code...", Logger.info)
 
             with open('check.gif', 'wb') as fr:  # 保存验证码图片
                 for chunk in codeImg:
@@ -261,33 +266,25 @@ class Spider(object):
                 if self.response.status_code == 200:
                     break
 
-            prepareBody = self.prepare(referer=self.urlBean.jwglLoginUrl,
-                                       originHost=None,
-                                       method='GET',
-                                       url=self.urlBean.jwglLoginDoneUrl,
-                                       data=None,
-                                       params=None)
+            if re.search('密码错误', self.response.text):
+                Logger.log('wrong password!', ['cleaning password file', 'exiting...'], level=Logger.error)
+                print(OutputFormater.table([['wrong password!'], ['cleaning password file'], ['exiting...']], padding=2))
+                self.urlBean.cleanUserInfo()
+                exit(0)
 
-            while True:
-                self.response = self.session.send(prepareBody)
-                if self.response.status_code == 200:
-                    break
+            elif re.search('请输入验证码', self.response.text):
+                Logger.log('please input vertify code!', ['retrying...'], level=Logger.warning)
+                print(OutputFormater.table([['please input vertify code!'], ['retrying...']], padding=2))
 
-            if re.search('Default', self.response.url):  # 若 response.url 中匹配到 Default，则认为登录成功
-                print("\n")
-                print("#######################")
-                print("# login successfully! #")
-                print("#######################")
-                print("\n")
+            elif re.search('验证码错误', self.response.text):
+                Logger.log('wrong vertify code!', ['retrying...'], level=Logger.warning)
+                print(OutputFormater.table([['wrong vertify code!'], ['retrying...']], padding=2))
+
+            else:
+                Logger.log('login successfully!', ['userName: ' + self.urlBean.userName, 'password: ' + self.urlBean.password], level=Logger.warning)
+                print(OutputFormater.table([['login successfully!']], padding=2))
                 self.urlBean.dumpUserInfo()
                 break
-            else:
-                print("\n")
-                print("#######################")
-                print("# wrong vertify code! #")
-                print("# retrying...         #")
-                print("#######################")
-                print("\n")
 
         return self
 
@@ -308,10 +305,7 @@ class Spider(object):
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
                 break
             else:
-                print("retrying fetching class list...")
-
-        print(self.response.url)
-        print('fetched class list\n')
+                print(Logger.log('retrying fetching class list...'))
 
         return self.formatClassList()
 
@@ -415,9 +409,7 @@ class Spider(object):
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
                 break
             else:
-                print("retrying fetching speech list...")
-
-        print('\nfetched speech list...')
+                print(Logger.log('retrying fetching speech list...'))
 
         return self.formatSpeechList()
 
@@ -445,7 +437,7 @@ class Spider(object):
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
                 break
             else:
-                print("retrying posting speech detail...")
+                print(Logger.log('retrying posting speech detail...'))
 
         postData = {
             '__EVENTTARGET': 'lbsq',
@@ -466,7 +458,7 @@ class Spider(object):
             if self.response.status_code == 200:
                 break
             else:
-                print("retrying posting speech request...")
+                print(Logger.log('retrying posting speech request...'))
 
         return self
 
@@ -480,10 +472,10 @@ class Spider(object):
 
         for tempRow in tempSelected_[1:]:
             tempRow = tempRow.find_all('td')
-            buttonId = re.findall('<a.*href=".*?\'(.*?)?\'.*".*><img.*>.*</a>', str(tempRow[-2]))[0]
+            buttonId = re.findall(self.buttonPattern, str(tempRow[-2]))[0]
             speechRow = [buttonId]
             for i in self.speechFilter:
-                item = re.findall('<td.*>(.*)?</td>', str(tempRow[i]))
+                item = re.findall(self.removeTd, str(tempRow[i]))
                 if len(item) == 0:
                     speechRow.append('')
                 else:
@@ -492,10 +484,10 @@ class Spider(object):
 
         for tempRow in tempSelectable_[1:]:
             tempRow = tempRow.find_all('td')
-            buttonId = re.findall('<a.*href=".*?\'(.*?)?\'.*".*><img.*>.*</a>', str(tempRow[-2]))[0]
+            buttonId = re.findall(self.buttonPattern, str(tempRow[-2]))[0]
             speechRow = [buttonId]
             for i in self.speechFilter:
-                item = re.findall('<td.*>(.*)?</td>', str(tempRow[i]))
+                item = re.findall(self.removeTd, str(tempRow[i]))
                 if len(item) == 0:
                     speechRow.append('')
                 else:
@@ -558,6 +550,19 @@ class VerifyError(Exception):
         return self.errorInfo
 
 
+class PasswordError(Exception):
+    """
+    密码错误类
+    """
+
+    def __init__(self, errorInfo):
+        Exception.__init__(self)
+        self.errorInfo = errorInfo
+
+    def __str__(self):
+        return self.errorInfo
+
+
 def print_vertify_code():
     from PIL import Image
     fullVector = []
@@ -569,7 +574,7 @@ def print_vertify_code():
     for j in range(imgHeight):
         row = ''
         for i in range(imgWidth):
-            if pixdata[i, j][0] + pixdata[i, j][1] + pixdata[i, j][2] < 3 * 127:
+            if pixdata[i, j][0] + pixdata[i, j][1] + pixdata[i, j][2] < 3 * 180:
                 row += '#'
             else:
                 row += ' '
