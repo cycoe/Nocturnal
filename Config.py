@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import random
+import os
 
 
 def getRandomTime(sleepTime):
@@ -24,3 +25,29 @@ class Config(object):
     # wechatUser_ = ['邱大帅全宇宙粉丝后援会']  # 讲座推送的用户名称
 
     logPath = 'robber.log'
+    userFile = 'password_'
+    userName = ''
+    password = ''
+
+    @staticmethod
+    def checkUserFile():
+        return os.path.exists(Config.userFile)
+
+    @staticmethod
+    def readUserInfo():
+        with open(Config.userFile) as fr:
+            content = fr.readlines()
+            Config.userName = content[0].strip()
+            Config.password = content[1].strip()
+
+    @staticmethod
+    def dumpUserInfo():
+        with open(Config.userFile, 'w') as fr:
+            fr.write(Config.userName)
+            fr.write('\n')
+            fr.write(Config.password)
+
+    @staticmethod
+    def cleanUserInfo():
+        if Config.checkUserFile():
+            os.remove(Config.userFile)

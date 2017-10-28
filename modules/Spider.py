@@ -5,6 +5,7 @@ import re
 from requests import Session, Request, exceptions
 from bs4 import BeautifulSoup
 from modules.UrlBean import UrlBean
+from Config import Config
 from modules.Logger import Logger
 from modules.OutputFormater import OutputFormater
 
@@ -15,7 +16,6 @@ class Spider(object):
     """
 
     def __init__(self):
-        self.urlBean = UrlBean()    # 实例化 url 管理对象
         self.session = Session()    # 实例化 session 对象，用于 handle 整个会话
 
         # 实例化验证码识别器对象
@@ -105,12 +105,12 @@ class Spider(object):
 
     # def prepareJwglFirst(self):
     #     headers = self.formatHeaders()
-    #     req = Request('GET', self.urlBean.jwglLoginUrl, headers=headers)
+    #     req = Request('GET', self.UrlBean.jwglLoginUrl, headers=headers)
     #     return self.session.prepare_request(req)
     #
     # def prepareFetchVerCode(self):
-    #     headers = self.formatHeaders(referer=self.urlBean.jwglLoginUrl)
-    #     req = Request('GET', self.urlBean.verifyCodeUrl, headers=headers)
+    #     headers = self.formatHeaders(referer=self.UrlBean.jwglLoginUrl)
+    #     req = Request('GET', self.UrlBean.verifyCodeUrl, headers=headers)
     #     return self.session.prepare_request(req)
     #
     # def prepareJwglLogin(self):
@@ -121,25 +121,25 @@ class Spider(object):
     #     postData = {
     #         '__VIEWSTATE': self.VIEWSTATE,
     #         '__EVENTVALIDATION': self.EVENTVALIDATION,
-    #         '_ctl0:txtusername': self.urlBean.userName,
-    #         '_ctl0:txtpassword': self.urlBean.jwglPassword,
+    #         '_ctl0:txtusername': self.UrlBean.userName,
+    #         '_ctl0:txtpassword': self.UrlBean.jwglPassword,
     #         '_ctl0:txtyzm': self.verCode,
     #         '_ctl0:ImageButton1.x': '43',
     #         '_ctl0:ImageButton1.y': '21',
     #     }
-    #     headers = self.formatHeaders(referer=self.urlBean.jwglLoginUrl, originHost=self.urlBean.jwglOriginUrl)
-    #     req = Request('POST', self.urlBean.jwglLoginUrl, headers=headers, data=postData)
+    #     headers = self.formatHeaders(referer=self.UrlBean.jwglLoginUrl, originHost=self.UrlBean.jwglOriginUrl)
+    #     req = Request('POST', self.UrlBean.jwglLoginUrl, headers=headers, data=postData)
     #     return self.session.prepare_request(req)
     #
     # def prepareJwglLoginDone(self):
-    #     headers = self.formatHeaders(referer=self.urlBean.jwglLoginUrl)
-    #     req = Request('GET', self.urlBean.jwglLoginDoneUrl, headers=headers)
+    #     headers = self.formatHeaders(referer=self.UrlBean.jwglLoginUrl)
+    #     req = Request('GET', self.UrlBean.jwglLoginDoneUrl, headers=headers)
     #     return self.session.prepare_request(req)
     #
     # def prepareFetchClassList(self):
-    #     headers = self.formatHeaders(referer=self.urlBean.leftMenuReferer)
-    #     payload = {'xh': self.urlBean.userName}
-    #     req = Request('GET', self.urlBean.fetchClassListUrl, headers=headers, params=payload)
+    #     headers = self.formatHeaders(referer=self.UrlBean.leftMenuReferer)
+    #     payload = {'xh': self.UrlBean.userName}
+    #     req = Request('GET', self.UrlBean.fetchClassListUrl, headers=headers, params=payload)
     #     return self.session.prepare_request(req)
     #
     # def preparePostClass(self, classId):
@@ -153,21 +153,21 @@ class Spider(object):
     #         '__VIEWSTATE': self.VIEWSTATE,
     #         '__EVENTVALIDATION': self.EVENTVALIDATION,
     #     }
-    #     headers = self.formatHeaders(referer=self.urlBean.fetchClassListUrl + '?xh=' + self.urlBean.userName, originHost=self.urlBean.jwglOriginUrl)
-    #     payload = {'xh': self.urlBean.userName}
-    #     req = Request('POST', self.urlBean.fetchClassListUrl, headers=headers, data=postData, params=payload)
+    #     headers = self.formatHeaders(referer=self.UrlBean.fetchClassListUrl + '?xh=' + self.UrlBean.userName, originHost=self.UrlBean.jwglOriginUrl)
+    #     payload = {'xh': self.UrlBean.userName}
+    #     req = Request('POST', self.UrlBean.fetchClassListUrl, headers=headers, data=postData, params=payload)
     #     return self.session.prepare_request(req)
 
     def prepareFetchSchedule(self):
-        headers = self.formatHeaders(referer=self.urlBean.leftMenuReferer)
-        payload = {'xh': self.urlBean.userName}
-        req = Request('GET', self.urlBean.fetchScheduleUrl, headers=headers, params=payload)
+        headers = self.formatHeaders(referer=UrlBean.leftMenuReferer)
+        payload = {'xh': Config.userName}
+        req = Request('GET', UrlBean.fetchScheduleUrl, headers=headers, params=payload)
         return self.session.prepare_request(req)
 
     def prepareGetEnglishTest(self):
-        headers = self.formatHeaders(referer=self.urlBean.leftMenuReferer)
-        payload = {'xh': self.urlBean.userName}
-        req = Request('GET', self.urlBean.englishTestUrl, headers=headers, params=payload)
+        headers = self.formatHeaders(referer=UrlBean.leftMenuReferer)
+        payload = {'xh': Config.userName}
+        req = Request('GET', UrlBean.englishTestUrl, headers=headers, params=payload)
         return self.session.prepare_request(req)
 
     def preparePostEnglishTest(self):
@@ -184,15 +184,15 @@ class Spider(object):
             'WUCpyjhdy:HFfilename': '等级考试确认单',
             'WUCpyjhdy:HFdatatype': '26',
         }
-        headers = self.formatHeaders(referer=self.urlBean.englishTestUrl + '?xh=' + self.urlBean.userName, originHost=self.urlBean.jwglOriginUrl)
-        payload = {'xh': self.urlBean.userName}
-        req = Request('POST', self.urlBean.englishTestUrl, headers=headers, data=postData, params=payload)
+        headers = self.formatHeaders(referer=UrlBean.englishTestUrl + '?xh=' + Config.userName, originHost=UrlBean.jwglOriginUrl)
+        payload = {'xh': Config.userName}
+        req = Request('POST', UrlBean.englishTestUrl, headers=headers, data=postData, params=payload)
         return self.session.prepare_request(req)
 
     def prepareFetchSpeechList(self):
-        headers = self.formatHeaders(referer=self.urlBean.leftMenuReferer)
-        payload = {'xh': self.urlBean.userName}
-        req = Request('GET', self.urlBean.fetchSpeechListUrl, headers=headers, params=payload)
+        headers = self.formatHeaders(referer=UrlBean.leftMenuReferer)
+        payload = {'xh': Config.userName}
+        req = Request('GET', UrlBean.fetchSpeechListUrl, headers=headers, params=payload)
         return self.session.prepare_request(req)
 
     def login(self):
@@ -203,7 +203,7 @@ class Spider(object):
         prepareBody = self.prepare(referer=None,
                                    originHost=None,
                                    method='GET',
-                                   url=self.urlBean.jwglLoginUrl,
+                                   url=UrlBean.jwglLoginUrl,
                                    data=None,
                                    params=None)
 
@@ -218,17 +218,17 @@ class Spider(object):
         reInput = True
         while True:
             if reInput:
-                if self.urlBean.checkUserFile():
-                    self.urlBean.readUserInfo()
+                if Config.checkUserFile():
+                    Config.readUserInfo()
                 else:
-                    self.urlBean.userName = input("> UserName: ")
-                    self.urlBean.password = input("> Password: ")
+                    Config.userName = input("> UserName: ")
+                    Config.password = input("> Password: ")
                 reInput = False
 
-            prepareBody = self.prepare(referer=self.urlBean.jwglLoginUrl,
+            prepareBody = self.prepare(referer=UrlBean.jwglLoginUrl,
                                        originHost=None,
                                        method='GET',
-                                       url=self.urlBean.verifyCodeUrl,
+                                       url=UrlBean.verifyCodeUrl,
                                        data=None,
                                        params=None)
 
@@ -250,16 +250,16 @@ class Spider(object):
             postData = {
                 '__VIEWSTATE': self.VIEWSTATE,
                 '__EVENTVALIDATION': self.EVENTVALIDATION,
-                '_ctl0:txtusername': self.urlBean.userName,
-                '_ctl0:txtpassword': self.urlBean.password,
+                '_ctl0:txtusername': Config.userName,
+                '_ctl0:txtpassword': Config.password,
                 '_ctl0:txtyzm': verCode,
                 '_ctl0:ImageButton1.x': '43',
                 '_ctl0:ImageButton1.y': '21',
             }
-            prepareBody = self.prepare(referer=self.urlBean.jwglLoginUrl,
-                                       originHost=self.urlBean.jwglOriginUrl,
+            prepareBody = self.prepare(referer=UrlBean.jwglLoginUrl,
+                                       originHost=UrlBean.jwglOriginUrl,
                                        method='POST',
-                                       url=self.urlBean.jwglLoginUrl,
+                                       url=UrlBean.jwglLoginUrl,
                                        data=postData,
                                        params=None)
 
@@ -271,13 +271,13 @@ class Spider(object):
             if re.search('用户名不存在', self.response.text):
                 Logger.log('No such a user!', ['Cleaning password file'], level=Logger.error)
                 print(OutputFormater.table([['No such a user!'], ['Cleaning password file']], padding=2))
-                self.urlBean.cleanUserInfo()
+                Config.cleanUserInfo()
                 reInput = True
 
             elif re.search('密码错误', self.response.text):
                 Logger.log('Wrong password!', ['Cleaning password file'], level=Logger.error)
                 print(OutputFormater.table([['Wrong password!'], ['Cleaning password file']], padding=2))
-                self.urlBean.cleanUserInfo()
+                Config.cleanUserInfo()
                 reInput = True
 
             elif re.search('请输入验证码', self.response.text):
@@ -289,20 +289,20 @@ class Spider(object):
                 print(OutputFormater.table([['Wrong vertify code!'], ['Retrying...']], padding=2))
 
             else:
-                Logger.log('Login successfully!', ['UserName: ' + self.urlBean.userName, 'Password: ' + self.urlBean.password], level=Logger.warning)
+                Logger.log('Login successfully!', ['UserName: ' + Config.userName, 'Password: ' + Config.password], level=Logger.warning)
                 print(OutputFormater.table([['Login successfully!']], padding=2))
-                self.urlBean.dumpUserInfo()
+                Config.dumpUserInfo()
                 break
 
         return self
 
     def fetchClassList(self):
 
-        params = {'xh': self.urlBean.userName}
-        prepareBody = self.prepare(referer=self.urlBean.leftMenuReferer,
+        params = {'xh': Config.userName}
+        prepareBody = self.prepare(referer=UrlBean.leftMenuReferer,
                                    originHost=None,
                                    method='GET',
-                                   url=self.urlBean.fetchClassListUrl,
+                                   url=UrlBean.fetchClassListUrl,
                                    data=None,
                                    params=params)
 
@@ -325,11 +325,11 @@ class Spider(object):
             '__VIEWSTATE': self.VIEWSTATE,
             '__EVENTVALIDATION': self.EVENTVALIDATION,
         }
-        payload = {'xh': self.urlBean.userName}
-        prepareBody = self.prepare(referer=self.urlBean.fetchClassListUrl + '?xh=' + self.urlBean.userName,
-                                   originHost=self.urlBean.jwglOriginUrl,
+        payload = {'xh': Config.userName}
+        prepareBody = self.prepare(referer=UrlBean.fetchClassListUrl + '?xh=' + Config.userName,
+                                   originHost=UrlBean.jwglOriginUrl,
                                    method='POST',
-                                   url=self.urlBean.fetchClassListUrl,
+                                   url=UrlBean.fetchClassListUrl,
                                    data=postData,
                                    params=payload)
 
@@ -345,11 +345,11 @@ class Spider(object):
 
     def fetchSchedule(self):
 
-        payload = {'xh': self.urlBean.userName}
-        prepareBody = self.prepare(referer=self.urlBean.leftMenuReferer,
+        payload = {'xh': Config.userName}
+        prepareBody = self.prepare(referer=UrlBean.leftMenuReferer,
                                    originHost=None,
                                    method='GET',
-                                   url=self.urlBean.fetchScheduleUrl,
+                                   url=UrlBean.fetchScheduleUrl,
                                    data=None,
                                    params=payload)
 
@@ -402,11 +402,11 @@ class Spider(object):
 
     def fetchSpeechList(self):
 
-        payload = {'xh': self.urlBean.userName}
-        prepareBody = self.prepare(referer=self.urlBean.leftMenuReferer,
+        payload = {'xh': Config.userName}
+        prepareBody = self.prepare(referer=UrlBean.leftMenuReferer,
                                    originHost=None,
                                    method='GET',
-                                   url=self.urlBean.fetchSpeechListUrl,
+                                   url=UrlBean.fetchSpeechListUrl,
                                    data=None,
                                    params=payload)
 
@@ -430,11 +430,11 @@ class Spider(object):
             '__EVENTVALIDATION': self.EVENTVALIDATION,
             'txtyzm': '',
         }
-        payload = {'xh': self.urlBean.userName}
-        prepareBody = self.prepare(referer=self.urlBean.fetchSpeechListUrl + '?xh=' + self.urlBean.userName,
-                                   originHost=self.urlBean.jwglOriginUrl,
+        payload = {'xh': Config.userName}
+        prepareBody = self.prepare(referer=UrlBean.fetchSpeechListUrl + '?xh=' + Config.userName,
+                                   originHost=UrlBean.jwglOriginUrl,
                                    method='POST',
-                                   url=self.urlBean.fetchSpeechListUrl,
+                                   url=UrlBean.fetchSpeechListUrl,
                                    data=postData,
                                    params=payload)
 
@@ -454,10 +454,10 @@ class Spider(object):
             '__EVENTVALIDATION': self.EVENTVALIDATION,
             'myscrollheight': '0',
         }
-        prepareBody = self.prepare(referer=self.urlBean.speechDetailUrl,
-                                   originHost=self.urlBean.jwglOriginUrl,
+        prepareBody = self.prepare(referer=UrlBean.speechDetailUrl,
+                                   originHost=UrlBean.jwglOriginUrl,
                                    method='POST',
-                                   url=self.urlBean.speechDetailUrl,
+                                   url=UrlBean.speechDetailUrl,
                                    data=postData,
                                    params=None)
 
@@ -578,11 +578,11 @@ def print_vertify_code():
     img = img.convert('RGBA')
     imgWidth = img.size[0]
     imgHeight = img.size[1]
-    pixdata = img.load()
+    pixData = img.load()
     for j in range(imgHeight):
         row = ''
         for i in range(imgWidth):
-            if pixdata[i, j][0] + pixdata[i, j][1] + pixdata[i, j][2] < 3 * 180:
+            if pixData[i, j][0] + pixData[i, j][1] + pixData[i, j][2] < 3 * 180:
                 row += '#'
             else:
                 row += ' '
