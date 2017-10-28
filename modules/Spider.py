@@ -290,7 +290,7 @@ class Spider(object):
                 print(Logger.log('Wrong vertify code!', ['Retrying...'], level=Logger.error))
 
             else:
-                print(Logger.log('Login successfully!', ['UserName: ' + Config.userName, 'Password: ' + Config.password], level=Logger.error))
+                print(Logger.log('Login successfully!', ['UserName: ' + Config.userName], level=Logger.error))
                 Config.dumpUserInfo()
                 break
 
