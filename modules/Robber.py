@@ -15,6 +15,12 @@ from Config import Config
 
 
 def checkStatus(check_):
+    """
+    decorator to check login status before request
+
+    :param check_: a list of status
+    :return: function wrapper
+    """
     def func_wrapper(func):
         def return_wrapper(self, *args):
             flag = True
@@ -124,4 +130,9 @@ class Robber(object):
         print(self.spider.getEnglishTestStatus())
         self.spider.postEnglishTest()
         print(self.spider.getEnglishTestStatus())
+
+    def clean(self):
+        self.spider.clean()
+        print(Logger.log('site clearing...', ['exiting...'], level=Logger.error))
+        exit(0)
 

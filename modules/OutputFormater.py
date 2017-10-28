@@ -11,18 +11,18 @@ class OutputFormater(object):
     def __init__(self):
         pass
 
-    @staticmethod
-    def output(content, header='', footer=''):
-        outputContent = ""
-        outputContent += header + '\n\n'
-        for row in content:
-            outputContent += '|'
-            for item in range(len(row)):
-                outputContent += ' ' + row[item] + ' |'
-            outputContent += '\n'
-        outputContent += '\n' + footer
-
-        return outputContent
+    # @staticmethod
+    # def output(content, header='', footer=''):
+    #     outputContent = ""
+    #     outputContent += header + '\n\n'
+    #     for row in content:
+    #         outputContent += '|'
+    #         for item in range(len(row)):
+    #             outputContent += ' ' + row[item] + ' |'
+    #         outputContent += '\n'
+    #     outputContent += '\n' + footer
+    #
+    #     return outputContent
 
     @staticmethod
     def table(content, gravity=center, padding=0, verticalSpacer=True, horizontalSpacer=True):
@@ -32,7 +32,7 @@ class OutputFormater(object):
         for row in content:
             for item in row:
                 if len(item) + padding > maxLength_[row.index(item)]:
-                    maxLength_[row.index(item)] = len(item) + padding
+                    maxLength_[row.index(item)] = len(item) + padding * 2
         border = '+'
         for maxLength in maxLength_:
             border += '-' * maxLength

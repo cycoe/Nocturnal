@@ -45,12 +45,12 @@ def outputWelcome():
         ['Class Robber'],
         ['by: cycoe'],
         ['License: MIT 3.0']
-    ], padding=10, horizontalSpacer=False))
+    ], padding=5, horizontalSpacer=False))
 
 
 def outputHelp():
     print(OutputFormater.table([
-        ['command', 'abbr', 'description'],
+        ['command', 'abbr.', 'description'],
         ['help', 'h', 'print helps'],
         ['login', 'l', 'login web'],
         ['speech', 's', 'speech robbing mode'],
@@ -88,7 +88,7 @@ def robEnglish():
 
 
 def quit():
-    exit(0)
+    robber.clean()
 
 
 if __name__ == "__main__":

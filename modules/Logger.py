@@ -24,14 +24,15 @@ class Logger(object):
         else:
             output = '\033[1;31m'
         output += time.strftime('[%Y-%m-%d %H:%M:%S]', time.localtime(time.time()))
-        output += ' ' + level_[level] + ' ' + content + '\n'
+        output += ' ' + level_[level] + ' ' + content
         if subContent_:
-            for subContent in subContent_:
-                output += '....' + subContent + '\n'
+            output += '\n'
+            subContent_ = ['.' * 4 + subContent for subContent in subContent_]
+            output += '\n'.join(subContent_)
         output += '\033[0m'
 
-        if level == 1 or level == 2:
+        if level == 2:
             with open(Config.logPath, 'a') as fr:
-                fr.write(output)
+                fr.write(output + '\n')
 
         return output

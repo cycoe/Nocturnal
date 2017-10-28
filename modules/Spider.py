@@ -32,10 +32,10 @@ class Spider(object):
     @staticmethod
     def formatHeaders(referer=None, contentLength=None, originHost=None):
         """
-        生成请求的 headers
+        封装请求的 headers
 
         :param referer: 跳转标记，告诉 web 服务器自己是从哪个页面跳转过来的
-        :param contentLength: 未知
+        :param contentLength: 作用未知
         :param originHost: 原始主机地址
         :returns: headers 字典
         """
@@ -200,6 +200,7 @@ class Spider(object):
         登录教务网
         """
 
+        # 在登录前请求一次登录页面，获取网页的隐藏表单数据
         prepareBody = self.prepare(referer=None,
                                    originHost=None,
                                    method='GET',
@@ -208,14 +209,16 @@ class Spider(object):
                                    params=None)
 
         while True:
-            self.response = self.session.send(prepareBody)  # GET 方法获取登录网站的 '__VIEWSTATE'
+            self.response = self.session.send(prepareBody)
             self.VIEWSTATE = self.getVIEWSTATE()
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
                 break
-            Logger.log("Retrying fetching login page viewState...", Logger.info)
+            Logger.log("Retrying fetching login page viewState...", level=Logger.warning)
 
-        reInput = True
+        reInput = True      # 是否需要重新输入用户名和密码
+
+        # 登录主循环
         while True:
             if reInput:
                 if Config.checkUserFile():
@@ -225,6 +228,7 @@ class Spider(object):
                     Config.password = input("> Password: ")
                 reInput = False
 
+            # 获取验证码
             prepareBody = self.prepare(referer=UrlBean.jwglLoginUrl,
                                        originHost=None,
                                        method='GET',
@@ -237,7 +241,7 @@ class Spider(object):
                 if codeImg.status_code == 200:
                     break
                 else:
-                    Logger.log("retrying fetching vertify code...", Logger.info)
+                    Logger.log("retrying fetching vertify code...", level=Logger.warning)
 
             with open('check.gif', 'wb') as fr:  # 保存验证码图片
                 for chunk in codeImg:
@@ -247,6 +251,7 @@ class Spider(object):
             verCode = input("input verify code:")
             # verCode = self.classifier.recognizer("check.gif")  # 识别验证码
 
+            # 发送登陆请求
             postData = {
                 '__VIEWSTATE': self.VIEWSTATE,
                 '__EVENTVALIDATION': self.EVENTVALIDATION,
@@ -269,28 +274,23 @@ class Spider(object):
                     break
 
             if re.search('用户名不存在', self.response.text):
-                Logger.log('No such a user!', ['Cleaning password file'], level=Logger.error)
-                print(OutputFormater.table([['No such a user!'], ['Cleaning password file']], padding=2))
+                print(Logger.log('No such a user!', ['Cleaning password file'], level=Logger.error))
                 Config.cleanUserInfo()
                 reInput = True
 
             elif re.search('密码错误', self.response.text):
-                Logger.log('Wrong password!', ['Cleaning password file'], level=Logger.error)
-                print(OutputFormater.table([['Wrong password!'], ['Cleaning password file']], padding=2))
+                print(Logger.log('Wrong password!', ['Cleaning password file'], level=Logger.error))
                 Config.cleanUserInfo()
                 reInput = True
 
             elif re.search('请输入验证码', self.response.text):
-                Logger.log('Please input vertify code!', ['Retrying...'], level=Logger.warning)
-                print(OutputFormater.table([['Please input vertify code!'], ['Retrying...']], padding=2))
+                print(Logger.log('Please input vertify code!', ['Retrying...'], level=Logger.error))
 
             elif re.search('验证码错误', self.response.text):
-                Logger.log('Wrong vertify code!', ['Retrying...'], level=Logger.warning)
-                print(OutputFormater.table([['Wrong vertify code!'], ['Retrying...']], padding=2))
+                print(Logger.log('Wrong vertify code!', ['Retrying...'], level=Logger.error))
 
             else:
-                Logger.log('Login successfully!', ['UserName: ' + Config.userName, 'Password: ' + Config.password], level=Logger.warning)
-                print(OutputFormater.table([['Login successfully!']], padding=2))
+                print(Logger.log('Login successfully!', ['UserName: ' + Config.userName, 'Password: ' + Config.password], level=Logger.error))
                 Config.dumpUserInfo()
                 break
 
@@ -417,7 +417,7 @@ class Spider(object):
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
                 break
             else:
-                print(Logger.log('Retrying fetching speech list...'))
+                print(Logger.log('Retrying fetching speech list...', level=Logger.warning))
 
         return self.formatSpeechList()
 
@@ -445,7 +445,7 @@ class Spider(object):
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
                 break
             else:
-                print(Logger.log('Retrying posting speech detail...'))
+                print(Logger.log('Retrying posting speech detail...', level=Logger.warning))
 
         postData = {
             '__EVENTTARGET': 'lbsq',
@@ -466,7 +466,7 @@ class Spider(object):
             if self.response.status_code == 200:
                 break
             else:
-                print(Logger.log('Retrying posting speech request...'))
+                print(Logger.log('Retrying posting speech request...', level=Logger.warning))
 
         return self
 

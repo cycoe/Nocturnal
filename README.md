@@ -1,5 +1,8 @@
 ## spider for BUCT postgraduate student system
 
+### Statement
+**This spider is just coded by cycoe for python and ANN learning, I'm not responsible for any abuse.**
+
 ### dependencies
 | modules | use |
 |---------|-----|
@@ -19,5 +22,3 @@
 2. `python main.py`
 3. input `help` for usage
 
-### Statement
-**Just for study**
