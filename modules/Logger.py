@@ -27,7 +27,7 @@ class Logger(object):
         output += ' ' + level_[level] + ' ' + content
         if subContent_:
             output += '\n'
-            subContent_ = ['.' * 4 + subContent for subContent in subContent_]
+            subContent_ = ['-' * 4 + subContent for subContent in subContent_]
             output += '\n'.join(subContent_)
         output += '\033[0m'
 
