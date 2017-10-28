@@ -1,522 +1,99 @@
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML>
-	<HEAD>
-		<title>学生选课管理-培养计划内课程 </title>
-		<meta content="True" name="vs_showGrid">
-		<meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR">
-		<meta content="Visual Basic .NET 7.1" name="CODE_LANGUAGE">
-		<meta content="JavaScript" name="vs_defaultClientScript">
-		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
-		<LINK href="../style/Styles.css" type="text/css" rel="stylesheet">
-		<SCRIPT language="JavaScript">
-<!--
-
-		    function Trim(strValue) {
-		        return strValue.replace(/^\s*|\s*$/g, "");
-		    }
-		    function SetCookie(sName, sValue) {
-		        document.cookie = sName + "=" + escape(sValue);
-		    }
-		    function GetCookie(sName) {
-		        var aCookie = document.cookie.split(";");
-		        for (var i = 0; i < aCookie.length; i++) {
-		            var aCrumb = aCookie[i].split("=");
-		            if (sName == Trim(aCrumb[0])) {
-		                return (aCrumb[1]);
-		            }
-		        }
-		        return null;
-		    }
-		    function scrollback() {
-		        if (GetCookie("scroll") != null) { document.body.scrollTop = GetCookie("scroll") }
-		    }   
-  -->
-		</SCRIPT>
-	</HEAD>
-	<body MS_POSITIONING="GridLayout" id="body" onscroll='SetCookie("scroll",body.scrollTop);' onload="scrollback();">
-		<form name="Form1" method="post" action="pyjhxk.aspx?xh=2017200532" id="Form1">
-<input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="" />
-<input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="" />
-<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="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" />
-
-<script type="text/javascript">
-<!--
-var theForm = document.forms['Form1'];
-if (!theForm) {
-    theForm = document.Form1;
-}
-function __doPostBack(eventTarget, eventArgument) {
-    if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
-        theForm.__EVENTTARGET.value = eventTarget;
-        theForm.__EVENTARGUMENT.value = eventArgument;
-        theForm.submit();
-    }
-}
-// -->
-</script>
-
-
-<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEWJALR1YZUAoqHyacCAtLCweoJAvbGx/QJArGP56QLAp20wvgMAsz4zPsMAsz48PcJAs3kucMMArL7r6oCApiFrKoCAtS1mK0BAq7ap6oCArbDha0BAtXLh60BAtquj+MJAvm2keMJArT/m+MJAruHjeMJAoaKh+MJAvarwPwKAtLCmbQIAtvComcCosWyUgLzgIySDwLYl+78BAKp08e8AwKO6qmnCQLfpYPnBwLEvOXRDQKV+L6RDAL6jqH8AQKixfK6DgKixd7fBQKixcqEDQKixbapBHfa8m5SmkyM/etIyDMGOopyWFxV2WmLq+wao2JDWHMa" />
-			<TABLE style="WIDTH: 100%" cellSpacing="0" cellPadding="0" border="0">
-				<TR>
-					<TD class="" style="HEIGHT: 30px" vAlign="top">
-						<TABLE id="Table1" cellSpacing="0" cellPadding="0" width="100%" border="0">
-							<TR>
-								<TD vAlign="top" height="30">
-									<TABLE class="TitleBackColor" id="Table8" style="WIDTH: 100%; HEIGHT: 25px" cellSpacing="0"
-										cellPadding="0" border="0">
-										<TR>
-											<TD class="titlebar" style="WIDTH: 56.33%" colSpan="2">
+<title>
+	北京化工大学
+	—研究生管理信息系统</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="description" content="南京南软科技有限公司是江苏省软件企业，自创立起就一直致力于行业应用软件的开发，目前拥有多项领先的技术和产品，并以一流的商誉赢得业内外人士的广泛称赞。南软公司本着“替用户着想，为用户服务，对用户负责”的客户服务理念，坚持尽最大的努力，使用户得到满意的产品、满意的工程、满意的服务、满意的投资回报。">
+<meta name="keywords" content="研究生管理系统,研究生,研究生招生,研究生招生管理系统,研究生招生管理,南京南软,南软科技,南京南软科技有限公司,南软研究生,考试系统,学习培训考试系统,东南大学南软公司,东南大学">
 <style type="text/css">
-.location{background:url(../images/locationbg.png) repeat-x;border:1px solid #dae4ea;margin-bottom:5px;height:24px;}
-.location h2{background:url(../images/locationicon.png) no-repeat 10px 6px;float:left;height:22px;line-height:22px;font-size:12px;color:#0062af; font-weight:bold; padding-left:20px;display:inline; margin-top:2px;}
-.location span{float:right;height:24px;line-height:24px;margin-right:10px; background:url(../images/locationrighelp.png) no-repeat 4px 4px; padding-left:20px;}
-.location span a{color:#0060ae; font-size:12px;}
+body {margin:0;padding:0; font:12px "宋体", arial,sans-serif;}
+div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,blockquote,p{padding:0; margin:0;}
+table,td,tr,th{font-size:12px;}
+li{list-style-type:none;}
+img{vertical-align:top;border:0;}
+ol,ul {list-style:none;}
+input{margin:0;padding:0}
+input,img{line-height:normal}
+em{font-style:normal;}
+.clear{clear:both;}
+a {color:#333333; text-decoration:none;}
+a:visited{text-decoration:none;}
+a:hover{color:#ff6600;text-decoration:underline;}
+a:active{color:#333333;}
+.header,.container,.footer {width:980px;margin:0px auto;clear:both;}
+.container_teacher{width:100%; height:400px;margin:0px auto;clear:both;background:url(images/loginbg_teacher.jpg) no-repeat center top;}
+.container_student{width:100%; height:400px;margin:0px auto;clear:both;background:url(images/login_student.jpg) no-repeat center top;}
+.container980{width:295px; height:272px;margin:0px auto;clear:both; padding-top:128px; padding-left:685px; color:#3f3f3f}
+.header_left{float:left;height:100px; width:325px;}
+.header_right{float:right;height:100px; width:265px;}
+.signin{width:94px;height:38px;background-image:url(images/signin.png);cursor:pointer;border:0;background-color:transparent;}
+.reset{width:94px;height:38px;background-image:url(images/reset.png);cursor:pointer;border:0;background-color:transparent;}
+.loginfooter{background:url(images/logindownbg.png) no-repeat top; text-align:center; color:#8d8c8c; height:60px; line-height:60px; font-family:Verdana,arial,sans-serif;}
+.loginfooter a{color:#8d8c8c;}
+.loginfooter a:hover{color:#ff6600;}
+/*高度垂直居中自适应*/
+/*IREFOX+IE7*/ 
+html,body{height:100%;overflow-y:hidden;} 
+#infoBox[id]{text-align:center; width:100%; height:100%; display:table;} 
+#info[id]{display:table-cell;vertical-align:middle;} /*这里可以指个宽度试试，是可以自适应的*/ 
+/*IE6*/ 
+*html #infoBox{position:absolute; top:50%; width:100%; text-align:center; display:block; height:auto} 
+*html #info{position:relative; top:-50%; text-align:center;} /*这里可以指个宽度试试，是可以自适应的*/ 
+/*IE7*/ 
+*+html #infoBox[id]{position:absolute; top:50%; width:100%; text-align:center; display:block; height:auto} 
+*+html #info[id]{position:relative; top:-50%; text-align:center;} /*这里可以指个宽度试试，是可以自适应的*/ 
 </style>
+<body>
+	<div id="infoBox">
+		<div id="info">
+			<div class="header">
+				<div class="header_left"><img src="images/loginlogo.png"></div>
+				<div class="header_right"><img src="images/companylogo.png"></div>
+				<div class="clear"></div>
+			</div>
+			<div class="container_student">
+				<div class="container980">
+					<form name="aspnetForm" method="post" action="login.aspx" id="aspnetForm">
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUENTM4MWQYAQUeX19Db250cm9sc1JlcXVpcmVQb3N0QmFja0tleV9fFgEFEl9jdGwwOkltYWdlQnV0dG9uMQ0NODyO1wx8Du/Dppbl8bfJw0UTfwwIEHKsvYbP9Nqt" />
 
-
-<div class="location"><span><a href="../SysHelp/SysHelpShow.aspx?Type=5f580b4e8cabe95ce95c21fa24af10dfc084dc491000bebb73720d7a6d273eef"
-            target="_blank" style=" text-decoration:none;">帮助</a></span><h2>选课-培养计划内课程</h2></div>
-
-
-
-</TD>
-										</TR>
-									</TABLE>
-								</TD>
-							</TR>
-						</TABLE>
-					</TD>
-				</TR>
-				<TR>
-					<TD style="HEIGHT: 50px" vAlign="top" align="center">
-						<TABLE class="querybox" style="WIDTH: 95%; HEIGHT: 40px" cellSpacing="0" cellPadding="0"
-							border="0">
-							<TR>
-								<TD vAlign="middle" noWrap>
-									<TABLE class="td" style="WIDTH: 100%; HEIGHT: 92.29%" cellSpacing="0" cellPadding="0" border="0">
-										<TR>
-											<TD noWrap>
-                                                <span id="lblxksm">目前在课程退补选时段 [课堂开课两周内，可在网上进行退补选] 。在此时段内可进行硕/博士生英语正常选课<br/>（硕士时间为：2017-09-11 08:00:00至2017-09-15 11:00:00，博士时间为：2017-09-08 08:00:00至2017-09-10 17:00:00）！</span>
-                                                <br />
-                                                <span id="lbltitle" style="color:Blue;font-weight:bold;"></span><span id="lblNum" style="color:Red;">应选课13门 可选课13门 已选课1门</span><span id="lbltitle1" style="color:Red;"></span><span id="lblSum" style="color:Red;">已选 总学分:28.0 学位分:24.0</span>
-                                                
-                                            </TD>
-											<td noWrap align="right"></td>
-										</TR>
-									</TABLE>
-								</TD>
-							</TR>
-						</TABLE>
-					</TD>
-				</TR>
-			</TABLE>
-			<table id="Table2" cellspacing="0" cellpadding="0" width="95%" align="center" border="0">
-	<tr>
-		<TD valign="top">
-						<TABLE class="box" cellSpacing="0" cellPadding="0" width="100%" align="center">
+<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEWBQKD7ogKAs351pYFAoWvzpoEAo/yj6QJAvejy/sN4orIb7P+pLUuRnP+SEJjmDK905Y49c5EptEPq4AmsvQ=" />
+						<table width="250" border="0" cellspacing="0" cellpadding="0">
 							<tr>
-								<TD class="uname" vAlign="bottom" width="90%" background="../images/title_02.gif" height="2"><a id="Linkbutton7" href="javascript:__doPostBack(&#39;Linkbutton7&#39;,&#39;&#39;)" style="color:#CC0066;">培养计划内课程</a></TD>
-								<td class="uname" vAlign="bottom" align="right" background="../images/title_02.gif"
-									height="2"><IMG style="WIDTH: 32px; HEIGHT: 18px" height="18" alt="" src="../images/ssoo.gif" width="32"
-										align="bottom"><input type="image" name="Imagebutton3" id="Imagebutton3" src="../Images/T05.gif" border="0" /></td>
-							</tr>
-						</TABLE>
-						<table id="tbjhnkc" class="td" style="WIDTH: 100%; HEIGHT: 21px" cellspacing="0" cellpadding="0" border="0">
-			<tr>
-				<TD class="tttable">&nbsp;
-									</TD>
-				<TD style="WIDTH: 120px" align="right"><a id="cmdRefresh" href="javascript:__doPostBack(&#39;cmdRefresh&#39;,&#39;&#39;)"><img src="../images/refresh.gif" border="0" align="absbottom">&nbsp;刷新</a></TD>
-				<TD style="WIDTH: 80px"><a id="lnkExit" href="../loging.aspx"><img src="../images/logout.gif" border="0" align="absbottom">&nbsp;返回</a></TD>
-			</tr>
-		</table>
-		
-						<table class="GridBackColor" cellspacing="0" rules="all" bordercolor="#9CD7FF" border="1" id="dgData" style="background-color:White;border-color:#9CD7FF;font-size:X-Small;width:100%;border-collapse:collapse;">
-			<tr class="GridHeadBackColor" nowrap="nowrap" align="center" style="background-color:#C8E1FB;">
-				<td>班级名称</td><td>教室</td><td>开课院系</td><td>课程编号</td><td>课程名称</td><td>主讲教师</td><td>开课时段</td><td align="center" style="width:30px;">课时</td><td align="center" style="width:30px;">学分</td><td align="center" style="width:30px;">学位课</td><td align="center" style="width:30px;">跨学期</td><td align="center" style="width:30px;">容纳人数</td><td align="center" style="width:30px;">选课人数</td><td align="center" style="width:30px;">选课方式</td><td align="center" style="width:30px;">已选方式</td><td>班级说明</td><td>关联课堂</td><td>校区</td><td align="center">操作</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;">
-				<td>硕士生英语（一外）（8班/仅限学硕）</td><td>教423</td><td>文法学院</td><td>Eng505</td><td>硕士生英语（一外）</td><td>胡晓明</td><td>第2-17周:连续周重复 星期一-下午6,下午7,星期四-上午3,上午4,上午5</td><td align="center" style="width:30px;">72</td><td align="center" style="width:30px;">2</td><td align="center" style="width:30px;">是</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">36</td><td align="center" style="width:30px;">36</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;"></td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl2_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl2_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										
-										<a id="dgData__ctl2_Linkbutton2" href="javascript:__doPostBack(&#39;dgData$_ctl2$Linkbutton2&#39;,&#39;&#39;)"><img src='../images/signal1_04.gif' border=0 alt=选择当前课程>选课</a>
-									</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;">
-				<td>硕士生英语（一外）（16班/仅限学硕）</td><td>教423</td><td>文法学院</td><td>Eng505</td><td>硕士生英语（一外）</td><td>胡晓明</td><td>第2-17周:连续周重复 星期一-下午8,下午9,下午10,星期四-上午1,上午2</td><td align="center" style="width:30px;">72</td><td align="center" style="width:30px;">2</td><td align="center" style="width:30px;">是</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">36</td><td align="center" style="width:30px;">36</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;"></td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl3_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl3_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										
-										<a id="dgData__ctl3_Linkbutton2" href="javascript:__doPostBack(&#39;dgData$_ctl3$Linkbutton2&#39;,&#39;&#39;)"><img src='../images/signal1_04.gif' border=0 alt=选择当前课程>选课</a>
-									</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;">
-				<td>硕士生英语（一外）(17班)(仅限学硕)</td><td>教331</td><td>文法学院</td><td>Eng505</td><td>硕士生英语（一外）</td><td>王梅英</td><td>第2-17周: 星期一-下午6,下午7,星期四-上午3,上午4,上午5</td><td align="center" style="width:30px;">72</td><td align="center" style="width:30px;">2</td><td align="center" style="width:30px;">是</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">36</td><td align="center" style="width:30px;">36</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;"></td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl4_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl4_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										
-										<a id="dgData__ctl4_Linkbutton2" href="javascript:__doPostBack(&#39;dgData$_ctl4$Linkbutton2&#39;,&#39;&#39;)"><img src='../images/signal1_04.gif' border=0 alt=选择当前课程>选课</a>
-									</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;">
-				<td>硕士生英语（一外）(18班)(仅限学硕)</td><td>教331</td><td>文法学院</td><td>Eng505</td><td>硕士生英语（一外）</td><td>王梅英</td><td>第2-17周:连续周重复 星期一-下午8,下午9,下午10,星期四-上午1,上午2</td><td align="center" style="width:30px;">72</td><td align="center" style="width:30px;">2</td><td align="center" style="width:30px;">是</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">36</td><td align="center" style="width:30px;">36</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;"></td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl5_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl5_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										
-										<a id="dgData__ctl5_Linkbutton2" href="javascript:__doPostBack(&#39;dgData$_ctl5$Linkbutton2&#39;,&#39;&#39;)"><img src='../images/signal1_04.gif' border=0 alt=选择当前课程>选课</a>
-									</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;" style="background-color:Moccasin;">
-				<td>中国特色社会主义理论与实践研究(1班)</td><td>科401</td><td>马克思主义学院</td><td>HSS502</td><td>中国特色社会主义理论与实践研究</td><td>乔瑾</td><td>第1-13周:连续周重复 星期一-晚上11,晚上12,晚上13</td><td align="center" style="width:30px;">36</td><td align="center" style="width:30px;">2</td><td align="center" style="width:30px;">是</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">150</td><td align="center" style="width:30px;">150</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;"></td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl6_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl6_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										
-										
-									</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;" style="background-color:Moccasin;">
-				<td>中国特色社会主义理论与实践研究(2班)</td><td>科402</td><td>马克思主义学院</td><td>HSS502</td><td>中国特色社会主义理论与实践研究</td><td>刘玲</td><td>第1-13周:连续周重复 星期一-晚上11,晚上12,晚上13</td><td align="center" style="width:30px;">36</td><td align="center" style="width:30px;">2</td><td align="center" style="width:30px;">是</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">150</td><td align="center" style="width:30px;">150</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;"></td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl7_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl7_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										
-										
-									</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;" style="background-color:Moccasin;">
-				<td>中国特色社会主义理论与实践研究(3班)</td><td>科403</td><td>马克思主义学院</td><td>HSS502</td><td>中国特色社会主义理论与实践研究</td><td>王武生</td><td>第1-13周:连续周重复 星期一-晚上11,晚上12,晚上13</td><td align="center" style="width:30px;">36</td><td align="center" style="width:30px;">2</td><td align="center" style="width:30px;">是</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">150</td><td align="center" style="width:30px;">150</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;"></td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl8_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl8_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										
-										
-									</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;" style="background-color:Moccasin;">
-				<td>中国特色社会主义理论与实践研究(4班)</td><td>科501</td><td>马克思主义学院</td><td>HSS502</td><td>中国特色社会主义理论与实践研究</td><td>张丽荣</td><td>第1-13周:连续周重复 星期一-晚上11,晚上12,晚上13</td><td align="center" style="width:30px;">36</td><td align="center" style="width:30px;">2</td><td align="center" style="width:30px;">是</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">150</td><td align="center" style="width:30px;">150</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;"></td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl9_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl9_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										
-										
-									</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;" style="background-color:Moccasin;">
-				<td>中国特色社会主义理论与实践研究(5班)</td><td>科502</td><td>马克思主义学院</td><td>HSS502</td><td>中国特色社会主义理论与实践研究</td><td>蔡永海</td><td>第1-13周:连续周重复 星期一-晚上11,晚上12,晚上13</td><td align="center" style="width:30px;">36</td><td align="center" style="width:30px;">2</td><td align="center" style="width:30px;">是</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">150</td><td align="center" style="width:30px;">150</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;"></td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl10_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl10_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										
-										
-									</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;" style="background-color:Moccasin;">
-				<td>中国特色社会主义理论与实践研究(6班)</td><td>科302</td><td>马克思主义学院</td><td>HSS502</td><td>中国特色社会主义理论与实践研究</td><td>翟俊刚</td><td>第1-13周:连续周重复 星期一-晚上11,晚上12,晚上13</td><td align="center" style="width:30px;">36</td><td align="center" style="width:30px;">2</td><td align="center" style="width:30px;">是</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">150</td><td align="center" style="width:30px;">150</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;"></td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl11_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl11_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										
-										
-									</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;" style="background-color:Moccasin;">
-				<td>中国特色社会主义理论与实践研究(7班)</td><td>科303</td><td>马克思主义学院</td><td>HSS502</td><td>中国特色社会主义理论与实践研究</td><td>王美玉</td><td>第1-13周:连续周重复 星期一-晚上11,晚上12,晚上13</td><td align="center" style="width:30px;">36</td><td align="center" style="width:30px;">2</td><td align="center" style="width:30px;">是</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">150</td><td align="center" style="width:30px;">150</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;"></td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl12_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl12_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										
-										
-									</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;" style="background-color:#6fa7f8;">
-				<td>中国特色社会主义理论与实践研究(8班)</td><td>科401</td><td>马克思主义学院</td><td>HSS502</td><td>中国特色社会主义理论与实践研究</td><td>宋保仁</td><td>第1-13周:连续周重复 星期日-晚上11,晚上12,晚上13</td><td align="center" style="width:30px;">36</td><td align="center" style="width:30px;">2</td><td align="center" style="width:30px;">是</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">150</td><td align="center" style="width:30px;">150</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;">网上选课</td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl13_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl13_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										<a onclick="return confirm(&#39;确定要取消该记录吗?&#39;);" id="dgData__ctl13_LinkButton1" href="javascript:__doPostBack(&#39;dgData$_ctl13$LinkButton1&#39;,&#39;&#39;)"><img src='../images/delete.gif' border=0 alt=退选当前课程>退选</a>
-										
-									</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;" style="background-color:Moccasin;">
-				<td>中国特色社会主义理论与实践研究(9班)</td><td>科402</td><td>马克思主义学院</td><td>HSS502</td><td>中国特色社会主义理论与实践研究</td><td>何树远</td><td>第1-13周:连续周重复 星期日-晚上11,晚上12,晚上13</td><td align="center" style="width:30px;">36</td><td align="center" style="width:30px;">2</td><td align="center" style="width:30px;">是</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">150</td><td align="center" style="width:30px;">150</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;"></td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl14_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl14_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										
-										
-									</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;" style="background-color:Moccasin;">
-				<td>中国特色社会主义理论与实践研究(10班)</td><td>科403</td><td>马克思主义学院</td><td>HSS502</td><td>中国特色社会主义理论与实践研究</td><td>于文博</td><td>第1-13周:连续周重复 星期日-晚上11,晚上12,晚上13</td><td align="center" style="width:30px;">36</td><td align="center" style="width:30px;">2</td><td align="center" style="width:30px;">是</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">150</td><td align="center" style="width:30px;">150</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;"></td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl15_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl15_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										
-										
-									</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;" style="background-color:Moccasin;">
-				<td>中国特色社会主义理论与实践研究(11班)</td><td>科501</td><td>马克思主义学院</td><td>HSS502</td><td>中国特色社会主义理论与实践研究</td><td>袁富民</td><td>第1-13周:连续周重复 星期日-晚上11,晚上12,晚上13</td><td align="center" style="width:30px;">36</td><td align="center" style="width:30px;">2</td><td align="center" style="width:30px;">是</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">150</td><td align="center" style="width:30px;">150</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;"></td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl16_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl16_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										
-										
-									</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;" style="background-color:Moccasin;">
-				<td>中国特色社会主义理论与实践研究(12班)</td><td>科502</td><td>马克思主义学院</td><td>HSS502</td><td>中国特色社会主义理论与实践研究</td><td>陈顺伟 </td><td>第1-13周:连续周重复 星期日-晚上11,晚上12,晚上13</td><td align="center" style="width:30px;">36</td><td align="center" style="width:30px;">2</td><td align="center" style="width:30px;">是</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">150</td><td align="center" style="width:30px;">149</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;"></td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl17_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl17_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										
-										
-									</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;" style="background-color:Moccasin;">
-				<td>中国特色社会主义理论与实践研究(13班)</td><td>科302</td><td>马克思主义学院</td><td>HSS502</td><td>中国特色社会主义理论与实践研究</td><td>高洁</td><td>第1-13周:连续周重复 星期日-晚上11,晚上12,晚上13</td><td align="center" style="width:30px;">36</td><td align="center" style="width:30px;">2</td><td align="center" style="width:30px;">是</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">150</td><td align="center" style="width:30px;">150</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;"></td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl18_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl18_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										
-										
-									</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;" style="background-color:Moccasin;">
-				<td>中国特色社会主义理论与实践研究(14班)</td><td>科303</td><td>马克思主义学院</td><td>HSS502</td><td>中国特色社会主义理论与实践研究</td><td>黄晓丹</td><td>第1-13周:连续周重复 星期日-晚上11,晚上12,晚上13</td><td align="center" style="width:30px;">36</td><td align="center" style="width:30px;">2</td><td align="center" style="width:30px;">是</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">150</td><td align="center" style="width:30px;">66</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;"></td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl19_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl19_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										
-										
-									</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;" style="background-color:Moccasin;">
-				<td>应用数理统计(1班)</td><td>科401</td><td>理学院</td><td>Math501</td><td>应用数理统计</td><td>兰光强</td><td>第1-9周:连续周重复 星期二-上午3,上午4,上午5,星期六-上午1,上午2</td><td align="center" style="width:30px;">40</td><td align="center" style="width:30px;">2</td><td align="center" style="width:30px;">是</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">160</td><td align="center" style="width:30px;">160</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;"></td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl20_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl20_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										
-										
-									</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;" style="background-color:Moccasin;">
-				<td>应用数理统计(2班)</td><td>科402</td><td>理学院</td><td>Math501</td><td>应用数理统计</td><td>李志强</td><td>第1-9周:连续周重复 星期二-上午3,上午4,上午5,星期六-上午1,上午2</td><td align="center" style="width:30px;">40</td><td align="center" style="width:30px;">2</td><td align="center" style="width:30px;">是</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">160</td><td align="center" style="width:30px;">160</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;"></td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl21_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl21_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										
-										
-									</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;" style="background-color:Moccasin;">
-				<td>应用数理统计(3班)</td><td>科403</td><td>理学院</td><td>Math501</td><td>应用数理统计</td><td>王利</td><td>第1-9周:连续周重复 星期二-上午3,上午4,上午5,星期六-上午1,上午2</td><td align="center" style="width:30px;">40</td><td align="center" style="width:30px;">2</td><td align="center" style="width:30px;">是</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">160</td><td align="center" style="width:30px;">160</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;"></td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl22_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl22_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										
-										
-									</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;" style="background-color:#6fa7f8;">
-				<td>应用数理统计(4班)</td><td>科501</td><td>理学院</td><td>Math501</td><td>应用数理统计</td><td>郭玲</td><td>第1-9周:连续周重复 星期二-上午3,上午4,上午5,星期六-上午1,上午2</td><td align="center" style="width:30px;">40</td><td align="center" style="width:30px;">2</td><td align="center" style="width:30px;">是</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">160</td><td align="center" style="width:30px;">160</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;">网上选课</td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl23_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl23_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										<a onclick="return confirm(&#39;确定要取消该记录吗?&#39;);" id="dgData__ctl23_LinkButton1" href="javascript:__doPostBack(&#39;dgData$_ctl23$LinkButton1&#39;,&#39;&#39;)"><img src='../images/delete.gif' border=0 alt=退选当前课程>退选</a>
-										
-									</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;" style="background-color:Moccasin;">
-				<td>矩阵理论及其应用(1班)</td><td>科401</td><td>理学院</td><td>Math502</td><td>矩阵理论及其应用</td><td>赵中华</td><td>第1-9周:连续周重复 星期二-上午1,上午2,星期六-上午3,上午4,上午5</td><td align="center" style="width:30px;">40</td><td align="center" style="width:30px;">2</td><td align="center" style="width:30px;">是</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">160</td><td align="center" style="width:30px;">160</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;"></td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl24_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl24_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										
-										
-									</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;" style="background-color:#6fa7f8;">
-				<td>矩阵理论及其应用(2班)</td><td>科402</td><td>理学院</td><td>Math502</td><td>矩阵理论及其应用</td><td>崔丽鸿</td><td>第1-9周:连续周重复 星期二-上午1,上午2,星期六-上午3,上午4,上午5</td><td align="center" style="width:30px;">40</td><td align="center" style="width:30px;">2</td><td align="center" style="width:30px;">是</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">160</td><td align="center" style="width:30px;">160</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;">网上选课</td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl25_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl25_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										<a onclick="return confirm(&#39;确定要取消该记录吗?&#39;);" id="dgData__ctl25_LinkButton1" href="javascript:__doPostBack(&#39;dgData$_ctl25$LinkButton1&#39;,&#39;&#39;)"><img src='../images/delete.gif' border=0 alt=退选当前课程>退选</a>
-										
-									</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;">
-				<td>数学物理方程</td><td>科402</td><td>理学院</td><td>Math503</td><td>数学物理方程</td><td>许兰喜</td><td>第1-17周:连续周重复 星期三-晚上11,晚上12,晚上13</td><td align="center" style="width:30px;">50</td><td align="center" style="width:30px;">2.5</td><td align="center" style="width:30px;">是</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">160</td><td align="center" style="width:30px;">160</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;"></td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl26_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl26_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										
-										<a id="dgData__ctl26_Linkbutton2" href="javascript:__doPostBack(&#39;dgData$_ctl26$Linkbutton2&#39;,&#39;&#39;)"><img src='../images/signal1_04.gif' border=0 alt=选择当前课程>选课</a>
-									</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;" style="background-color:#6fa7f8;">
-				<td>材料结构与性能</td><td>科403</td><td>材料科学与工程学院</td><td>MSE507</td><td>材料结构与性能</td><td>李志林</td><td>第1-18周:连续周重复 星期三-晚上11,晚上12,晚上13</td><td align="center" style="width:30px;">48</td><td align="center" style="width:30px;">3</td><td align="center" style="width:30px;">是</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">160</td><td align="center" style="width:30px;">160</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;">网上选课</td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl27_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl27_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										<a onclick="return confirm(&#39;确定要取消该记录吗?&#39;);" id="dgData__ctl27_LinkButton1" href="javascript:__doPostBack(&#39;dgData$_ctl27$LinkButton1&#39;,&#39;&#39;)"><img src='../images/delete.gif' border=0 alt=退选当前课程>退选</a>
-										
-									</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;">
-				<td>混合原理及设备</td><td>科402</td><td>化学工程学院</td><td>ChE522</td><td>混合原理及设备</td><td>高正明</td><td>第1-9周:连续周重复 星期日-上午2,上午3,上午4,上午5</td><td align="center" style="width:30px;">32</td><td align="center" style="width:30px;">2</td><td align="center" style="width:30px;">否</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">160</td><td align="center" style="width:30px;">160</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;"></td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl28_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl28_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										
-										<a id="dgData__ctl28_Linkbutton2" href="javascript:__doPostBack(&#39;dgData$_ctl28$Linkbutton2&#39;,&#39;&#39;)"><img src='../images/signal1_04.gif' border=0 alt=选择当前课程>选课</a>
-									</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;">
-				<td>安全系统工程</td><td>教433</td><td>信息科学与技术学院</td><td>EE527</td><td>安全系统工程</td><td>徐圆</td><td>第1-9周:连续周重复 星期一-上午2,上午3,上午4,上午5</td><td align="center" style="width:30px;">32</td><td align="center" style="width:30px;">2</td><td align="center" style="width:30px;">否</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">67</td><td align="center" style="width:30px;">57</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;"></td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl29_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl29_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										
-										<a id="dgData__ctl29_Linkbutton2" href="javascript:__doPostBack(&#39;dgData$_ctl29$Linkbutton2&#39;,&#39;&#39;)"><img src='../images/signal1_04.gif' border=0 alt=选择当前课程>选课</a>
-									</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;">
-				<td>化工清洁生产与技术</td><td>教433</td><td>化学工程学院</td><td>Env571</td><td>化工清洁生产与技术</td><td>元炯亮</td><td>第1-9周:连续周重复 星期五-上午2,上午3,上午4,上午5</td><td align="center" style="width:30px;">32</td><td align="center" style="width:30px;">2</td><td align="center" style="width:30px;">否</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">70</td><td align="center" style="width:30px;">49</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;"></td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl30_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl30_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										
-										<a id="dgData__ctl30_Linkbutton2" href="javascript:__doPostBack(&#39;dgData$_ctl30$Linkbutton2&#39;,&#39;&#39;)"><img src='../images/signal1_04.gif' border=0 alt=选择当前课程>选课</a>
-									</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;">
-				<td>清洁能源与气候变化</td><td>教417</td><td>化学工程学院</td><td>Env576</td><td>清洁能源与气候变化</td><td>袁海荣</td><td>第1-9周:连续周重复 星期二-下午6,下午7,下午8,下午9</td><td align="center" style="width:30px;">32</td><td align="center" style="width:30px;">2</td><td align="center" style="width:30px;">否</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">60</td><td align="center" style="width:30px;">48</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;"></td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl31_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl31_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										
-										<a id="dgData__ctl31_Linkbutton2" href="javascript:__doPostBack(&#39;dgData$_ctl31$Linkbutton2&#39;,&#39;&#39;)"><img src='../images/signal1_04.gif' border=0 alt=选择当前课程>选课</a>
-									</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;">
-				<td>计算机信息检索</td><td>教321</td><td>图书馆</td><td>INF501</td><td>计算机信息检索</td><td>张杰</td><td>第1-10周:连续周重复 星期三-下午6,下午7</td><td align="center" style="width:30px;">20</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">否</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">50</td><td align="center" style="width:30px;">11</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;"></td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl32_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl32_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										
-										<a id="dgData__ctl32_Linkbutton2" href="javascript:__doPostBack(&#39;dgData$_ctl32$Linkbutton2&#39;,&#39;&#39;)"><img src='../images/signal1_04.gif' border=0 alt=选择当前课程>选课</a>
-									</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;">
-				<td>高级管理学</td><td>教325</td><td>经济管理学院</td><td>ME501</td><td>高级管理学</td><td>张英奎</td><td>第1-9周:连续周重复 星期一-上午1,上午2,上午3,上午4</td><td align="center" style="width:30px;">32</td><td align="center" style="width:30px;">2</td><td align="center" style="width:30px;">否</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">75</td><td align="center" style="width:30px;">65</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;"></td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl33_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl33_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										
-										<a id="dgData__ctl33_Linkbutton2" href="javascript:__doPostBack(&#39;dgData$_ctl33$Linkbutton2&#39;,&#39;&#39;)"><img src='../images/signal1_04.gif' border=0 alt=选择当前课程>选课</a>
-									</td>
-			</tr><tr nowrap="nowrap" onMouseOver="javascript:this.bgColor=&#39;#C7F8AE&#39;;" onMouseOut="javascript:this.bgColor=&#39;#ffffff&#39;;">
-				<td>项目管理</td><td>教309</td><td>经济管理学院</td><td>ME514</td><td>项目管理</td><td>孙军</td><td>第1-9周:连续周重复 星期二-下午6,下午7,下午8,下午9</td><td align="center" style="width:30px;">32</td><td align="center" style="width:30px;">2</td><td align="center" style="width:30px;">否</td><td align="center" style="width:30px;">1</td><td align="center" style="width:30px;">55</td><td align="center" style="width:30px;">38</td><td align="center" style="width:30px;">网上选课</td><td align="center" style="width:30px;"></td><td align="center">&nbsp;</td><td>
-                                <span id="dgData__ctl34_lblglkt"></span>
-                                </td><td>
-                                <span id="dgData__ctl34_lblxxdd">东校区</span>
-                                </td><td nowrap="nowrap" align="center" style="width:50px;">
-										
-										<a id="dgData__ctl34_Linkbutton2" href="javascript:__doPostBack(&#39;dgData$_ctl34$Linkbutton2&#39;,&#39;&#39;)"><img src='../images/signal1_04.gif' border=0 alt=选择当前课程>选课</a>
-									</td>
-			</tr>
-		</table>
-						<P>
-						<P><FONT face="宋体" color="#ff0000" size="2"></FONT></P>
-						<FONT face="宋体"></FONT>
-						<P></P>
-						<P><FONT face="宋体">
-								<table id="Table3" class="box" style="BORDER-LEFT-COLOR: #99ff66; BORDER-BOTTOM-COLOR: #99ff66; BORDER-TOP-COLOR: #99ff66; BORDER-COLLAPSE: collapse; HEIGHT: 8px; BACKGROUND-COLOR: #f0f9f8; BORDER-RIGHT-COLOR: #99ff66" bordercolor="#99ff66" width="100%" align="center" border="1">
-			<tr>
-				<TD><FONT face="宋体">
-												<TABLE id="Table4" cellSpacing="0" cellPadding="0" width="100%" border="0">
-													<TR>
-														<TD><FONT size="2">颜色说明 <SPAN style="BACKGROUND-COLOR: silver"><FONT color="#000000">灰色</FONT></SPAN>-&gt;表示没有开该课程&nbsp;
-																<SPAN style="BACKGROUND-COLOR: #6fa7f8">蓝色</SPAN>-&gt;表示已选 <SPAN style="BACKGROUND-COLOR: white">
-																	白色</SPAN>-&gt;表示可选 <SPAN style="BACKGROUND-COLOR: moccasin">黄色</SPAN>-&gt;表示不可选<br />
-                                                            <br />
-                                                            [关联课堂]列说明：1、若此列为空，则表示此课堂不存在关联和被关联课堂。<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2、若此列为课堂名称，则表示在选择此课堂时，系统将自动选中关联课堂。<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3、若此列为<span id="dgData__ctl3_lblglkt"><font 
-                                                                color="red">★</font></span>，则表示此课堂被其它课堂关联，在选择相应课堂时，此课堂将被自动选中。</FONT></TD>
-													</TR>
-													<TR>
-														<TD style="HEIGHT: 17px"></TD>
-													</TR>
-													<TR>
-														<TD><span id="xswsxksm" style="color:Red;font-size:8pt;"></span></TD>
-													</TR>
-												</TABLE>
-											</FONT>
-										</TD>
-			</tr>
-		</table>
-		
-							</FONT>
-						</P>
-					</TD>
-	</tr>
-	<tr>
-		<td><FONT face="宋体"></FONT></td>
-	</tr>
-</table>
-
-			<TABLE cellSpacing="0" cellPadding="0" width="95%" align="center" border="0" >
-				<TR>
-					<TD vAlign="top">
-						<TABLE class="box" cellSpacing="0" cellPadding="0" width="100%" align="center">
-							<tr>
-								<TD class="uname" vAlign="bottom" width="90%" background="../images/title_02.gif" height="2"><a id="Linkbutton3" href="javascript:__doPostBack(&#39;Linkbutton3&#39;,&#39;&#39;)" style="color:#CC0066;">已选培养计划外课程</a></TD>
-								<td class="uname" vAlign="middle" align="right" background="../images/title_02.gif"
-									height="2"><IMG style="WIDTH: 32px; HEIGHT: 18px" height="18" alt="" src="../images/ssoo.gif" width="32"
-										align="bottom"><input type="image" name="Imagebutton1" id="Imagebutton1" src="../Images/T05.gif" border="0" /></td>
-							</tr>
-						</TABLE>
-						<table id="tblkc" class="box" cellspacing="1" cellpadding="0" width="100%" align="center">
-	<tr>
-		<td>
-									<TABLE class="td" style="WIDTH: 100%; HEIGHT: 21px" cellSpacing="0" cellPadding="0" border="0">
-										<TR>
-											<TD class="tttable">课程列表
-												<span id="lblNum2">(共:0条记录)</span><FONT color="#ff0000"></FONT></TD>
-											<TD style="WIDTH: 120px" align="right"><a id="Linkbutton4" href="javascript:__doPostBack(&#39;Linkbutton4&#39;,&#39;&#39;)"><img src="../images/refresh.gif" border="0" align="absbottom">&nbsp;刷新</a></TD>
-										</TR>
-									</TABLE>
+								<td width="45" height="42" align="left">用户名</td>
+								<td><input name="_ctl0:txtusername" type="text" id="_ctl0_txtusername" onblur="this.style.borderColor=&#39;#d1d1d1&#39;" onfocus="this.style.borderColor=&#39;#338cce&#39;" style="height:28px;width:197px;BORDER-RIGHT:#b9b9b9 1px solid; BORDER-TOP:#b9b9b9 1px solid; PADDING-LEFT:5px; BORDER-LEFT:#b9b9b9 1px solid; LINE-HEIGHT:28px; BORDER-BOTTOM:#b9b9b9 1px solid" />
 								</td>
-	</tr>
-	<tr>
-		<td><table class="GridBackColor" cellspacing="0" rules="all" bordercolor="#9CD7FF" border="1" id="dgData1" style="background-color:White;border-color:#9CD7FF;font-size:X-Small;width:100%;border-collapse:collapse;">
-			<tr class="GridHeadBackColor" nowrap="nowrap" align="center" style="background-color:#C8E1FB;">
-				<td><a href="javascript:__doPostBack(&#39;dgData1$_ctl2$_ctl1&#39;,&#39;&#39;)">班级名称</a></td><td><a href="javascript:__doPostBack(&#39;dgData1$_ctl2$_ctl2&#39;,&#39;&#39;)">教室</a></td><td><a href="javascript:__doPostBack(&#39;dgData1$_ctl2$_ctl3&#39;,&#39;&#39;)">开课院系</a></td><td><a href="javascript:__doPostBack(&#39;dgData1$_ctl2$_ctl4&#39;,&#39;&#39;)">课程编号</a></td><td><a href="javascript:__doPostBack(&#39;dgData1$_ctl2$_ctl5&#39;,&#39;&#39;)">课程名称</a></td><td><a href="javascript:__doPostBack(&#39;dgData1$_ctl2$_ctl6&#39;,&#39;&#39;)">主讲教师</a></td><td><a href="javascript:__doPostBack(&#39;dgData1$_ctl2$_ctl7&#39;,&#39;&#39;)">开课时段</a></td><td><a href="javascript:__doPostBack(&#39;dgData1$_ctl2$_ctl8&#39;,&#39;&#39;)">课时</a></td><td><a href="javascript:__doPostBack(&#39;dgData1$_ctl2$_ctl9&#39;,&#39;&#39;)">学分</a></td><td><a href="javascript:__doPostBack(&#39;dgData1$_ctl2$_ctl10&#39;,&#39;&#39;)">跨学期</a></td><td><a href="javascript:__doPostBack(&#39;dgData1$_ctl2$_ctl11&#39;,&#39;&#39;)">容纳人数</a></td><td><a href="javascript:__doPostBack(&#39;dgData1$_ctl2$_ctl12&#39;,&#39;&#39;)">选课人数</a></td><td><a href="javascript:__doPostBack(&#39;dgData1$_ctl2$_ctl13&#39;,&#39;&#39;)">开课方式</a></td><td align="center">操作</td>
-			</tr><tr>
-				<td colspan="15"><span>1</span></td>
-			</tr>
-		</table></td>
-	</tr>
-</table>
+							</tr>
+							<tr>
+								<td height="42" align="left">密 码</td>
+								<td><input name="_ctl0:txtpassword" type="password" id="_ctl0_txtpassword" onblur="this.style.borderColor=&#39;#d1d1d1&#39;" onfocus="this.style.borderColor=&#39;#338cce&#39;" style="height:28px;width:197px;BORDER-RIGHT:#b9b9b9 1px solid; BORDER-TOP:#b9b9b9 1px solid; PADDING-LEFT:5px; BORDER-LEFT:#b9b9b9 1px solid; LINE-HEIGHT:28px; BORDER-BOTTOM:#b9b9b9 1px solid" />
+								</td>
+							</tr>
+							<tr>
+								<td align="left" style="WIDTH: 60px; HEIGHT: 50px">验证码</td>
+								<td align="left" style="HEIGHT: 50px"><input name="_ctl0:txtyzm" type="text" id="_ctl0_txtyzm" onblur="this.style.borderColor=&#39;#d1d1d1&#39;;" onfocus="this.style.borderColor=&#39;#338cce&#39;;" style="height:28px;width:60px;BORDER-RIGHT:#b9b9b9 1px solid; BORDER-TOP:#b9b9b9 1px solid; PADDING-LEFT:5px; OVERFLOW:hidden; BORDER-LEFT:#b9b9b9 1px solid; LINE-HEIGHT:28px; BORDER-BOTTOM:#b9b9b9 1px solid; diplay:block" />
+									<img src="PageTemplate/NsoftPage/yzm/IdentifyingCode.aspx" style="vertical-align:bottom; margin-bottom:1px; cursor: pointer;" alt="点击刷新" onclick="javascript:var time = new Date().getTime(); this.src=this.src + '?' + time;">
+                                        </td>
+							</tr>
+							<tr>
+								<td height="74">&nbsp;</td>
+								<td><div style="FLOAT:left">
+										<input type="image" name="_ctl0:ImageButton1" id="_ctl0_ImageButton1" src="PageTemplate/nsoftpage/images/signin.png" border="0" />&nbsp;
+										
+									</div>
+								</td>
+							</tr>
+							<tr>
+                            <td>     </td>
+							</tr>
+						</table>
+					</form>
+				</div>
+			</div>
+			<div class="footer loginfooter">说明：1.使用IE6以上&nbsp;&nbsp;2.1024*768分辨率浏览本系统&nbsp;&nbsp;3.请不要屏蔽弹出窗口&nbsp;&nbsp;4.技术支持：<a href="http://www.southsoft.com.cn" target="_blank">南京南软</a></div>
+		</div>
+	</div>
+	<SCRIPT language="javascript">
+document.all("_ctl0:txtusername").focus();
 
-						<P><FONT face="宋体" color="#ff0000" size="2"></FONT></P>
-						<FONT face="宋体"></FONT>
-						<P></P>
-						
-						
-					</TD>
-				</TR>
-			</TABLE>
-		
-<script language=javascript>alert('目前在课程退补选时段 [课堂开课两周内，可在网上进行退补选] 。\r\n\r\n在此时段内可进行硕/博士生英语正常选课（硕士时间为：2017-09-11 08:00:00至2017-09-15 11:00:00，博士时间为：2017-09-08 08:00:00至2017-09-10 17:00:00）！')</script></form>
-	</body>
-</HTML>
+	</SCRIPT>
+</body>

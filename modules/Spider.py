@@ -471,6 +471,13 @@ class Spider(object):
         return self
 
     def formatSpeechList(self):
+        """
+        format speech list to matrix
+
+        :return tempSelected_: return the HTML form of selected speech list
+        :return selected_: return the matrix form of selected speech list
+        :return selectable_: return the matrix form of selectable speech list
+        """
 
         htmlBody = BeautifulSoup(self.response.text, 'html.parser')
         tempSelected_ = htmlBody.find_all('table', class_='GridBackColor')[0].find_all('tr', nowrap='nowrap')
@@ -502,7 +509,7 @@ class Spider(object):
                     speechRow.append(item[0])
             selectable_.append(speechRow)
 
-        return selected_, selectable_
+        return tempSelected_, selected_, selectable_
 
     def formatClassList(self):
 

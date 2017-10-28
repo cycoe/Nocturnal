@@ -16,7 +16,7 @@ class Mail(object):
 
     @staticmethod
     def send_mail(content):
-        message = MIMEText(content, 'plain', 'utf-8')
+        message = MIMEText(content, 'HTML', 'utf-8')
         message['From'] = formataddr(['cycoe', Mail.sender])
         message['To'] = formataddr(['cycoe', Mail.receiver])
         message['subject'] = 'Robbed a new speech!'

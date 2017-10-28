@@ -29,15 +29,11 @@ def checkStatus(check_):
 
 
 def getLoginStatus():
-    def wrapper():
-        return Robber.loginStatus
-    return wrapper
+    return Robber.loginStatus
 
 
 def getWechatLoginStatus():
-    def wrapper():
-        return Robber.wechatLoginStatus
-    return wrapper
+    return Robber.wechatLoginStatus
 
 
 class Robber(object):
@@ -102,11 +98,11 @@ class Robber(object):
     def robSpeech(self):
         originalNum = 0
         while True:
-            selected_, selectable_ = self.spider.fetchSpeechList()
+            tempSelected_, selected_, selectable_ = self.spider.fetchSpeechList()
             if len(selected_) > originalNum:
                 originalNum = len(selected_)
                 print(OutputFormater.output(selected_, header=Logger.log('Robbed a speech!', level=Logger.warning)))
-                threading.Thread(target=Mail.send_mail, args=(OutputFormater.table(selected_, padding=2),)).start()
+                threading.Thread(target=Mail.send_mail, args=(tempSelected_,)).start()
             buttonId_ = [selectable[0] for selectable in selectable_ if int(selectable[6]) > int(selectable[7])]
             if buttonId_:
                 random.shuffle(buttonId_)
