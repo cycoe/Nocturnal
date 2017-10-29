@@ -24,6 +24,7 @@ def initArgvs():
     ArgvsParser.connect(['notifySpeech', 'ns'], notifySpeech)
     ArgvsParser.connect(['wechatLogin', 'wl'], wechatLogin)
     ArgvsParser.connect(['quit', 'q'], quit_)
+    ArgvsParser.connect(['emailLogin', 'el'], emailLogin)
 
 
 def cycle():
@@ -46,6 +47,7 @@ def outputHelp():
         ['command', 'abbr.', 'description'],
         ['help', 'h', 'print helps'],
         ['login', 'l', 'login web'],
+        ['emailLogin', 'el', 'login email to send notification'],
         ['speech', 's', 'speech robbing mode'],
         ['class', 'c', 'class robbing mode'],
         ['quit', 'q', 'quit robber']
@@ -78,6 +80,10 @@ def robSpeech():
 
 def robEnglish():
     robber.robEnglishTest()
+
+
+def emailLogin():
+    robber.emailLogin()
 
 
 def quit_():

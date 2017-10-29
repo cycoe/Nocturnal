@@ -236,12 +236,10 @@ class Spider(object):
 
             if re.search('用户名不存在', self.response.text):
                 print(Logger.log('No such a user!', ['Cleaning password file'], level=Logger.error))
-                Config.cleanConfFile()
                 reInput = True
 
             elif re.search('密码错误', self.response.text):
                 print(Logger.log('Wrong password!', ['Cleaning password file'], level=Logger.error))
-                Config.cleanConfFile()
                 reInput = True
 
             elif re.search('请输入验证码', self.response.text):

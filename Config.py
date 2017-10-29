@@ -36,7 +36,6 @@ class Config(object):
         'sender': '',
         'emailPassword': '',
         'host': '',
-        'port': '',
         'receiver': '',
     }
 
@@ -66,9 +65,13 @@ class Config(object):
                 fr.write('\n')
 
     @staticmethod
-    def cleanConfFile():
-        Config.confDict['userName'] = ''
-        Config.confDict['password'] = ''
+    def setEmailInfo():
+        if Config.checkConfFile():
+            Config.loadConfFile()
+        Config.confDict['sender'] = input('> Sender email: ')
+        Config.confDict['emailPassword'] = input('> Sender email password: ')
+        Config.confDict['host'] = input('> Sender email host: ')
+        Config.confDict['receiver'] = input('> receive email: ')
         Config.dumpConfFile()
 
     @staticmethod

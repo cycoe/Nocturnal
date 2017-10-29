@@ -63,6 +63,9 @@ class Robber(object):
             self.wechatId_.append(itchat.search_friends(wechatUser)[0]['UserName'])
         Robber.wechatLoginStatus = True
 
+    def emailLogin(self):
+        Config.setEmailInfo()
+
     @checkStatus([getLoginStatus, getWechatLoginStatus])
     def pushToAllGroup(self, msg):
         for wechatId in self.wechatId_:
