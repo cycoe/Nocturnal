@@ -19,10 +19,10 @@ def initArgvs():
     ArgvsParser.connect(['help', 'h'], outputHelp)
     ArgvsParser.connect(['speech', 's'], robSpeech)
     ArgvsParser.connect(['class', 'c'], robAllClass)
-    ArgvsParser.connect(['englishTest', 'et'], robEnglish)
+    # ArgvsParser.connect(['englishTest', 'et'], robEnglish)
     ArgvsParser.connect(['login', 'l'], login)
-    ArgvsParser.connect(['notifySpeech', 'ns'], notifySpeech)
-    ArgvsParser.connect(['wechatLogin', 'wl'], wechatLogin)
+    # ArgvsParser.connect(['notifySpeech', 'ns'], notifySpeech)
+    # ArgvsParser.connect(['wechatLogin', 'wl'], wechatLogin)
     ArgvsParser.connect(['quit', 'q'], quit_)
     ArgvsParser.connect(['emailLogin', 'el'], emailLogin)
 
@@ -49,7 +49,7 @@ def outputHelp():
         ['login', 'l', 'login web'],
         ['emailLogin', 'el', 'login email to send notification'],
         ['speech', 's', 'speech robbing mode'],
-        ['class', 'c', 'class robbing mode'],
+        # ['class', 'c', 'class robbing mode'],
         ['quit', 'q', 'quit robber']
     ], gravity=OutputFormater.center, padding=2))
 
