@@ -105,14 +105,14 @@ class Robber(object):
         while True:
             flag = self.spider.fetchSpeechList()
             if flag:
-                tempSelected_, selected_, selectable_ = flag
+                selectedHtml, selected_, selectable_ = flag
             else:
                 return None
             if len(selected_) > originalNum:
                 originalNum = len(selected_)
                 print(Logger.log('Robbed a speech!', level=Logger.warning))
                 print(OutputFormater.table(selected_, padding=1, horizontalSpacer=False))
-                threading.Thread(target=Mail.send_mail, args=(tempSelected_,)).start()
+                threading.Thread(target=Mail.send_mail, args=(selectedHtml,)).start()
             buttonId_ = [selectable[0] for selectable in selectable_ if int(selectable[6]) > int(selectable[7])]
             if buttonId_:
                 random.shuffle(buttonId_)

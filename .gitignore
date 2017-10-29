@@ -4,6 +4,8 @@
 *.conf
 password_
 check.gif
+dist
+build
 ############################################
 
 # Byte-compiled / optimized / DLL files

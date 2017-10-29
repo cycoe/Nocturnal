@@ -457,7 +457,8 @@ class Spider(object):
         """
 
         htmlBody = BeautifulSoup(self.response.text, 'html.parser')
-        tempSelected_ = htmlBody.find_all('table', class_='GridBackColor')[0].find_all('tr', nowrap='nowrap')
+        selectedHtml = htmlBody.find_all('table', class_='GridBackColor')[0]
+        tempSelected_ = selectedHtml.find_all('tr', nowrap='nowrap')
         tempSelectable_ = htmlBody.find_all('table', class_='GridBackColor')[1].find_all('tr', nowrap='nowrap')
         selected_ = []
         selectable_ = []
@@ -486,7 +487,7 @@ class Spider(object):
                     speechRow.append(item[0])
             selectable_.append(speechRow)
 
-        return tempSelected_, selected_, selectable_
+        return str(selectedHtml), selected_, selectable_
 
     def formatClassList(self):
 
