@@ -53,8 +53,7 @@ class Robber(object):
         self.wechatId_ = []
 
     def login(self):
-        self.spider.login()
-        Robber.loginStatus = True
+        Robber.loginStatus = self.spider.login()
 
     def wechatLogin(self):
         itchat.auto_login(enableCmdQR=2)
@@ -97,24 +96,31 @@ class Robber(object):
                 availableSpeechListCache = availableSpeechList[:]
                 availableSpeechList.insert(0, ['报告类别', '报告名称', '报告时间', '报告地点', '余量'])
                 # self.pushToAllGroup(OutputFormater.output(availableSpeechList, header='有报告余量！'))
-                print(OutputFormater.output(availableSpeechList, header='有报告余量！'))
+                print(OutputFormater.table(availableSpeechList))
             time.sleep(Config.refreshSleep())
 
     @checkStatus([getLoginStatus])
     def robSpeech(self):
         originalNum = 0
         while True:
-            tempSelected_, selected_, selectable_ = self.spider.fetchSpeechList()
+            flag = self.spider.fetchSpeechList()
+            if flag:
+                tempSelected_, selected_, selectable_ = flag
+            else:
+                return None
             if len(selected_) > originalNum:
                 originalNum = len(selected_)
-                print(OutputFormater.output(selected_, header=Logger.log('Robbed a speech!', level=Logger.warning)))
+                print(Logger.log('Robbed a speech!', level=Logger.warning))
+                print(OutputFormater.table(selected_, padding=1, horizontalSpacer=False))
                 threading.Thread(target=Mail.send_mail, args=(tempSelected_,)).start()
             buttonId_ = [selectable[0] for selectable in selectable_ if int(selectable[6]) > int(selectable[7])]
             if buttonId_:
                 random.shuffle(buttonId_)
                 buttonId = buttonId_[0]
                 print(Logger.log('Robbing speech...', level=Logger.info))
-                self.spider.postSpeech(buttonId)
+                flag = self.spider.postSpeech(buttonId)
+                if not flag:
+                    return None
             if len(buttonId_) < 2:
                 print(Logger.log('No speech to rob, dozing...', level=Logger.info))
                 time.sleep(Config.refreshSleep())

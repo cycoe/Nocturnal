@@ -5,9 +5,8 @@ import re
 from requests import Session, Request, exceptions
 from bs4 import BeautifulSoup
 from modules.UrlBean import UrlBean
-from Config import Config
 from modules.Logger import Logger
-from modules.OutputFormater import OutputFormater
+from Config import Config
 
 
 class Spider(object):
@@ -25,9 +24,13 @@ class Spider(object):
 
         self.classFilter = [3, 4, 5, 6, 11, 12]
         self.speechFilter = [0, 1, 3, 4, 5, 6, 7]
+        self.VIEWSTATE = ''
+        self.EVENTVALIDATION = ''
 
         self.buttonPattern = re.compile('<a.*href=".*?\'(.*?)?\'.*".*><img.*>.*</a>')
         self.removeTd = re.compile('<td.*>(.*)?</td>')
+        self.viewStatePattern = re.compile('<.*name="__VIEWSTATE".*value="(.*)?".*/>')
+        self.eventValidationPattern = re.compile('<.*name="__EVENTVALIDATION".*value="(.*)?".*/>')
 
     @staticmethod
     def formatHeaders(referer=None, contentLength=None, originHost=None):
@@ -63,7 +66,7 @@ class Spider(object):
 
         :returns: 页面的 __VIEWSTATE
         """
-        VIEWSTATE = re.findall('<.*name="__VIEWSTATE".*value="(.*)?".*/>', self.response.text)
+        VIEWSTATE = re.findall(self.viewStatePattern, self.response.text)
         if len(VIEWSTATE) > 0:
             return VIEWSTATE
         else:
@@ -75,7 +78,7 @@ class Spider(object):
 
         :returns: 页面的 __EVENTVALIDATION
         """
-        EVENTVALIDATION = re.findall('<.*name="__EVENTVALIDATION".*value="(.*)?".*/>', self.response.text)
+        EVENTVALIDATION = re.findall(self.eventValidationPattern, self.response.text)
         if len(EVENTVALIDATION) > 0:
             return EVENTVALIDATION
         else:
@@ -103,70 +106,15 @@ class Spider(object):
         req = Request(method, url, headers=headers, data=data, params=params)
         return self.session.prepare_request(req)
 
-    # def prepareJwglFirst(self):
-    #     headers = self.formatHeaders()
-    #     req = Request('GET', self.UrlBean.jwglLoginUrl, headers=headers)
-    #     return self.session.prepare_request(req)
-    #
-    # def prepareFetchVerCode(self):
-    #     headers = self.formatHeaders(referer=self.UrlBean.jwglLoginUrl)
-    #     req = Request('GET', self.UrlBean.verifyCodeUrl, headers=headers)
-    #     return self.session.prepare_request(req)
-    #
-    # def prepareJwglLogin(self):
-    #     """
-    #     实例化登录 jwgl 需要的 request
-    #     __VIEWSTATE 和 __EVENTVALIDATION 可从网页源代码中获取
-    #     """
-    #     postData = {
-    #         '__VIEWSTATE': self.VIEWSTATE,
-    #         '__EVENTVALIDATION': self.EVENTVALIDATION,
-    #         '_ctl0:txtusername': self.UrlBean.userName,
-    #         '_ctl0:txtpassword': self.UrlBean.jwglPassword,
-    #         '_ctl0:txtyzm': self.verCode,
-    #         '_ctl0:ImageButton1.x': '43',
-    #         '_ctl0:ImageButton1.y': '21',
-    #     }
-    #     headers = self.formatHeaders(referer=self.UrlBean.jwglLoginUrl, originHost=self.UrlBean.jwglOriginUrl)
-    #     req = Request('POST', self.UrlBean.jwglLoginUrl, headers=headers, data=postData)
-    #     return self.session.prepare_request(req)
-    #
-    # def prepareJwglLoginDone(self):
-    #     headers = self.formatHeaders(referer=self.UrlBean.jwglLoginUrl)
-    #     req = Request('GET', self.UrlBean.jwglLoginDoneUrl, headers=headers)
-    #     return self.session.prepare_request(req)
-    #
-    # def prepareFetchClassList(self):
-    #     headers = self.formatHeaders(referer=self.UrlBean.leftMenuReferer)
-    #     payload = {'xh': self.UrlBean.userName}
-    #     req = Request('GET', self.UrlBean.fetchClassListUrl, headers=headers, params=payload)
-    #     return self.session.prepare_request(req)
-    #
-    # def preparePostClass(self, classId):
-    #     """
-    #     实例化登录 jwgl 需要的 request
-    #     __VIEWSTATE 和 __EVENTVALIDATION 可从网页源代码中获取
-    #     """
-    #     postData = {
-    #         '__EVENTTARGET': 'dgData__ctl' + classId + '_Linkbutton1',
-    #         '__EVENTARGUMENT': '',
-    #         '__VIEWSTATE': self.VIEWSTATE,
-    #         '__EVENTVALIDATION': self.EVENTVALIDATION,
-    #     }
-    #     headers = self.formatHeaders(referer=self.UrlBean.fetchClassListUrl + '?xh=' + self.UrlBean.userName, originHost=self.UrlBean.jwglOriginUrl)
-    #     payload = {'xh': self.UrlBean.userName}
-    #     req = Request('POST', self.UrlBean.fetchClassListUrl, headers=headers, data=postData, params=payload)
-    #     return self.session.prepare_request(req)
-
     def prepareFetchSchedule(self):
         headers = self.formatHeaders(referer=UrlBean.leftMenuReferer)
-        payload = {'xh': Config.userName}
+        payload = {'xh': Config.confDict['userName']}
         req = Request('GET', UrlBean.fetchScheduleUrl, headers=headers, params=payload)
         return self.session.prepare_request(req)
 
     def prepareGetEnglishTest(self):
         headers = self.formatHeaders(referer=UrlBean.leftMenuReferer)
-        payload = {'xh': Config.userName}
+        payload = {'xh': Config.confDict['userName']}
         req = Request('GET', UrlBean.englishTestUrl, headers=headers, params=payload)
         return self.session.prepare_request(req)
 
@@ -184,14 +132,14 @@ class Spider(object):
             'WUCpyjhdy:HFfilename': '等级考试确认单',
             'WUCpyjhdy:HFdatatype': '26',
         }
-        headers = self.formatHeaders(referer=UrlBean.englishTestUrl + '?xh=' + Config.userName, originHost=UrlBean.jwglOriginUrl)
-        payload = {'xh': Config.userName}
+        headers = self.formatHeaders(referer=UrlBean.englishTestUrl + '?xh=' + Config.confDict['userName'], originHost=UrlBean.jwglOriginUrl)
+        payload = {'xh': Config.confDict['userName']}
         req = Request('POST', UrlBean.englishTestUrl, headers=headers, data=postData, params=payload)
         return self.session.prepare_request(req)
 
     def prepareFetchSpeechList(self):
         headers = self.formatHeaders(referer=UrlBean.leftMenuReferer)
-        payload = {'xh': Config.userName}
+        payload = {'xh': Config.confDict['userName']}
         req = Request('GET', UrlBean.fetchSpeechListUrl, headers=headers, params=payload)
         return self.session.prepare_request(req)
 
@@ -208,24 +156,29 @@ class Spider(object):
                                    data=None,
                                    params=None)
 
-        while True:
+        Config.initAttempt()
+        while Config.descAttempt():
             self.response = self.session.send(prepareBody)
             self.VIEWSTATE = self.getVIEWSTATE()
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
                 break
             Logger.log("Retrying fetching login page viewState...", level=Logger.warning)
+        if not Config.descAttempt():
+            Logger.log('Up to max attempts!', ['Maybe remote server unreachable'], level=Logger.error)
+            return False
 
-        reInput = True      # 是否需要重新输入用户名和密码
-
+        if Config.checkConfFile():
+            Config.loadConfFile()
+        else:
+            Config.confDict['userName'] = input("> UserName: ")
+            Config.confDict['password'] = input("> Password: ")
         # 登录主循环
+        reInput = False  # 是否需要重新输入用户名和密码
         while True:
             if reInput:
-                if Config.checkUserFile():
-                    Config.readUserInfo()
-                else:
-                    Config.userName = input("> UserName: ")
-                    Config.password = input("> Password: ")
+                Config.confDict['userName'] = input("> UserName: ")
+                Config.confDict['password'] = input("> Password: ")
                 reInput = False
 
             # 获取验证码
@@ -236,27 +189,31 @@ class Spider(object):
                                        data=None,
                                        params=None)
 
-            while True:
+            Config.initAttempt()
+            while Config.descAttempt():
                 codeImg = self.session.send(prepareBody)  # 获取验证码图片
                 if codeImg.status_code == 200:
                     break
                 else:
                     Logger.log("retrying fetching vertify code...", level=Logger.warning)
+            if not Config.descAttempt():
+                Logger.log('Up to max attempts!', ['Maybe remote server unreachable'], level=Logger.error)
+                return False
 
             with open('check.gif', 'wb') as fr:  # 保存验证码图片
                 for chunk in codeImg:
                     fr.write(chunk)
 
             print_vertify_code()
-            verCode = input("input verify code:")
+            verCode = input("> input verify code: ")
             # verCode = self.classifier.recognizer("check.gif")  # 识别验证码
 
             # 发送登陆请求
             postData = {
                 '__VIEWSTATE': self.VIEWSTATE,
                 '__EVENTVALIDATION': self.EVENTVALIDATION,
-                '_ctl0:txtusername': Config.userName,
-                '_ctl0:txtpassword': Config.password,
+                '_ctl0:txtusername': Config.confDict['userName'],
+                '_ctl0:txtpassword': Config.confDict['password'],
                 '_ctl0:txtyzm': verCode,
                 '_ctl0:ImageButton1.x': '43',
                 '_ctl0:ImageButton1.y': '21',
@@ -268,19 +225,23 @@ class Spider(object):
                                        data=postData,
                                        params=None)
 
-            while True:
+            Config.initAttempt()
+            while Config.descAttempt():
                 self.response = self.session.send(prepareBody)
                 if self.response.status_code == 200:
                     break
+            if not Config.descAttempt():
+                Logger.log('Up to max attempts!', ['Maybe remote server unreachable'], level=Logger.error)
+                return False
 
             if re.search('用户名不存在', self.response.text):
                 print(Logger.log('No such a user!', ['Cleaning password file'], level=Logger.error))
-                Config.cleanUserInfo()
+                Config.cleanConfFile()
                 reInput = True
 
             elif re.search('密码错误', self.response.text):
                 print(Logger.log('Wrong password!', ['Cleaning password file'], level=Logger.error))
-                Config.cleanUserInfo()
+                Config.cleanConfFile()
                 reInput = True
 
             elif re.search('请输入验证码', self.response.text):
@@ -290,15 +251,15 @@ class Spider(object):
                 print(Logger.log('Wrong vertify code!', ['Retrying...'], level=Logger.error))
 
             else:
-                print(Logger.log('Login successfully!', ['UserName: ' + Config.userName], level=Logger.error))
-                Config.dumpUserInfo()
+                print(Logger.log('Login successfully!', ['UserName: ' + Config.confDict['userName']], level=Logger.error))
+                Config.dumpConfFile()
                 break
 
-        return self
+        return True
 
     def fetchClassList(self):
 
-        params = {'xh': Config.userName}
+        params = {'xh': Config.confDict['userName']}
         prepareBody = self.prepare(referer=UrlBean.leftMenuReferer,
                                    originHost=None,
                                    method='GET',
@@ -306,7 +267,8 @@ class Spider(object):
                                    data=None,
                                    params=params)
 
-        while True:
+        Config.initAttempt()
+        while Config.descAttempt():
             self.response = self.session.send(prepareBody)
             self.VIEWSTATE = self.getVIEWSTATE()
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
@@ -314,6 +276,9 @@ class Spider(object):
                 break
             else:
                 print(Logger.log('retrying fetching class list...'))
+        if not Config.descAttempt():
+            Logger.log('Up to max attempts!', ['Maybe you need to re-login'], level=Logger.error)
+            return False
 
         return self.formatClassList()
 
@@ -325,8 +290,8 @@ class Spider(object):
             '__VIEWSTATE': self.VIEWSTATE,
             '__EVENTVALIDATION': self.EVENTVALIDATION,
         }
-        payload = {'xh': Config.userName}
-        prepareBody = self.prepare(referer=UrlBean.fetchClassListUrl + '?xh=' + Config.userName,
+        payload = {'xh': Config.confDict['userName']}
+        prepareBody = self.prepare(referer=UrlBean.fetchClassListUrl + '?xh=' + Config.confDict['userName'],
                                    originHost=UrlBean.jwglOriginUrl,
                                    method='POST',
                                    url=UrlBean.fetchClassListUrl,
@@ -345,7 +310,7 @@ class Spider(object):
 
     def fetchSchedule(self):
 
-        payload = {'xh': Config.userName}
+        payload = {'xh': Config.confDict['userName']}
         prepareBody = self.prepare(referer=UrlBean.leftMenuReferer,
                                    originHost=None,
                                    method='GET',
@@ -402,7 +367,7 @@ class Spider(object):
 
     def fetchSpeechList(self):
 
-        payload = {'xh': Config.userName}
+        payload = {'xh': Config.confDict['userName']}
         prepareBody = self.prepare(referer=UrlBean.leftMenuReferer,
                                    originHost=None,
                                    method='GET',
@@ -410,7 +375,8 @@ class Spider(object):
                                    data=None,
                                    params=payload)
 
-        while True:
+        Config.initAttempt()
+        while Config.descAttempt():
             self.response = self.session.send(prepareBody)
             self.VIEWSTATE = self.getVIEWSTATE()
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
@@ -418,6 +384,9 @@ class Spider(object):
                 break
             else:
                 print(Logger.log('Retrying fetching speech list...', level=Logger.warning))
+        if not Config.descAttempt():
+            Logger.log('Up to max attempts!', ['Maybe you need to re-login'], level=Logger.error)
+            return False
 
         return self.formatSpeechList()
 
@@ -430,15 +399,16 @@ class Spider(object):
             '__EVENTVALIDATION': self.EVENTVALIDATION,
             'txtyzm': '',
         }
-        payload = {'xh': Config.userName}
-        prepareBody = self.prepare(referer=UrlBean.fetchSpeechListUrl + '?xh=' + Config.userName,
+        payload = {'xh': Config.confDict['userName']}
+        prepareBody = self.prepare(referer=UrlBean.fetchSpeechListUrl + '?xh=' + Config.confDict['userName'],
                                    originHost=UrlBean.jwglOriginUrl,
                                    method='POST',
                                    url=UrlBean.fetchSpeechListUrl,
                                    data=postData,
                                    params=payload)
 
-        while True:
+        Config.initAttempt()
+        while Config.descAttempt():
             self.response = self.session.send(prepareBody)
             self.VIEWSTATE = self.getVIEWSTATE()
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
@@ -446,6 +416,9 @@ class Spider(object):
                 break
             else:
                 print(Logger.log('Retrying posting speech detail...', level=Logger.warning))
+        if not Config.descAttempt():
+            Logger.log('Up to max attempts!', ['Maybe you need to re-login'], level=Logger.error)
+            return False
 
         postData = {
             '__EVENTTARGET': 'lbsq',
@@ -461,14 +434,18 @@ class Spider(object):
                                    data=postData,
                                    params=None)
 
-        while True:
+        Config.initAttempt()
+        while Config.descAttempt():
             self.response = self.session.send(prepareBody)
             if self.response.status_code == 200:
                 break
             else:
                 print(Logger.log('Retrying posting speech request...', level=Logger.warning))
+        if not Config.descAttempt():
+            Logger.log('Up to max attempts!', ['Maybe you need to re-login'], level=Logger.error)
+            return False
 
-        return self
+        return True
 
     def formatSpeechList(self):
         """
@@ -549,7 +526,6 @@ class Spider(object):
         爬取结束关闭会话
         """
         self.session.close()
-        print('exiting...')
 
 
 class VerifyError(Exception):

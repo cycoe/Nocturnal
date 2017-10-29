@@ -21,33 +21,64 @@ class Config(object):
 
     refreshSleep = getRandomTime(5)   # 刷新的间隔时间
     wechatPushSleep = getRandomTime(1)     # 发送两条微信消息之间的间隔
+    maxAttempt = 100
+
     # wechatGroup_ = ['研究生的咸♂鱼生活']     # 讲座推送的微信群名称
     # wechatUser_ = ['邱大帅全宇宙粉丝后援会']  # 讲座推送的用户名称
 
+    attempt = maxAttempt
     logPath = 'robber.log'
-    userFile = 'password_'
-    userName = ''
-    password = ''
+    confFile = 'robber.conf'
+
+    confDict = {
+        'userName': '',
+        'password': '',
+        'sender': '',
+        'emailPassword': '',
+        'host': '',
+        'port': '',
+        'receiver': '',
+    }
 
     @staticmethod
-    def checkUserFile():
-        return os.path.exists(Config.userFile)
+    def checkConfFile():
+        return os.path.exists(Config.confFile)
 
     @staticmethod
-    def readUserInfo():
-        with open(Config.userFile) as fr:
-            content = fr.readlines()
-            Config.userName = content[0].strip()
-            Config.password = content[1].strip()
+    def loadConfFile():
+        with open(Config.confFile) as fr:
+            content_ = fr.readlines()
+            for content in content_:
+                pair_ = content.split(':')
+                pair_ = [pair.strip() for pair in pair_]
+                if len(pair_) == 2:
+                    Config.confDict[pair_[0]] = pair_[1]
+                elif len(pair_) == 1:
+                    Config.confDict[pair_[0]] = ''
 
     @staticmethod
-    def dumpUserInfo():
-        with open(Config.userFile, 'w') as fr:
-            fr.write(Config.userName)
-            fr.write('\n')
-            fr.write(Config.password)
+    def dumpConfFile():
+        with open(Config.confFile, 'w') as fr:
+            for key in Config.confDict.keys():
+                fr.write(str(key))
+                fr.write(': ')
+                fr.write(str(Config.confDict[key]))
+                fr.write('\n')
 
     @staticmethod
-    def cleanUserInfo():
-        if Config.checkUserFile():
-            os.remove(Config.userFile)
+    def cleanConfFile():
+        Config.confDict['userName'] = ''
+        Config.confDict['password'] = ''
+        Config.dumpConfFile()
+
+    @staticmethod
+    def initAttempt():
+        Config.attempt = Config.maxAttempt
+
+    @staticmethod
+    def descAttempt():
+        Config.attempt -= 1
+        if Config.attempt > 0:
+            return True
+        else:
+            return False

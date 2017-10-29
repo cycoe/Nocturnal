@@ -24,10 +24,10 @@ class Logger(object):
         else:
             output = '\033[1;31m'
         output += time.strftime('[%Y-%m-%d %H:%M:%S]', time.localtime(time.time()))
-        output += ' ' + level_[level] + ' ' + content
+        output += ' ' + content
         if subContent_:
             output += '\n'
-            subContent_ = ['-' * 4 + subContent for subContent in subContent_]
+            subContent_ = ['-> ' + subContent for subContent in subContent_]
             output += '\n'.join(subContent_)
         output += '\033[0m'
 

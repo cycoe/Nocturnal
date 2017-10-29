@@ -6,37 +6,30 @@ from modules.ArgvsParser import ArgvsParser
 from modules.OutputFormater import OutputFormater
 from modules.Logger import Logger
 
-argvsParser = ArgvsParser()
 robber = Robber()
 
 
 def main():
     outputWelcome()
+    initArgvs()
     cycle()
+
+
+def initArgvs():
+    ArgvsParser.connect(['help', 'h'], outputHelp)
+    ArgvsParser.connect(['speech', 's'], robSpeech)
+    ArgvsParser.connect(['class', 'c'], robAllClass)
+    ArgvsParser.connect(['englishTest', 'et'], robEnglish)
+    ArgvsParser.connect(['login', 'l'], login)
+    ArgvsParser.connect(['notifySpeech', 'ns'], notifySpeech)
+    ArgvsParser.connect(['wechatLogin', 'wl'], wechatLogin)
+    ArgvsParser.connect(['quit', 'q'], quit_)
 
 
 def cycle():
     while True:
         command = input('>>> ')
-        if argvsParser.parse(command) == argvsParser.help:
-            outputHelp()
-        elif argvsParser.parse(command) == argvsParser.speech:
-            robSpeech()
-        elif argvsParser.parse(command) == argvsParser.listClass:
-            pass
-        elif argvsParser.parse(command) == argvsParser.autoClass:
-            robAllClass()
-        elif argvsParser.parse(command) == argvsParser.englishTest:
-            pass
-        elif argvsParser.parse(command) == argvsParser.login:
-            login()
-        elif argvsParser.parse(command) == argvsParser.wechatLogin:
-            wechatLogin()
-        elif argvsParser.parse(command) == argvsParser.notifySpeech:
-            notifySpeech()
-        elif argvsParser.parse(command) == argvsParser.quit:
-            quit()
-        else:
+        if not ArgvsParser.run(command):
             print(Logger.log('Wrong arguments detected!', level=Logger.error))
 
 
@@ -79,15 +72,15 @@ def robSpeech():
     robber.robSpeech()
 
 
-def robClass():
-    robber.getClassIdList(argvsParser.listFile)
+# def robClass():
+#     robber.getClassIdList(argvsParser.listFile)
 
 
 def robEnglish():
     robber.robEnglishTest()
 
 
-def quit():
+def quit_():
     robber.clean()
 
 
