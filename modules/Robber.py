@@ -65,6 +65,14 @@ class Robber(object):
 
     def emailLogin(self):
         Config.setEmailInfo()
+        print(Logger.log('Send a test mail to your mailbox...', level=Logger.info))
+        if Mail.send_mail('Just test connection.'):
+            print(Logger.log('Connected to your email', level=Logger.warning))
+            Config.connectedToMail = True
+            Config.dumpConfFile()
+        else:
+            Config.connectedToMail = False
+            print(Logger.log('Cannot connect to your email, check your config', level=Logger.warning))
 
     @checkStatus([getLoginStatus, getWechatLoginStatus])
     def pushToAllGroup(self, msg):
@@ -104,18 +112,21 @@ class Robber(object):
 
     @checkStatus([getLoginStatus])
     def robSpeech(self):
-        originalNum = 0
+        originalNum = 100
         while True:
             flag = self.spider.fetchSpeechList()
             if flag:
                 selectedHtml, selected_, selectable_ = flag
+                selectable_ = [selectable for selectable in selectable_ if selectable[1] not in Config.getSelected()]
             else:
                 return None
             if len(selected_) > originalNum:
                 originalNum = len(selected_)
+                Config.mergeSelected(selected_)
                 print(Logger.log('Robbed a speech!', level=Logger.warning))
                 print(OutputFormater.table(selected_, padding=1, horizontalSpacer=False))
-                threading.Thread(target=Mail.send_mail, args=(selectedHtml,)).start()
+                if Config.connectedToMail:
+                    threading.Thread(target=Mail.send_mail, args=(selectedHtml,)).start()
             buttonId_ = [selectable[0] for selectable in selectable_ if int(selectable[6]) > int(selectable[7])]
             if buttonId_:
                 random.shuffle(buttonId_)

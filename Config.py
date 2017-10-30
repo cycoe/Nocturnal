@@ -22,6 +22,8 @@ class Config(object):
     refreshSleep = getRandomTime(5)   # 刷新的间隔时间
     wechatPushSleep = getRandomTime(1)     # 发送两条微信消息之间的间隔
     maxAttempt = 100
+    connectedToMail = False
+    selected_ = []
 
     # wechatGroup_ = ['研究生的咸♂鱼生活']     # 讲座推送的微信群名称
     # wechatUser_ = ['邱大帅全宇宙粉丝后援会']  # 讲座推送的用户名称
@@ -29,13 +31,14 @@ class Config(object):
     attempt = maxAttempt
     logPath = 'robber.log'
     confFile = 'robber.conf'
+    blackList = 'blackList'
+    sender = 'class_robber@cycoe.win'
+    emailPassword = 'class_robber'
+    host = 'smtp.ym.163.com'
 
     confDict = {
         'userName': '',
         'password': '',
-        'sender': '',
-        'emailPassword': '',
-        'host': '',
         'receiver': '',
     }
 
@@ -68,11 +71,7 @@ class Config(object):
     def setEmailInfo():
         if Config.checkConfFile():
             Config.loadConfFile()
-        Config.confDict['sender'] = input('> Sender email: ')
-        Config.confDict['emailPassword'] = input('> Sender email password: ')
-        Config.confDict['host'] = input('> Sender email host: ')
         Config.confDict['receiver'] = input('> receive email: ')
-        Config.dumpConfFile()
 
     @staticmethod
     def initAttempt():
@@ -85,3 +84,26 @@ class Config(object):
             return True
         else:
             return False
+
+    @staticmethod
+    def getSelected():
+        if os.path.exists(Config.blackList):
+            with open(Config.blackList) as fr:
+                return [selected.strip() for selected in fr.readlines()]
+        else:
+            return []
+
+    @staticmethod
+    def mergeSelected(selected_):
+        selected_ = [selected[1] for selected in selected_]
+        if os.path.exists(Config.blackList):
+            with open(Config.blackList) as fr:
+                oriSelected_ = [selected.strip() for selected in fr.readlines()]
+        else:
+            oriSelected_ = []
+        oriSelected_.extend(selected_)
+        oriSelected_ = set(oriSelected_)
+        with open(Config.blackList, 'w') as fr:
+            for oriSelected in oriSelected_:
+                fr.write(oriSelected + '\n')
+

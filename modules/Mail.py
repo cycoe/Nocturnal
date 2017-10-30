@@ -12,14 +12,14 @@ class Mail(object):
 
     @staticmethod
     def send_mail(content):
-        mail_host = Config.confDict['host']
-        sender = Config.confDict['sender']
-        password = Config.confDict['emailPassword']
+        mail_host = Config.host
+        sender = Config.sender
+        password = Config.emailPassword
         receiver = Config.confDict['receiver']
 
         message = MIMEText(content, 'html', 'utf-8')
-        message['From'] = formataddr(['cycoe', sender])
-        message['To'] = formataddr(['cycoe', receiver])
+        message['From'] = formataddr(['class_robber', sender])
+        message['To'] = formataddr(['class_robber', receiver])
         message['subject'] = 'Robbed a new speech!'
 
         try:
@@ -28,6 +28,8 @@ class Mail(object):
             server.login(sender, password)
             server.sendmail(sender, [receiver], message.as_string())
             server.quit()
-            print(Logger.log('Sent a mail to your mailbox', subContent_=['mail: ' + receiver], level=Logger.warning))
+            print(Logger.log('Sent a mail to your mailbox', subContent_=['To mail: ' + receiver], level=Logger.warning))
+            return True
         except smtplib.SMTPException:
             print(Logger.log('failed to send a mail', level=Logger.warning))
+            return False

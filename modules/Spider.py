@@ -170,7 +170,7 @@ class Spider(object):
 
         if Config.checkConfFile():
             Config.loadConfFile()
-        else:
+        if Config.confDict['userName'] == '' and Config.confDict['password'] == '':
             Config.confDict['userName'] = input("> UserName: ")
             Config.confDict['password'] = input("> Password: ")
         # 登录主循环
