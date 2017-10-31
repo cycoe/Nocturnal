@@ -126,10 +126,10 @@ class Robber(object):
                 flag = self.spider.postSpeech(buttonId)
                 if not flag:
                     return None
-            newSelected_ = [selected[2] for selected in selected_ if selected not in Config.getSelected()]
+            newSelected_ = [selected[2] for selected in selected_ if selected[2] not in Config.getSelected()]
             if newSelected_:
                 Config.mergeSelected(newSelected_)
-                print(Logger.log('Robbed a speech!', subContent_=[selected[2] for selected in selected_], level=Logger.error))
+                print(Logger.log('Robbed a speech!', subContent_=newSelected_, level=Logger.error))
                 if Mail.connectedToMail:
                     threading.Thread(target=Mail.send_mail, args=(selectedHtml,)).start()
             if len(buttonId_) < 2:
