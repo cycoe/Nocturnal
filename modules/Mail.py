@@ -10,6 +10,8 @@ from Config import Config
 
 class Mail(object):
 
+    connectedToMail = True
+
     @staticmethod
     def send_mail(content):
         mail_host = Config.host
@@ -29,7 +31,9 @@ class Mail(object):
             server.sendmail(sender, [receiver], message.as_string())
             server.quit()
             print(Logger.log('Sent a mail to your mailbox', subContent_=['To mail: ' + receiver], level=Logger.warning))
+            Mail.connectedToMail = True
             return True
         except smtplib.SMTPException:
             print(Logger.log('failed to send a mail', level=Logger.warning))
+            Mail.connectedToMail = False
             return False

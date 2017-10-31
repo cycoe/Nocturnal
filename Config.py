@@ -3,14 +3,12 @@
 
 import random
 import os
+import time
 
 
 def getRandomTime(sleepTime):
-
     def wrapper():
-
         return sleepTime * (1 + random.random())
-
     return wrapper
 
 
@@ -22,7 +20,6 @@ class Config(object):
     refreshSleep = getRandomTime(5)   # 刷新的间隔时间
     wechatPushSleep = getRandomTime(1)     # 发送两条微信消息之间的间隔
     maxAttempt = 100
-    connectedToMail = False
     selected_ = []
 
     # wechatGroup_ = ['研究生的咸♂鱼生活']     # 讲座推送的微信群名称

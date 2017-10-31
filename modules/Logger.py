@@ -6,7 +6,7 @@ import time
 from Config import Config
 
 
-level_ = ['<info>', '<warning>', '<error>']
+level_ = ['<i>', '<w>', '<e>']
 
 
 class Logger(object):

@@ -6,6 +6,7 @@ import time
 import itchat
 import random
 import threading
+
 from modules.Spider import Spider
 from modules.OutputFormater import OutputFormater
 from modules.Logger import Logger
@@ -14,7 +15,7 @@ from modules.listUtils import find_all_in_list
 from Config import Config
 
 
-def checkStatus(check_):
+def checkStatus(*check_):
     """
     decorator to check login status before request
 
@@ -68,24 +69,24 @@ class Robber(object):
         print(Logger.log('Send a test mail to your mailbox...', level=Logger.info))
         if Mail.send_mail('Just test connection.'):
             print(Logger.log('Connected to your email', level=Logger.warning))
-            Config.connectedToMail = True
+            Mail.connectedToMail = True
             Config.dumpConfFile()
         else:
-            Config.connectedToMail = False
+            Mail.connectedToMail = False
             print(Logger.log('Cannot connect to your email, check your config', level=Logger.warning))
 
-    @checkStatus([getLoginStatus, getWechatLoginStatus])
+    @checkStatus(getLoginStatus, getWechatLoginStatus)
     def pushToAllGroup(self, msg):
         for wechatId in self.wechatId_:
             itchat.send(msg, toUserName=wechatId)
             time.sleep(Config.wechatPushSleep())
 
-    @checkStatus([getLoginStatus])
+    @checkStatus(getLoginStatus)
     def getClassIdList(self, listFile):
         classList = self.spider.fetchClassList()
         print(classList)
 
-    @checkStatus([getLoginStatus, getWechatLoginStatus])
+    @checkStatus(getLoginStatus, getWechatLoginStatus)
     def notifySpeech(self, threshold=3):
         # self.pushToAllGroup('开始报告余量监测...')
 
@@ -110,7 +111,7 @@ class Robber(object):
                 print(OutputFormater.table(availableSpeechList))
             time.sleep(Config.refreshSleep())
 
-    @checkStatus([getLoginStatus])
+    @checkStatus(getLoginStatus)
     def robSpeech(self):
         originalNum = 100
         while True:
@@ -123,15 +124,15 @@ class Robber(object):
             if len(selected_) > originalNum:
                 originalNum = len(selected_)
                 Config.mergeSelected(selected_)
-                print(Logger.log('Robbed a speech!', level=Logger.warning))
+                print(Logger.log('Robbed a speech!', level=Logger.error))
                 print(OutputFormater.table(selected_, padding=1, horizontalSpacer=False))
-                if Config.connectedToMail:
+                if Mail.connectedToMail:
                     threading.Thread(target=Mail.send_mail, args=(selectedHtml,)).start()
             buttonId_ = [selectable[0] for selectable in selectable_ if int(selectable[6]) > int(selectable[7])]
             if buttonId_:
                 random.shuffle(buttonId_)
                 buttonId = buttonId_[0]
-                print(Logger.log('Robbing speech...', level=Logger.info))
+                print(Logger.log('Robbing speech...', level=Logger.warning))
                 flag = self.spider.postSpeech(buttonId)
                 if not flag:
                     return None
@@ -139,12 +140,12 @@ class Robber(object):
                 print(Logger.log('No speech to rob, dozing...', level=Logger.info))
                 time.sleep(Config.refreshSleep())
 
-    @checkStatus([getLoginStatus])
+    @checkStatus(getLoginStatus)
     def robClass(self, classIdList):
         for classId in classIdList:
             self.spider.postClass(classId)
 
-    @checkStatus([getLoginStatus])
+    @checkStatus(getLoginStatus)
     def robEnglishTest(self):
         self.spider.getEnglishTest()
         print(self.spider.getEnglishTestStatus())
