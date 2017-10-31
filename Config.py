@@ -90,14 +90,13 @@ class Config(object):
             return []
 
     @staticmethod
-    def mergeSelected(selected_):
-        selected_ = [selected[1] for selected in selected_]
+    def mergeSelected(newSelected_):
         if os.path.exists(Config.blackList):
             with open(Config.blackList) as fr:
                 oriSelected_ = [selected.strip() for selected in fr.readlines()]
         else:
             oriSelected_ = []
-        oriSelected_.extend(selected_)
+        oriSelected_.extend(newSelected_)
         oriSelected_ = set(oriSelected_)
         with open(Config.blackList, 'w') as fr:
             for oriSelected in oriSelected_:

@@ -36,7 +36,7 @@ def cycle():
 
 def outputWelcome():
     print(OutputFormater.table([
-        ['Class Robber'],
+        ['Class Robber V 2.1'],
         ['By cycoe'],
         ['Site: cycoe.win'],
         ['License: MIT 3.0']

@@ -6,6 +6,7 @@ password_
 check.gif
 dist
 build
+blackList
 ############################################
 
 # Byte-compiled / optimized / DLL files

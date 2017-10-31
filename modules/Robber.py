@@ -111,21 +111,13 @@ class Robber(object):
 
     @checkStatus(getLoginStatus)
     def robSpeech(self):
-        originalNum = 100
         while True:
             flag = self.spider.fetchSpeechList()
             if flag:
                 selectedHtml, selected_, selectable_ = flag
-                selectable_ = [selectable for selectable in selectable_ if selectable[1] not in Config.getSelected()]
+                selectable_ = [selectable for selectable in selectable_ if selectable[2] not in Config.getSelected()]
             else:
                 return None
-            if len(selected_) > originalNum:
-                originalNum = len(selected_)
-                Config.mergeSelected(selected_)
-                print(Logger.log('Robbed a speech!', level=Logger.error))
-                print(OutputFormater.table(selected_, padding=1, horizontalSpacer=False))
-                if Mail.connectedToMail:
-                    threading.Thread(target=Mail.send_mail, args=(selectedHtml,)).start()
             buttonId_ = [selectable[0] for selectable in selectable_ if int(selectable[6]) > int(selectable[7])]
             if buttonId_:
                 random.shuffle(buttonId_)
@@ -134,6 +126,12 @@ class Robber(object):
                 flag = self.spider.postSpeech(buttonId)
                 if not flag:
                     return None
+            newSelected_ = [selected[2] for selected in selected_ if selected not in Config.getSelected()]
+            if newSelected_:
+                Config.mergeSelected(newSelected_)
+                print(Logger.log('Robbed a speech!', subContent_=[selected[2] for selected in selected_], level=Logger.error))
+                if Mail.connectedToMail:
+                    threading.Thread(target=Mail.send_mail, args=(selectedHtml,)).start()
             if len(buttonId_) < 2:
                 print(Logger.log('No speech to rob, dozing...', level=Logger.info))
                 time.sleep(Config.refreshSleep())
