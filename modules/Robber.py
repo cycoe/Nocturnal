@@ -66,14 +66,12 @@ class Robber(object):
 
     def emailLogin(self):
         Config.setEmailInfo()
-        print(Logger.log('Send a test mail to your mailbox...', level=Logger.info))
-        if Mail.send_mail('Just test connection.'):
-            print(Logger.log('Connected to your email', level=Logger.warning))
-            Mail.connectedToMail = True
-            Config.dumpConfFile()
-        else:
-            Mail.connectedToMail = False
-            print(Logger.log('Cannot connect to your email, check your config', level=Logger.warning))
+        print(Logger.log('Sending a test mail to your mailbox...', subContent_=[
+            'Check the trash box if you haven\'t received the test mail',
+            'Sender mail address: class_robber@cycoe.win',
+            'Nick name: class_robber'
+        ], level=Logger.info))
+        Mail.send_mail('Just test connection.')
 
     @checkStatus(getLoginStatus, getWechatLoginStatus)
     def pushToAllGroup(self, msg):
@@ -154,6 +152,6 @@ class Robber(object):
 
     def clean(self):
         self.spider.clean()
-        print(Logger.log('site clearing...', ['exiting...'], level=Logger.error))
+        print(Logger.log('Site clearing...', ['exiting...'], level=Logger.error))
         exit(0)
 

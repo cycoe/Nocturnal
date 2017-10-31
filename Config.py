@@ -3,7 +3,6 @@
 
 import random
 import os
-import time
 
 
 def getRandomTime(sleepTime):

@@ -30,10 +30,11 @@ class Mail(object):
             server.login(sender, password)
             server.sendmail(sender, [receiver], message.as_string())
             server.quit()
-            print(Logger.log('Sent a mail to your mailbox', subContent_=['To mail: ' + receiver], level=Logger.warning))
+            print(Logger.log('Have Send a mail to your mailbox', subContent_=['To mail: ' + receiver], level=Logger.error))
             Mail.connectedToMail = True
-            return True
         except smtplib.SMTPException:
-            print(Logger.log('failed to send a mail', level=Logger.warning))
+            print(Logger.log('Failed to send a mail', subContent_=['Check your email address'], level=Logger.error))
             Mail.connectedToMail = False
-            return False
+        except UnicodeDecodeError:
+            print(Logger.log('Cannot handle the decode', subContent_=['Please check your computer name whether English'], level=Logger.warning))
+            Mail.connectedToMail = False
