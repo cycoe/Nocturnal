@@ -18,3 +18,4 @@ class UrlBean(object):
     fetchSpeechListUrl = "http://graduate.buct.edu.cn:8080/pyxx/txhdgl/hdlist.aspx"    # 讲座列表获取地址
     speechDetailUrl = "http://graduate.buct.edu.cn:8080/pyxx/txhdgl/hdxxdetail.aspx"   # 讲座详情地址
     fetchGradeUrl = "http://jwgl.buct.edu.cn/xscjcx.aspx"  # 成绩获取地址
+

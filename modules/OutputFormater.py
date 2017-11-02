@@ -27,7 +27,6 @@ class OutputFormater(object):
                 border += '+'
         if not verticalSpacer:
             border += '+'
-        border += '\n'
 
         output_ = []
         for row in content:
@@ -45,11 +44,10 @@ class OutputFormater(object):
                     output += '|'
             if not verticalSpacer:
                 output += '|'
-            output += '\n'
             output_.append(output)
         if horizontalSpacer:
-            output = border + border.join(output_) + border
+            output = border + '\n' + ('\n' + border + '\n').join(output_) + '\n' + border
         else:
-            output = border + ''.join(output_) + border
+            output = border + '\n' + '\n'.join(output_) + '\n' + border
 
         return output

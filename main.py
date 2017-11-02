@@ -5,6 +5,8 @@ from modules.Robber import Robber
 from modules.ArgvsParser import ArgvsParser
 from modules.OutputFormater import OutputFormater
 from modules.Logger import Logger
+from Config import Config
+import pyqrcode
 
 robber = Robber()
 
@@ -12,6 +14,7 @@ robber = Robber()
 def main():
     outputWelcome()
     initArgvs()
+    outputHelp()
     cycle()
 
 
@@ -25,6 +28,7 @@ def initArgvs():
     # ArgvsParser.connect(['wechatLogin', 'wl'], wechatLogin)
     ArgvsParser.connect(['quit', 'q'], quit_)
     ArgvsParser.connect(['emailLogin', 'el'], emailLogin)
+    ArgvsParser.connect(['donate', 'd'], printQRCode)
 
 
 def cycle():
@@ -51,6 +55,7 @@ def outputHelp():
         ['emailLogin', 'el', 'login email to send notification'],
         ['speech', 's', 'speech robbing mode'],
         # ['class', 'c', 'class robbing mode'],
+        ['donate', 'd', 'support developer a cup of coffee'],
         ['quit', 'q', 'quit robber']
     ], gravity=OutputFormater.center, padding=2))
 
@@ -85,6 +90,16 @@ def robEnglish():
 
 def emailLogin():
     robber.emailLogin()
+
+
+def printQRCode():
+    wechatURI = pyqrcode.create(Config.wechatURI)
+    alipayURI = pyqrcode.create(Config.alipayURI)
+    print(Logger.log('Thanks a lot for donating'))
+    print(OutputFormater.table([['Via wechat'], ['|'], ['V']], verticalSpacer=False, horizontalSpacer=False, padding=10))
+    print(wechatURI.terminal(quiet_zone=1))
+    print(OutputFormater.table([['Via alipay'], ['|'], ['V']], verticalSpacer=False, horizontalSpacer=False, padding=10))
+    print(alipayURI.terminal(quiet_zone=1))
 
 
 def quit_():

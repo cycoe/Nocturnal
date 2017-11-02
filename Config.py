@@ -32,6 +32,9 @@ class Config(object):
     emailPassword = 'class_robber'
     host = 'smtp.ym.163.com'
 
+    wechatURI = 'wxp://f2f0PYx27X0CWU1yiBhSKeHHgYzfA27iOicM'
+    alipayURI = 'HTTPS://QR.ALIPAY.COM/FKX01669SBV7NA4ALTVPE8'
+
     confDict = {
         'userName': '',
         'password': '',
