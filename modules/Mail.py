@@ -13,7 +13,7 @@ class Mail(object):
     connectedToMail = True
 
     @staticmethod
-    def send_mail(content):
+    def send_mail(subject, content):
         mail_host = Config.host
         sender = Config.sender
         password = Config.emailPassword
@@ -22,7 +22,7 @@ class Mail(object):
         message = MIMEText(content, 'html', 'utf-8')
         message['From'] = formataddr(['class_robber', sender])
         message['To'] = formataddr(['class_robber', receiver])
-        message['subject'] = 'Robbed a new speech!'
+        message['subject'] = subject
 
         try:
             server = smtplib.SMTP()
