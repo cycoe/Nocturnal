@@ -71,7 +71,7 @@ class Robber(object):
             'Sender mail address: class_robber@cycoe.win',
             'Nick name: class_robber'
         ], level=Logger.info))
-        Mail.send_mail('Just test connection.')
+        Mail.send_mail('Just test connection.', 'Test connection between class robber and mail server. No reply')
 
     @checkStatus(getLoginStatus, getWechatLoginStatus)
     def pushToAllGroup(self, msg):
@@ -131,7 +131,7 @@ class Robber(object):
                 Config.mergeSelected(newSelected_)
                 print(Logger.log('Robbed a speech!', subContent_=newSelected_, level=Logger.error))
                 if Mail.connectedToMail:
-                    threading.Thread(target=Mail.send_mail, args=(selectedHtml,)).start()
+                    threading.Thread(target=Mail.send_mail, args=('Robbed a new speech', selectedHtml,)).start()
             if len(buttonId_) < 2:
                 print(Logger.log('No speech to rob, dozing...', level=Logger.info))
                 time.sleep(Config.refreshSleep())

@@ -82,6 +82,11 @@ class Config(object):
         if Config.attempt > 0:
             return True
         else:
+            # if Mail.connectedToMail:
+            #     threading.Thread(target=Mail.send_mail, args=('Class robber halted', Logger.log(
+            #         'Class robber halted because of up to max attempts',
+            #         ['Check your login status', 'Check the response of server']
+            #     ),)).start()
             return False
 
     @staticmethod
