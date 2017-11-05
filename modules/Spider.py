@@ -6,7 +6,7 @@ from requests import Session, Request, exceptions
 from bs4 import BeautifulSoup
 from modules.UrlBean import UrlBean
 from modules.Logger import Logger
-from Config import Config
+from modules.MisUtils import MisUtils
 
 
 class Spider(object):
@@ -108,13 +108,13 @@ class Spider(object):
 
     def prepareFetchSchedule(self):
         headers = self.formatHeaders(referer=UrlBean.leftMenuReferer)
-        payload = {'xh': Config.confDict['userName']}
+        payload = {'xh': MisUtils.confDict['userName']}
         req = Request('GET', UrlBean.fetchScheduleUrl, headers=headers, params=payload)
         return self.session.prepare_request(req)
 
     def prepareGetEnglishTest(self):
         headers = self.formatHeaders(referer=UrlBean.leftMenuReferer)
-        payload = {'xh': Config.confDict['userName']}
+        payload = {'xh': MisUtils.confDict['userName']}
         req = Request('GET', UrlBean.englishTestUrl, headers=headers, params=payload)
         return self.session.prepare_request(req)
 
@@ -132,14 +132,14 @@ class Spider(object):
             'WUCpyjhdy:HFfilename': '等级考试确认单',
             'WUCpyjhdy:HFdatatype': '26',
         }
-        headers = self.formatHeaders(referer=UrlBean.englishTestUrl + '?xh=' + Config.confDict['userName'], originHost=UrlBean.jwglOriginUrl)
-        payload = {'xh': Config.confDict['userName']}
+        headers = self.formatHeaders(referer=UrlBean.englishTestUrl + '?xh=' + MisUtils.confDict['userName'], originHost=UrlBean.jwglOriginUrl)
+        payload = {'xh': MisUtils.confDict['userName']}
         req = Request('POST', UrlBean.englishTestUrl, headers=headers, data=postData, params=payload)
         return self.session.prepare_request(req)
 
     def prepareFetchSpeechList(self):
         headers = self.formatHeaders(referer=UrlBean.leftMenuReferer)
-        payload = {'xh': Config.confDict['userName']}
+        payload = {'xh': MisUtils.confDict['userName']}
         req = Request('GET', UrlBean.fetchSpeechListUrl, headers=headers, params=payload)
         return self.session.prepare_request(req)
 
@@ -156,29 +156,29 @@ class Spider(object):
                                    data=None,
                                    params=None)
 
-        Config.initAttempt()
-        while Config.descAttempt():
+        MisUtils.initAttempt()
+        while MisUtils.descAttempt():
             self.response = self.session.send(prepareBody)
             self.VIEWSTATE = self.getVIEWSTATE()
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
                 break
             Logger.log("Retrying fetching login page viewState...", level=Logger.warning)
-        if not Config.descAttempt():
+        if not MisUtils.descAttempt():
             Logger.log('Up to max attempts!', ['Maybe remote server unreachable'], level=Logger.error)
             return False
 
-        if Config.checkConfFile():
-            Config.loadConfFile()
-        if Config.confDict['userName'] == '' and Config.confDict['password'] == '':
-            Config.confDict['userName'] = input("> UserName: ")
-            Config.confDict['password'] = input("> Password: ")
+        if MisUtils.checkConfFile():
+            MisUtils.loadConfFile()
+        if MisUtils.confDict['userName'] == '' and MisUtils.confDict['password'] == '':
+            MisUtils.confDict['userName'] = input("> UserName: ")
+            MisUtils.confDict['password'] = input("> Password: ")
         # 登录主循环
         reInput = False  # 是否需要重新输入用户名和密码
         while True:
             if reInput:
-                Config.confDict['userName'] = input("> UserName: ")
-                Config.confDict['password'] = input("> Password: ")
+                MisUtils.confDict['userName'] = input("> UserName: ")
+                MisUtils.confDict['password'] = input("> Password: ")
                 reInput = False
 
             # 获取验证码
@@ -189,14 +189,14 @@ class Spider(object):
                                        data=None,
                                        params=None)
 
-            Config.initAttempt()
-            while Config.descAttempt():
+            MisUtils.initAttempt()
+            while MisUtils.descAttempt():
                 codeImg = self.session.send(prepareBody)  # 获取验证码图片
                 if codeImg.status_code == 200:
                     break
                 else:
                     Logger.log("retrying fetching vertify code...", level=Logger.warning)
-            if not Config.descAttempt():
+            if not MisUtils.descAttempt():
                 Logger.log('Up to max attempts!', ['Maybe remote server unreachable'], level=Logger.error)
                 return False
 
@@ -212,8 +212,8 @@ class Spider(object):
             postData = {
                 '__VIEWSTATE': self.VIEWSTATE,
                 '__EVENTVALIDATION': self.EVENTVALIDATION,
-                '_ctl0:txtusername': Config.confDict['userName'],
-                '_ctl0:txtpassword': Config.confDict['password'],
+                '_ctl0:txtusername': MisUtils.confDict['userName'],
+                '_ctl0:txtpassword': MisUtils.confDict['password'],
                 '_ctl0:txtyzm': verCode,
                 '_ctl0:ImageButton1.x': '43',
                 '_ctl0:ImageButton1.y': '21',
@@ -225,12 +225,12 @@ class Spider(object):
                                        data=postData,
                                        params=None)
 
-            Config.initAttempt()
-            while Config.descAttempt():
+            MisUtils.initAttempt()
+            while MisUtils.descAttempt():
                 self.response = self.session.send(prepareBody)
                 if self.response.status_code == 200:
                     break
-            if not Config.descAttempt():
+            if not MisUtils.descAttempt():
                 Logger.log('Up to max attempts!', ['Maybe remote server unreachable'], level=Logger.error)
                 return False
 
@@ -249,15 +249,15 @@ class Spider(object):
                 print(Logger.log('Wrong vertify code!', ['Retrying...'], level=Logger.error))
 
             else:
-                print(Logger.log('Login successfully!', ['UserName: ' + Config.confDict['userName']], level=Logger.error))
-                Config.dumpConfFile()
+                print(Logger.log('Login successfully!', ['UserName: ' + MisUtils.confDict['userName']], level=Logger.error))
+                MisUtils.dumpConfFile()
                 break
 
         return True
 
     def fetchClassList(self):
 
-        params = {'xh': Config.confDict['userName']}
+        params = {'xh': MisUtils.confDict['userName']}
         prepareBody = self.prepare(referer=UrlBean.leftMenuReferer,
                                    originHost=None,
                                    method='GET',
@@ -265,8 +265,8 @@ class Spider(object):
                                    data=None,
                                    params=params)
 
-        Config.initAttempt()
-        while Config.descAttempt():
+        MisUtils.initAttempt()
+        while MisUtils.descAttempt():
             self.response = self.session.send(prepareBody)
             self.VIEWSTATE = self.getVIEWSTATE()
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
@@ -274,7 +274,7 @@ class Spider(object):
                 break
             else:
                 print(Logger.log('retrying fetching class list...'))
-        if not Config.descAttempt():
+        if not MisUtils.descAttempt():
             Logger.log('Up to max attempts!', ['Maybe you need to re-login'], level=Logger.error)
             return False
 
@@ -288,8 +288,8 @@ class Spider(object):
             '__VIEWSTATE': self.VIEWSTATE,
             '__EVENTVALIDATION': self.EVENTVALIDATION,
         }
-        payload = {'xh': Config.confDict['userName']}
-        prepareBody = self.prepare(referer=UrlBean.fetchClassListUrl + '?xh=' + Config.confDict['userName'],
+        payload = {'xh': MisUtils.confDict['userName']}
+        prepareBody = self.prepare(referer=UrlBean.fetchClassListUrl + '?xh=' + MisUtils.confDict['userName'],
                                    originHost=UrlBean.jwglOriginUrl,
                                    method='POST',
                                    url=UrlBean.fetchClassListUrl,
@@ -308,7 +308,7 @@ class Spider(object):
 
     def fetchSchedule(self):
 
-        payload = {'xh': Config.confDict['userName']}
+        payload = {'xh': MisUtils.confDict['userName']}
         prepareBody = self.prepare(referer=UrlBean.leftMenuReferer,
                                    originHost=None,
                                    method='GET',
@@ -365,7 +365,7 @@ class Spider(object):
 
     def fetchSpeechList(self):
 
-        payload = {'xh': Config.confDict['userName']}
+        payload = {'xh': MisUtils.confDict['userName']}
         prepareBody = self.prepare(referer=UrlBean.leftMenuReferer,
                                    originHost=None,
                                    method='GET',
@@ -373,8 +373,8 @@ class Spider(object):
                                    data=None,
                                    params=payload)
 
-        Config.initAttempt()
-        while Config.descAttempt():
+        MisUtils.initAttempt()
+        while MisUtils.descAttempt():
             self.response = self.session.send(prepareBody)
             self.VIEWSTATE = self.getVIEWSTATE()
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
@@ -382,7 +382,7 @@ class Spider(object):
                 break
             else:
                 print(Logger.log('Retrying fetching speech list...', level=Logger.warning))
-        if not Config.descAttempt():
+        if not MisUtils.descAttempt():
             Logger.log('Up to max attempts!', ['Maybe you need to re-login'], level=Logger.error)
             return False
 
@@ -397,16 +397,16 @@ class Spider(object):
             '__EVENTVALIDATION': self.EVENTVALIDATION,
             'txtyzm': '',
         }
-        payload = {'xh': Config.confDict['userName']}
-        prepareBody = self.prepare(referer=UrlBean.fetchSpeechListUrl + '?xh=' + Config.confDict['userName'],
+        payload = {'xh': MisUtils.confDict['userName']}
+        prepareBody = self.prepare(referer=UrlBean.fetchSpeechListUrl + '?xh=' + MisUtils.confDict['userName'],
                                    originHost=UrlBean.jwglOriginUrl,
                                    method='POST',
                                    url=UrlBean.fetchSpeechListUrl,
                                    data=postData,
                                    params=payload)
 
-        Config.initAttempt()
-        while Config.descAttempt():
+        MisUtils.initAttempt()
+        while MisUtils.descAttempt():
             self.response = self.session.send(prepareBody)
             self.VIEWSTATE = self.getVIEWSTATE()
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
@@ -414,7 +414,7 @@ class Spider(object):
                 break
             else:
                 print(Logger.log('Retrying posting speech detail...', level=Logger.warning))
-        if not Config.descAttempt():
+        if not MisUtils.descAttempt():
             Logger.log('Up to max attempts!', ['Maybe you need to re-login'], level=Logger.error)
             return False
 
@@ -432,14 +432,14 @@ class Spider(object):
                                    data=postData,
                                    params=None)
 
-        Config.initAttempt()
-        while Config.descAttempt():
+        MisUtils.initAttempt()
+        while MisUtils.descAttempt():
             self.response = self.session.send(prepareBody)
             if self.response.status_code == 200:
                 break
             else:
                 print(Logger.log('Retrying posting speech request...', level=Logger.warning))
-        if not Config.descAttempt():
+        if not MisUtils.descAttempt():
             Logger.log('Up to max attempts!', ['Maybe you need to re-login'], level=Logger.error)
             return False
 

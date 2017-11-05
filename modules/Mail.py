@@ -5,7 +5,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.utils import formataddr
 from modules.Logger import Logger
-from Config import Config
+from modules.MisUtils import MisUtils
 
 
 class Mail(object):
@@ -14,10 +14,10 @@ class Mail(object):
 
     @staticmethod
     def send_mail(subject, content):
-        mail_host = Config.host
-        sender = Config.sender
-        password = Config.emailPassword
-        receiver = Config.confDict['receiver']
+        mail_host = MisUtils.host
+        sender = MisUtils.sender
+        password = MisUtils.emailPassword
+        receiver = MisUtils.confDict['receiver']
 
         message = MIMEText(content, 'html', 'utf-8')
         message['From'] = formataddr(['class_robber', sender])

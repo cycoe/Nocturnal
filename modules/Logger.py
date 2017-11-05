@@ -3,7 +3,7 @@
 
 import time
 
-from Config import Config
+from modules.MisUtils import MisUtils
 
 
 level_ = ['<i>', '<w>', '<e>']
@@ -26,7 +26,7 @@ class Logger(object):
             output += '\n'.join(subContent_)
 
         if level == 2:
-            with open(Config.logPath, 'a') as fr:
+            with open(MisUtils.logPath, 'a') as fr:
                 fr.write(output + '\n')
 
         return output

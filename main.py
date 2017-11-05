@@ -5,7 +5,7 @@ from modules.Robber import Robber
 from modules.ArgvsParser import ArgvsParser
 from modules.OutputFormater import OutputFormater
 from modules.Logger import Logger
-from Config import Config
+from modules.MisUtils import MisUtils
 import pyqrcode
 
 robber = Robber()
@@ -93,8 +93,8 @@ def emailLogin():
 
 
 def printQRCode():
-    wechatURI = pyqrcode.create(Config.wechatURI)
-    alipayURI = pyqrcode.create(Config.alipayURI)
+    wechatURI = pyqrcode.create(MisUtils.wechatURI)
+    alipayURI = pyqrcode.create(MisUtils.alipayURI)
     print(Logger.log('Thanks a lot for donating'))
     print(OutputFormater.table([['Via wechat'], ['|'], ['V']], verticalSpacer=False, horizontalSpacer=False, padding=10))
     print(wechatURI.terminal(quiet_zone=1))

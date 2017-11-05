@@ -12,7 +12,7 @@ from modules.OutputFormater import OutputFormater
 from modules.Logger import Logger
 from modules.Mail import Mail
 from modules.listUtils import find_all_in_list
-from Config import Config
+from modules.MisUtils import MisUtils
 
 
 def checkStatus(*check_):
@@ -58,14 +58,14 @@ class Robber(object):
 
     def wechatLogin(self):
         itchat.auto_login(enableCmdQR=2)
-        for wechatGroup in Config.wechatGroup_:
+        for wechatGroup in MisUtils.wechatGroup_:
             self.wechatId_.append(itchat.search_chatrooms(wechatGroup)[0]['UserName'])
-        for wechatUser in Config.wechatUser_:
+        for wechatUser in MisUtils.wechatUser_:
             self.wechatId_.append(itchat.search_friends(wechatUser)[0]['UserName'])
         Robber.wechatLoginStatus = True
 
     def emailLogin(self):
-        Config.setEmailInfo()
+        MisUtils.setEmailInfo()
         print(Logger.log('Sending a test mail to your mailbox...', subContent_=[
             'Check the trash box if you haven\'t received the test mail',
             'Sender mail address: class_robber@cycoe.win',
@@ -77,7 +77,7 @@ class Robber(object):
     def pushToAllGroup(self, msg):
         for wechatId in self.wechatId_:
             itchat.send(msg, toUserName=wechatId)
-            time.sleep(Config.wechatPushSleep())
+            time.sleep(MisUtils.wechatPushSleep())
 
     @checkStatus(getLoginStatus)
     def getClassIdList(self, listFile):
@@ -107,7 +107,7 @@ class Robber(object):
                 availableSpeechList.insert(0, ['报告类别', '报告名称', '报告时间', '报告地点', '余量'])
                 # self.pushToAllGroup(OutputFormater.output(availableSpeechList, header='有报告余量！'))
                 print(OutputFormater.table(availableSpeechList))
-            time.sleep(Config.refreshSleep())
+            time.sleep(MisUtils.refreshSleep())
 
     @checkStatus(getLoginStatus)
     def robSpeech(self):
@@ -115,7 +115,7 @@ class Robber(object):
             flag = self.spider.fetchSpeechList()
             if flag:
                 selectedHtml, selected_, selectable_ = flag
-                selectable_ = [selectable for selectable in selectable_ if selectable[2] not in Config.getSelected()]
+                selectable_ = [selectable for selectable in selectable_ if selectable[2] not in MisUtils.getSelected()]
             else:
                 return None
             buttonId_ = [selectable[0] for selectable in selectable_ if int(selectable[6]) > int(selectable[7])]
@@ -126,15 +126,15 @@ class Robber(object):
                 flag = self.spider.postSpeech(buttonId)
                 if not flag:
                     return None
-            newSelected_ = [selected[2] for selected in selected_ if selected[2] not in Config.getSelected()]
+            newSelected_ = [selected[2] for selected in selected_ if selected[2] not in MisUtils.getSelected()]
             if newSelected_:
-                Config.mergeSelected(newSelected_)
+                MisUtils.mergeSelected(newSelected_)
                 print(Logger.log('Robbed a speech!', subContent_=newSelected_, level=Logger.error))
                 if Mail.connectedToMail:
                     threading.Thread(target=Mail.send_mail, args=('Robbed a new speech', selectedHtml,)).start()
             if len(buttonId_) < 2:
                 print(Logger.log('No speech to rob, dozing...', level=Logger.info))
-                time.sleep(Config.refreshSleep())
+                time.sleep(MisUtils.refreshSleep())
 
     @checkStatus(getLoginStatus)
     def robClass(self, classIdList):
