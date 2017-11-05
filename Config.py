@@ -7,7 +7,7 @@ import os
 
 def getRandomTime(sleepTime):
     def wrapper():
-        return sleepTime * (1 + random.random())
+        return sleepTime * random.random()
     return wrapper
 
 
@@ -70,7 +70,7 @@ class Config(object):
     def setEmailInfo():
         if Config.checkConfFile():
             Config.loadConfFile()
-        Config.confDict['receiver'] = input('> receive email: ')
+        Config.confDict['receiver'] = input('> receiver email: ')
 
     @staticmethod
     def initAttempt():
