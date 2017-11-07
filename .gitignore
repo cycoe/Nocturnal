@@ -3,7 +3,6 @@
 *.log
 *.conf
 .idea
-password_
 check.gif
 dist
 build
