@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
+import os
+import random
 
 
 def sigmoid(sigma):
@@ -43,21 +45,24 @@ class Network(object):
     def __init__(self):
         self.structure = []
         self.weight_ = []
+        self.weight_remain = []
         self.x_ = []
         self.matrix_ = []
         self.tag_ = []
         self.delta_ = []
         self.rate = 0.9
+        self.push = 0.7
+        self.count = 0
 
-    def load_matrix(self, matrix_=np.array([[1, 2, 3],
-                                            [-1, 3, 4],
-                                            [2, 5, 2]])):
+    def load_matrix(self, matrix_=np.array([[1, 2, 3, 5, 3, 4, 3],
+                                            [-1, 3, 4, 4, 2, 3, 1],
+                                            [2, 5, 2, 4, 2, 4, 3]])):
         self.matrix_ = matrix_
         return self
 
-    def load_tag(self, tag_=np.array([[1],
-                                      [0],
-                                      [1]])):
+    def load_tag(self, tag_=np.array([[1, 0],
+                                      [0, 1],
+                                      [1, 1]])):
         self.tag_ = tag_
         return self
 
@@ -66,9 +71,11 @@ class Network(object):
         structure.append(len(self.tag_[0]))
         for index in range(len(structure) - 1):
             self.weight_.append(np.random.random((structure[index + 1], structure[index])) * 2 - 1)
+            self.weight_remain.append(0)
         self.structure = structure
         self.x_ = [0 for i in range(len(self.structure))]
         self.delta_ = [0 for i in range(len(self.structure) - 1)]
+
         return self
 
     def forward(self, sample_index):
@@ -77,20 +84,22 @@ class Network(object):
                 self.x_[index] = np.reshape(self.matrix_[sample_index], (self.structure[index], 1))
             else:
                 self.x_[index] = np.reshape(sigmoid(np.dot(self.weight_[index - 1], self.x_[index - 1])), (self.structure[index], 1))
-        # print(self.x_)
-        # print(self.weight_)
-        return self
+
+        return self.x_[-1]
 
     def backward(self, sample_index):
         for index in range(len(self.structure) - 2, -1, -1):
             output = self.x_[index + 1]
             if index == len(self.structure) - 2:
-                delta = np.reshape((self.tag_[sample_index] - output) * output * (1 - output), (self.structure[index + 1], 1))
+                delta = np.reshape((np.reshape(self.tag_[sample_index], (self.structure[index + 1], 1)) - output) * output * (1 - output), (self.structure[index + 1], 1))
             else:
                 delta = np.reshape(output * (1 - output) * np.dot(self.weight_[index + 1].T, self.delta_[index + 1]), (self.structure[index + 1], 1))
             self.delta_[index] = delta
-            self.weight_[index] += self.rate * np.outer(delta, self.x_[index])
-        print(self.delta_)
+            self.weight_remain[index] = self.rate * (1+20000/(10000+self.count)) * np.outer(delta, self.x_[index]) + self.push * self.weight_remain[index]
+            self.weight_[index] += self.weight_remain[index]
+            self.count += 1
+
+        return self
 
     def classify(self, sample):
         for index in range(len(self.structure)):
@@ -98,22 +107,51 @@ class Network(object):
                 self.x_[index] = np.reshape(sample, (self.structure[index], 1))
             else:
                 self.x_[index] = np.reshape(sigmoid(np.dot(self.weight_[index - 1], self.x_[index - 1])), (self.structure[index], 1))
+
         return self.x_[-1]
 
 
 def main():
+    sample_matrix = []
+    tag_ = []
+    for tag in os.listdir('../training'):
+        for sample_file in os.listdir('../training' + '/' + tag):
+            sample = []
+            with open('../training' + '/' + tag + '/' + sample_file) as fr:
+                for char in fr.readline().strip():
+                    sample.append(float(char))
+            sample_matrix.append(sample)
+            tag_temp = [float(i) for i in bin(ord(tag))[2:]]
+            if len(tag_temp) < 7:
+                tag_temp.insert(0, 0.0)
+            tag_.append(tag_temp)
     network = Network()
-    network.load_matrix().load_tag().set_structure([7])
-    for i in range(5000):
-        network.forward(0)
-        network.backward(0)
-        network.forward(1)
-        network.backward(1)
-        network.forward(2)
-        network.backward(2)
-    print(network.classify(np.array([[1, 2, 3]])))
-    print(network.classify(np.array([[-1, 3, 4]])))
-    print(network.classify(np.array([[2, 5, 2]])))
+    network.load_matrix(np.array(sample_matrix)).load_tag(np.array(tag_)).set_structure([20])
+
+    # training
+    sample_count = 4000
+    cycle_count = 5000
+    for i in range(cycle_count):
+        shuff = list(zip(sample_matrix, tag_))
+        random.shuffle(shuff)
+        sample_matrix = [item[0] for item in shuff]
+        tag_ = [item[1] for item in shuff]
+        count = 0
+        errors = 0
+        for j in range(sample_count):
+            output = network.forward(j)
+            network.backward(j)
+            output = [int(i + 0.5) for i in output]
+            target = [int(i) for i in network.tag_[j]]
+            for bit in range(len(output)):
+                if output[bit] != target[bit]:
+                    errors += 1
+                    break
+            count += 1
+
+        print('(' + str(int(i/cycle_count*100)) + '%) ' + 'error rate = ' + str(errors / count))
+
+    # recall
 
 
 if __name__ == '__main__':
