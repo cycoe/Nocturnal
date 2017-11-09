@@ -45,7 +45,7 @@ class Network(object):
     def __init__(self):
         self.structure = []
         self.weight_ = []
-        self.weight_remain = []
+        self.delta_weight = []
         self.x_ = []
         self.matrix_ = []
         self.tag_ = []
@@ -54,9 +54,9 @@ class Network(object):
         self.push = 0.7
         self.count = 0
 
-    def load_matrix(self, matrix_=np.array([[1, 2, 3, 5, 3, 4, 3],
-                                            [-1, 3, 4, 4, 2, 3, 1],
-                                            [2, 5, 2, 4, 2, 4, 3]])):
+    def load_matrix(self, matrix_=np.array([[1, 2, 3, 5],
+                                            [-1, 3, 4, 4],
+                                            [2, 5, 2, 4]])):
         self.matrix_ = matrix_
         return self
 
@@ -70,8 +70,8 @@ class Network(object):
         structure.insert(0, len(self.matrix_[0]))
         structure.append(len(self.tag_[0]))
         for index in range(len(structure) - 1):
-            self.weight_.append(np.random.random((structure[index + 1], structure[index])) * 2 - 1)
-            self.weight_remain.append(0)
+            self.weight_.append(np.random.random((structure[index + 1], structure[index] + 1)) * 2 - 1)
+            self.delta_weight.append(0)
         self.structure = structure
         self.x_ = [0 for i in range(len(self.structure))]
         self.delta_ = [0 for i in range(len(self.structure) - 1)]
@@ -83,7 +83,7 @@ class Network(object):
             if index == 0:
                 self.x_[index] = np.reshape(self.matrix_[sample_index], (self.structure[index], 1))
             else:
-                self.x_[index] = np.reshape(sigmoid(np.dot(self.weight_[index - 1], self.x_[index - 1])), (self.structure[index], 1))
+                self.x_[index] = np.reshape(sigmoid(np.dot(self.weight_[index - 1], np.insert(self.x_[index - 1], -1, 1))), (self.structure[index], 1))
 
         return self.x_[-1]
 
@@ -93,10 +93,10 @@ class Network(object):
             if index == len(self.structure) - 2:
                 delta = np.reshape((np.reshape(self.tag_[sample_index], (self.structure[index + 1], 1)) - output) * output * (1 - output), (self.structure[index + 1], 1))
             else:
-                delta = np.reshape(output * (1 - output) * np.dot(self.weight_[index + 1].T, self.delta_[index + 1]), (self.structure[index + 1], 1))
+                delta = np.reshape(output * (1 - output) * np.dot(np.delete(self.weight_[index + 1], -1, 1).T, self.delta_[index + 1]), (self.structure[index + 1], 1))
             self.delta_[index] = delta
-            self.weight_remain[index] = self.rate * (1+20000/(10000+self.count)) * np.outer(delta, self.x_[index]) + self.push * self.weight_remain[index]
-            self.weight_[index] += self.weight_remain[index]
+            self.delta_weight[index] = self.rate * (1+20000/(10000+self.count)) * np.outer(delta, np.insert(self.x_[index], -1, 1)) + self.push * self.delta_weight[index]
+            self.weight_[index] += self.delta_weight[index]
             self.count += 1
 
         return self
@@ -127,10 +127,11 @@ def main():
             tag_.append(tag_temp)
     network = Network()
     network.load_matrix(np.array(sample_matrix)).load_tag(np.array(tag_)).set_structure([20])
+    # network.load_matrix().load_tag().set_structure([3])
 
     # training
-    sample_count = 4000
-    cycle_count = 5000
+    sample_count = 400
+    cycle_count = 50000
     for i in range(cycle_count):
         shuff = list(zip(sample_matrix, tag_))
         random.shuffle(shuff)
