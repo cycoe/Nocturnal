@@ -16,6 +16,22 @@ def sigmoid(sigma):
     return 1.0 / (1 + np.exp(- sigma))
 
 
+def ReLu(sigma):
+    for index in range(len(sigma)):
+        if sigma[index][0] < 0:
+            sigma[index][0] = 0
+    return sigma
+
+
+def sgn(sigma):
+    for index in range(len(sigma)):
+        if sigma[index][0] > 0:
+            sigma[index][0] = 1
+        else:
+            sigma[index][0] = 0
+    return sigma
+
+
 def norm2(point):
     """
     欧几里得范数
@@ -54,15 +70,17 @@ class Network(object):
         self.push = 0.7
         self.count = 0
 
-    def load_matrix(self, matrix_=np.array([[1, 2, 3, 5],
-                                            [-1, 3, 4, 4],
-                                            [2, 5, 2, 4]])):
+    def load_matrix(self, matrix_=np.array([[0, 0],
+                                            [1, 0],
+                                            [0, 1],
+                                            [1, 1]])):
         self.matrix_ = matrix_
         return self
 
-    def load_tag(self, tag_=np.array([[1, 0],
-                                      [0, 1],
-                                      [1, 1]])):
+    def load_tag(self, tag_=np.array([[0],
+                                      [0],
+                                      [0],
+                                      [1]])):
         self.tag_ = tag_
         return self
 
@@ -70,7 +88,7 @@ class Network(object):
         structure.insert(0, len(self.matrix_[0]))
         structure.append(len(self.tag_[0]))
         for index in range(len(structure) - 1):
-            self.weight_.append(np.random.random((structure[index + 1], structure[index] + 1)) * 2 - 1)
+            self.weight_.append(np.random.random((structure[index + 1], structure[index] + 1)) * 0.2 - 0.1)
             self.delta_weight.append(0)
         self.structure = structure
         self.x_ = [0 for i in range(len(self.structure))]
@@ -83,7 +101,7 @@ class Network(object):
             if index == 0:
                 self.x_[index] = np.reshape(self.matrix_[sample_index], (self.structure[index], 1))
             else:
-                self.x_[index] = np.reshape(sigmoid(np.dot(self.weight_[index - 1], np.insert(self.x_[index - 1], -1, 1))), (self.structure[index], 1))
+                self.x_[index] = np.tanh(np.reshape(np.dot(self.weight_[index - 1], np.insert(self.x_[index - 1], -1, 1)), (self.structure[index], 1)))
 
         return self.x_[-1]
 
@@ -91,11 +109,11 @@ class Network(object):
         for index in range(len(self.structure) - 2, -1, -1):
             output = self.x_[index + 1]
             if index == len(self.structure) - 2:
-                delta = np.reshape((np.reshape(self.tag_[sample_index], (self.structure[index + 1], 1)) - output) * output * (1 - output), (self.structure[index + 1], 1))
+                delta = np.reshape((np.reshape(self.tag_[sample_index], (self.structure[index + 1], 1)) - output) * (1 - output * output), (self.structure[index + 1], 1))
             else:
-                delta = np.reshape(output * (1 - output) * np.dot(np.delete(self.weight_[index + 1], -1, 1).T, self.delta_[index + 1]), (self.structure[index + 1], 1))
+                delta = np.reshape((1 - output * output) * np.dot(np.delete(self.weight_[index + 1], -1, 1).T, self.delta_[index + 1]), (self.structure[index + 1], 1))
+            self.delta_weight[index] = self.rate * np.outer(delta, np.insert(self.x_[index], -1, 1)) + self.push * self.delta_weight[index]
             self.delta_[index] = delta
-            self.delta_weight[index] = self.rate * (1+20000/(10000+self.count)) * np.outer(delta, np.insert(self.x_[index], -1, 1)) + self.push * self.delta_weight[index]
             self.weight_[index] += self.delta_weight[index]
             self.count += 1
 
@@ -106,53 +124,89 @@ class Network(object):
             if index == 0:
                 self.x_[index] = np.reshape(sample, (self.structure[index], 1))
             else:
-                self.x_[index] = np.reshape(sigmoid(np.dot(self.weight_[index - 1], self.x_[index - 1])), (self.structure[index], 1))
+                self.x_[index] = np.tanh(np.reshape(np.dot(self.weight_[index - 1], np.insert(self.x_[index - 1], -1, 1)), (self.structure[index], 1)))
 
         return self.x_[-1]
 
 
 def main():
-    sample_matrix = []
-    tag_ = []
+    training_matrix = []
+    fitting_matrix = []
+    training_tag_ = []
+    fitting_tag_ = []
     for tag in os.listdir('../training'):
-        for sample_file in os.listdir('../training' + '/' + tag):
+        files_ = os.listdir('../training' + '/' + tag)
+        tag_temp = [float(i) for i in bin(ord(tag))[2:]]
+        if len(tag_temp) < 7:
+            tag_temp.insert(0, 0.0)
+        for sample_file in range(len(files_)):
             sample = []
-            with open('../training' + '/' + tag + '/' + sample_file) as fr:
+            with open('../training' + '/' + tag + '/' + files_[sample_file]) as fr:
                 for char in fr.readline().strip():
                     sample.append(float(char))
-            sample_matrix.append(sample)
-            tag_temp = [float(i) for i in bin(ord(tag))[2:]]
-            if len(tag_temp) < 7:
-                tag_temp.insert(0, 0.0)
-            tag_.append(tag_temp)
+            if sample_file < 0.7 * len(files_):
+                training_matrix.append(sample)
+                training_tag_.append(tag_temp)
+            else:
+                fitting_matrix.append(sample)
+                fitting_tag_.append(tag_temp)
+    # training_matrix = np.array([[0, 0],
+    #                             [0, 1],
+    #                             [1, 0],
+    #                             [1, 1]])
+    # training_tag_ = np.array([[0],
+    #                           [0],
+    #                           [0],
+    #                           [1]])
+    # fitting_matrix = np.array([[0, 0],
+    #                             [0, 1],
+    #                             [1, 0],
+    #                             [1, 1]])
+    # fitting_tag_ = np.array([[0],
+    #                           [0],
+    #                           [0],
+    #                           [1]])
     network = Network()
-    network.load_matrix(np.array(sample_matrix)).load_tag(np.array(tag_)).set_structure([20])
+    network.load_matrix(np.array(training_matrix)).load_tag(np.array(training_tag_)).set_structure([40])
     # network.load_matrix().load_tag().set_structure([3])
 
     # training
-    sample_count = 400
+    sample_count = len(training_tag_)
     cycle_count = 50000
     for i in range(cycle_count):
-        shuff = list(zip(sample_matrix, tag_))
-        random.shuffle(shuff)
-        sample_matrix = [item[0] for item in shuff]
-        tag_ = [item[1] for item in shuff]
-        count = 0
-        errors = 0
+        # shuff = list(zip(training_matrix, training_tag_))
+        # random.shuffle(shuff)
+        # training_matrix = [item[0] for item in shuff]
+        # training_tag_ = [item[1] for item in shuff]
+        training_count = 0
+        training_errors = 0
+        fitting_count = 0
+        fitting_errors = 0
         for j in range(sample_count):
             output = network.forward(j)
             network.backward(j)
             output = [int(i + 0.5) for i in output]
-            target = [int(i) for i in network.tag_[j]]
-            for bit in range(len(output)):
-                if output[bit] != target[bit]:
-                    errors += 1
-                    break
-            count += 1
+            target = [int(i) for i in training_tag_[j]]
+            # for bit in range(len(output)):
+            #     if output[bit] != target[bit]:
+            #         training_errors += 1
+            #         break
+            training_errors += norm2(np.array(output) - np.array(training_tag_[j]))
+            training_count += 1
 
-        print('(' + str(int(i/cycle_count*100)) + '%) ' + 'error rate = ' + str(errors / count))
-
-    # recall
+        for j in range(len(fitting_tag_)):
+            output = network.classify(fitting_matrix[j])
+            output = [int(i + 0.5) for i in output]
+            target = [int(i) for i in fitting_tag_[j]]
+            # for bit in range(len(output)):
+            #     if output[bit] != target[bit]:
+            #         fitting_errors += 1
+            #         break
+            fitting_errors += norm2(np.array(output) - np.array(fitting_tag_[j]))
+            fitting_count += 1
+        print('(' + str(int(i/cycle_count*100)) + '%) ' + 'training error ratio = ' + str(training_errors / training_count / len(training_tag_[0])), end='')
+        print('\t fitting error ratio = ' + str(fitting_errors / fitting_count / len(fitting_tag_[0])))
+        print(network.delta_)
 
 
 if __name__ == '__main__':
