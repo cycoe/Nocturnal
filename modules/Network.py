@@ -3,7 +3,7 @@
 
 import numpy as np
 import os
-import random
+from img2Vector import img2Vector
 
 
 def sigmoid(sigma):
@@ -66,8 +66,8 @@ class Network(object):
         self.matrix_ = []
         self.tag_ = []
         self.delta_ = []
-        self.rate = 0.9
-        self.push = 0.7
+        self.rate = 0.01
+        self.push = 0.007
         self.count = 0
 
     def load_matrix(self, matrix_=np.array([[0, 0],
@@ -128,6 +128,22 @@ class Network(object):
 
         return self.x_[-1]
 
+    def dump_weight(self):
+        if not os.path.exists('weight'):
+            os.mkdir('weight')
+        for index in range(len(self.weight_)):
+            np.save('weight/' + str(index), self.weight_[index])
+
+        return self
+
+    def load_weight(self):
+        if not os.path.exists('weight'):
+            return False
+        for index in range(len(self.weight_)):
+            weight = np.load('weight/' + str(index) + '.npy')
+            if np.shape(self.weight_[index]) == np.shape(weight):
+                self.weight_[index] = weight
+
 
 def main():
     training_matrix = []
@@ -166,8 +182,9 @@ def main():
     #                           [0],
     #                           [0],
     #                           [1]])
+
     network = Network()
-    network.load_matrix(np.array(training_matrix)).load_tag(np.array(training_tag_)).set_structure([40])
+    network.load_matrix(np.array(training_matrix)).load_tag(np.array(training_tag_)).set_structure([40, 20]).load_weight()
     # network.load_matrix().load_tag().set_structure([3])
 
     # training
@@ -187,27 +204,97 @@ def main():
             network.backward(j)
             output = [int(i + 0.5) for i in output]
             target = [int(i) for i in training_tag_[j]]
-            # for bit in range(len(output)):
-            #     if output[bit] != target[bit]:
-            #         training_errors += 1
-            #         break
-            training_errors += norm2(np.array(output) - np.array(training_tag_[j]))
+            for bit in range(len(output)):
+                if output[bit] != target[bit]:
+                    training_errors += 1
+                    break
+            # training_errors += norm2(np.array(output) - np.array(training_tag_[j]))
             training_count += 1
+            # print(output)
+            # print(training_tag_[j])
 
         for j in range(len(fitting_tag_)):
             output = network.classify(fitting_matrix[j])
             output = [int(i + 0.5) for i in output]
             target = [int(i) for i in fitting_tag_[j]]
-            # for bit in range(len(output)):
-            #     if output[bit] != target[bit]:
-            #         fitting_errors += 1
-            #         break
-            fitting_errors += norm2(np.array(output) - np.array(fitting_tag_[j]))
+            for bit in range(len(output)):
+                if output[bit] != target[bit]:
+                    fitting_errors += 1
+                    break
+            # fitting_errors += norm2(np.array(output) - np.array(fitting_tag_[j]))
             fitting_count += 1
-        print('(' + str(int(i/cycle_count*100)) + '%) ' + 'training error ratio = ' + str(training_errors / training_count / len(training_tag_[0])), end='')
-        print('\t fitting error ratio = ' + str(fitting_errors / fitting_count / len(fitting_tag_[0])))
-        print(network.delta_)
+        training_error = str(training_errors / training_count)
+        fitting_error = str(fitting_errors / fitting_count)
+        print('(' + str(int(i/cycle_count*100)) + '%) ' + 'training error ratio = ' + training_error, end='')
+        print('\t fitting error ratio = ' + fitting_error)
+        network.dump_weight()
+        with open('plot', 'a') as fr:
+            fr.write(training_error)
+            fr.write(',')
+            fr.write(fitting_error)
+            fr.write('\n')
+        # print(network.delta_)
 
 
 if __name__ == '__main__':
-    main()
+    # main()
+    # training_matrix = np.array([[0, 0],
+    #                             [0, 1],
+    #                             [1, 0],
+    #                             [1, 1]])
+    # training_tag_ = np.array([[0],
+    #                             [1],
+    #                             [1],
+    #                             [0]])
+    # fitting_matrix = np.array([[0, 0],
+    #                             [0, 1],
+    #                             [1, 0],
+    #                             [1, 1]])
+    # fitting_tag_ = np.array([[0],
+    #                           [0],
+    #                           [0],
+    #                           [1]])
+    #
+    # network = Network()
+    # network.load_matrix(np.array(training_matrix)).load_tag(np.array(training_tag_)).set_structure([3])
+    # for j in range(10000):
+    #     for i in range(len(training_matrix)):
+    #         print(network.forward(i))
+    #         network.backward(i)
+    # # print(network.x_)
+    #         # print(network.delta_)
+    training_matrix = []
+    fitting_matrix = []
+    training_tag_ = []
+    fitting_tag_ = []
+    for tag in os.listdir('../training'):
+        files_ = os.listdir('../training' + '/' + tag)
+        tag_temp = [float(i) for i in bin(ord(tag))[2:]]
+        if len(tag_temp) < 7:
+            tag_temp.insert(0, 0.0)
+        for sample_file in range(len(files_)):
+            sample = []
+            with open('../training' + '/' + tag + '/' + files_[sample_file]) as fr:
+                for char in fr.readline().strip():
+                    sample.append(float(char))
+            if sample_file < 0.7 * len(files_):
+                training_matrix.append(sample)
+                training_tag_.append(tag_temp)
+            else:
+                fitting_matrix.append(sample)
+                fitting_tag_.append(tag_temp)
+    network = Network()
+    network.load_matrix(np.array(training_matrix)).load_tag(np.array(training_tag_)).set_structure([40, 20]).load_weight()
+    for file in os.listdir('../training_ori'):
+        sample_ = img2Vector('../training_ori/' + file)
+        name = ''
+        for sample in sample_:
+            output = network.classify(np.reshape(np.array(sample), (network.structure[0], 1)))
+            output = [int(item + 0.5) for item in output]
+            count = 0
+            for index in range(len(output)):
+                count += 2**(6-index) * output[index]
+            output = chr(count)
+            name += output
+        print(name)
+        os.rename('../training_ori/' + file, '../training_ori/' + name + '.gif')
