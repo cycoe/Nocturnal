@@ -85,14 +85,12 @@ class Network(object):
         return self
 
     def set_structure(self, structure):
-        structure.insert(0, len(self.matrix_[0]))
-        structure.append(len(self.tag_[0]))
+        self.structure = structure
         for index in range(len(structure) - 1):
             self.weight_.append(np.random.random((structure[index + 1], structure[index] + 1)) * 0.2 - 0.1)
             self.delta_weight.append(0)
-        self.structure = structure
-        self.x_ = [0 for i in range(len(self.structure))]
-        self.delta_ = [0 for i in range(len(self.structure) - 1)]
+        self.x_ = [0 for i in range(len(structure))]
+        self.delta_ = [0 for i in range(len(structure) - 1)]
 
         return self
 
@@ -166,25 +164,9 @@ def main():
             else:
                 fitting_matrix.append(sample)
                 fitting_tag_.append(tag_temp)
-    # training_matrix = np.array([[0, 0],
-    #                             [0, 1],
-    #                             [1, 0],
-    #                             [1, 1]])
-    # training_tag_ = np.array([[0],
-    #                           [0],
-    #                           [0],
-    #                           [1]])
-    # fitting_matrix = np.array([[0, 0],
-    #                             [0, 1],
-    #                             [1, 0],
-    #                             [1, 1]])
-    # fitting_tag_ = np.array([[0],
-    #                           [0],
-    #                           [0],
-    #                           [1]])
 
     network = Network()
-    network.load_matrix(np.array(training_matrix)).load_tag(np.array(training_tag_)).set_structure([40, 20]).load_weight()
+    network.load_matrix(np.array(training_matrix)).load_tag(np.array(training_tag_)).set_structure([324, 40, 20, 7]).load_weight()
     # network.load_matrix().load_tag().set_structure([3])
 
     # training
@@ -237,64 +219,40 @@ def main():
 
 
 if __name__ == '__main__':
-    # main()
-    # training_matrix = np.array([[0, 0],
-    #                             [0, 1],
-    #                             [1, 0],
-    #                             [1, 1]])
-    # training_tag_ = np.array([[0],
-    #                             [1],
-    #                             [1],
-    #                             [0]])
-    # fitting_matrix = np.array([[0, 0],
-    #                             [0, 1],
-    #                             [1, 0],
-    #                             [1, 1]])
-    # fitting_tag_ = np.array([[0],
-    #                           [0],
-    #                           [0],
-    #                           [1]])
-    #
+    main()
+
+    # training_matrix = []
+    # fitting_matrix = []
+    # training_tag_ = []
+    # fitting_tag_ = []
+    # for tag in os.listdir('../training'):
+    #     files_ = os.listdir('../training' + '/' + tag)
+    #     tag_temp = [float(i) for i in bin(ord(tag))[2:]]
+    #     if len(tag_temp) < 7:
+    #         tag_temp.insert(0, 0.0)
+    #     for sample_file in range(len(files_)):
+    #         sample = []
+    #         with open('../training' + '/' + tag + '/' + files_[sample_file]) as fr:
+    #             for char in fr.readline().strip():
+    #                 sample.append(float(char))
+    #         if sample_file < 0.7 * len(files_):
+    #             training_matrix.append(sample)
+    #             training_tag_.append(tag_temp)
+    #         else:
+    #             fitting_matrix.append(sample)
+    #             fitting_tag_.append(tag_temp)
     # network = Network()
-    # network.load_matrix(np.array(training_matrix)).load_tag(np.array(training_tag_)).set_structure([3])
-    # for j in range(10000):
-    #     for i in range(len(training_matrix)):
-    #         print(network.forward(i))
-    #         network.backward(i)
-    # # print(network.x_)
-    #         # print(network.delta_)
-    training_matrix = []
-    fitting_matrix = []
-    training_tag_ = []
-    fitting_tag_ = []
-    for tag in os.listdir('../training'):
-        files_ = os.listdir('../training' + '/' + tag)
-        tag_temp = [float(i) for i in bin(ord(tag))[2:]]
-        if len(tag_temp) < 7:
-            tag_temp.insert(0, 0.0)
-        for sample_file in range(len(files_)):
-            sample = []
-            with open('../training' + '/' + tag + '/' + files_[sample_file]) as fr:
-                for char in fr.readline().strip():
-                    sample.append(float(char))
-            if sample_file < 0.7 * len(files_):
-                training_matrix.append(sample)
-                training_tag_.append(tag_temp)
-            else:
-                fitting_matrix.append(sample)
-                fitting_tag_.append(tag_temp)
-    network = Network()
-    network.load_matrix(np.array(training_matrix)).load_tag(np.array(training_tag_)).set_structure([40, 20]).load_weight()
-    for file in os.listdir('../training_ori'):
-        sample_ = img2Vector('../training_ori/' + file)
-        name = ''
-        for sample in sample_:
-            output = network.classify(np.reshape(np.array(sample), (network.structure[0], 1)))
-            output = [int(item + 0.5) for item in output]
-            count = 0
-            for index in range(len(output)):
-                count += 2**(6-index) * output[index]
-            output = chr(count)
-            name += output
-        print(name)
-        os.rename('../training_ori/' + file, '../training_ori/' + name + '.gif')
+    # network.set_structure([324, 40, 20, 7]).load_weight()
+    # for file in os.listdir('../training_ori'):
+    #     sample_ = img2Vector('../training_ori/' + file)
+    #     name = ''
+    #     for sample in sample_:
+    #         output = network.classify(np.reshape(np.array(sample), (network.structure[0], 1)))
+    #         output = [int(item + 0.5) for item in output]
+    #         count = 0
+    #         for index in range(len(output)):
+    #             count += 2**(6-index) * output[index]
+    #         output = chr(count)
+    #         name += output
+    #     print(name)
+    #     os.rename('../training_ori/' + file, '../training_ori/' + name + '.gif')
