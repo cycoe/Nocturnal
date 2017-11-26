@@ -11,7 +11,7 @@ from modules.Spider import Spider
 from modules.OutputFormater import OutputFormater
 from modules.Logger import Logger
 from modules.Mail import Mail
-from modules.listUtils import find_all_in_list
+from modules.listUtils import find_one_in_list
 from modules.MisUtils import MisUtils
 
 
@@ -102,7 +102,7 @@ class Robber(object):
                 if int(tempRow[4]) >= threshold:
                     availableSpeechList.append(tempRow)
 
-            if availableSpeechList and not find_all_in_list([item[1] for item in availableSpeechList], [item[1] for item in availableSpeechListCache]):
+            if availableSpeechList and not find_one_in_list([item[1] for item in availableSpeechList], [item[1] for item in availableSpeechListCache]):
                 availableSpeechListCache = availableSpeechList[:]
                 availableSpeechList.insert(0, ['报告类别', '报告名称', '报告时间', '报告地点', '余量'])
                 # self.pushToAllGroup(OutputFormater.output(availableSpeechList, header='有报告余量！'))

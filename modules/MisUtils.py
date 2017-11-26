@@ -3,6 +3,8 @@
 
 import random
 import os
+import platform
+import pyqrcode
 
 
 def getRandomTime(sleepTime):
@@ -108,3 +110,13 @@ class MisUtils(object):
         with open(MisUtils.blackList, 'w') as fr:
             for oriSelected in oriSelected_:
                 fr.write(oriSelected + '\n')
+
+    @staticmethod
+    def format_qrcode(uri):
+        qrcode = pyqrcode.create(uri)
+        qrcode_string = qrcode.terminal(quiet_zone=1)
+        if platform.system() == 'Windows':
+            pass
+        else:
+            return qrcode_string
+

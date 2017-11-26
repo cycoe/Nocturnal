@@ -26,6 +26,7 @@ class Spider(object):
         self.speechFilter = [0, 1, 3, 4, 5, 6, 7]
         self.VIEWSTATE = ''
         self.EVENTVALIDATION = ''
+        self.response = None
 
         self.buttonPattern = re.compile('<a.*href=".*?\'(.*?)?\'.*".*><img.*>.*</a>')
         self.removeTd = re.compile('<td.*>(.*)?</td>')
@@ -415,7 +416,7 @@ class Spider(object):
             else:
                 print(Logger.log('Retrying posting speech detail...', level=Logger.warning))
         if not MisUtils.descAttempt():
-            Logger.log('Up to max attempts!', ['Maybe you need to re-login'], level=Logger.error)
+            print(Logger.log('Up to max attempts!', ['Maybe you need to re-login'], level=Logger.error))
             return False
 
         postData = {
@@ -440,7 +441,7 @@ class Spider(object):
             else:
                 print(Logger.log('Retrying posting speech request...', level=Logger.warning))
         if not MisUtils.descAttempt():
-            Logger.log('Up to max attempts!', ['Maybe you need to re-login'], level=Logger.error)
+            print(Logger.log('Up to max attempts!', ['Maybe you need to re-login'], level=Logger.error))
             return False
 
         return True
