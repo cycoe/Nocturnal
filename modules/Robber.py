@@ -111,28 +111,52 @@ class Robber(object):
 
     @checkStatus(getLoginStatus)
     def robSpeech(self):
+        # while True:
+        #     flag = self.spider.fetchSpeechList()
+        #     if flag:
+        #         selectedHtml, selected_, selectable_ = flag
+        #         selectable_ = [selectable for selectable in selectable_ if selectable[2] not in MisUtils.getSelected()]
+        #     else:
+        #         return None
+        #     buttonId_ = [selectable[0] for selectable in selectable_ if int(selectable[6]) > int(selectable[7])]
+        #     if buttonId_:
+        #         random.shuffle(buttonId_)
+        #         buttonId = buttonId_[0]
+        #         print(Logger.log('Robbing speech...', level=Logger.warning))
+        #         flag = self.spider.postSpeech(buttonId)
+        #         if not flag:
+        #             return None
+        #     newSelected_ = [selected[2] for selected in selected_ if selected[2] not in MisUtils.getSelected()]
+        #     if newSelected_:
+        #         MisUtils.mergeSelected(newSelected_)
+        #         print(Logger.log('Robbed a speech!', subContent_=newSelected_, level=Logger.error))
+        #         if Mail.connectedToMail:
+        #             threading.Thread(target=Mail.send_mail, args=('Robbed a new speech', selectedHtml,)).start()
+        #     if len(buttonId_) < 2:
+        #         print(Logger.log('No speech to rob, dozing...', level=Logger.info))
+        #         time.sleep(MisUtils.refreshSleep())
+
+        selectedHtml, selected_, selectable_ = self.spider.fetchSpeechList()
+        selectable_ = [selectable for selectable in selectable_ if selectable[2] not in MisUtils.getSelected()]
+        buttonId_ = [selectable[0] for selectable in selectable_ if int(selectable[6]) > int(selectable[7])]
         while True:
-            flag = self.spider.fetchSpeechList()
-            if flag:
-                selectedHtml, selected_, selectable_ = flag
-                selectable_ = [selectable for selectable in selectable_ if selectable[2] not in MisUtils.getSelected()]
-            else:
-                return None
-            buttonId_ = [selectable[0] for selectable in selectable_ if int(selectable[6]) > int(selectable[7])]
             if buttonId_:
                 random.shuffle(buttonId_)
                 buttonId = buttonId_[0]
                 print(Logger.log('Robbing speech...', level=Logger.warning))
-                flag = self.spider.postSpeech(buttonId)
-                if not flag:
-                    return None
+                selectedHtml, selected_, selectable_ = self.spider.postSpeech(buttonId)
+                selectable_ = [selectable for selectable in selectable_ if selectable[2] not in MisUtils.getSelected()]
+            else:
+                selectedHtml, selected_, selectable_ = self.spider.fetchSpeechList()
+                selectable_ = [selectable for selectable in selectable_ if selectable[2] not in MisUtils.getSelected()]
             newSelected_ = [selected[2] for selected in selected_ if selected[2] not in MisUtils.getSelected()]
             if newSelected_:
                 MisUtils.mergeSelected(newSelected_)
                 print(Logger.log('Robbed a speech!', subContent_=newSelected_, level=Logger.error))
                 if Mail.connectedToMail:
                     threading.Thread(target=Mail.send_mail, args=('Robbed a new speech', selectedHtml,)).start()
-            if len(buttonId_) < 2:
+            buttonId_ = [selectable[0] for selectable in selectable_ if int(selectable[6]) > int(selectable[7])]
+            if not buttonId_:
                 print(Logger.log('No speech to rob, dozing...', level=Logger.info))
                 time.sleep(MisUtils.refreshSleep())
 

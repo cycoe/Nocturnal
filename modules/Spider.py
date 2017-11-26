@@ -390,13 +390,38 @@ class Spider(object):
         return self.formatSpeechList()
 
     def postSpeech(self, buttonId):
+        # 获取验证码
+        prepareBody = self.prepare(referer=UrlBean.jwglLoginUrl,
+                                   originHost=None,
+                                   method='GET',
+                                   url=UrlBean.verifyCodeUrl,
+                                   data=None,
+                                   params=None)
+
+        MisUtils.initAttempt()
+        while MisUtils.descAttempt():
+            codeImg = self.session.send(prepareBody)  # 获取验证码图片
+            if codeImg.status_code == 200:
+                break
+            else:
+                Logger.log("retrying fetching vertify code...", level=Logger.warning)
+        if not MisUtils.descAttempt():
+            Logger.log('Up to max attempts!', ['Maybe remote server unreachable'], level=Logger.error)
+            return False
+
+        with open('check.gif', 'wb') as fr:  # 保存验证码图片
+            for chunk in codeImg:
+                fr.write(chunk)
+
+        print_vertify_code()
+        verCode = input("> input verify code: ")
 
         postData = {
             '__EVENTTARGET': buttonId,
             '__EVENTARGUMENT': '',
             '__VIEWSTATE': self.VIEWSTATE,
             '__EVENTVALIDATION': self.EVENTVALIDATION,
-            'txtyzm': '',
+            'txtyzm': verCode,
         }
         payload = {'xh': MisUtils.confDict['userName']}
         prepareBody = self.prepare(referer=UrlBean.fetchSpeechListUrl + '?xh=' + MisUtils.confDict['userName'],
@@ -414,37 +439,34 @@ class Spider(object):
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
                 break
             else:
-                print(Logger.log('Retrying posting speech detail...', level=Logger.warning))
+                print(Logger.log('Retrying posting speech ...', level=Logger.warning))
         if not MisUtils.descAttempt():
             print(Logger.log('Up to max attempts!', ['Maybe you need to re-login'], level=Logger.error))
             return False
 
-        postData = {
-            '__EVENTTARGET': 'lbsq',
-            '__EVENTARGUMENT': '',
-            '__VIEWSTATE': self.VIEWSTATE,
-            '__EVENTVALIDATION': self.EVENTVALIDATION,
-            'myscrollheight': '0',
-        }
-        prepareBody = self.prepare(referer=UrlBean.speechDetailUrl,
-                                   originHost=UrlBean.jwglOriginUrl,
-                                   method='POST',
-                                   url=UrlBean.speechDetailUrl,
-                                   data=postData,
-                                   params=None)
+        # postData = {
+        #     '__EVENTTARGET': 'lbsq',
+        #     '__EVENTARGUMENT': '',
+        #     '__VIEWSTATE': self.VIEWSTATE,
+        #     '__EVENTVALIDATION': self.EVENTVALIDATION,
+        #     'myscrollheight': '0',
+        # }
+        # prepareBody = self.prepare(referer=UrlBean.speechDetailUrl,
+        #                            originHost=UrlBean.jwglOriginUrl,
+        #                            method='POST',
+        #                            url=UrlBean.speechDetailUrl,
+        #                            data=postData,
+        #                            params=None)
+        #
+        # MisUtils.initAttempt()
+        # while MisUtils.descAttempt():
+        #     self.response = self.session.send(prepareBody)
+        #     if self.response.status_code == 200:
+        #         break
+        #     else:
+        #         print(Logger.log('Retrying posting speech request...', level=Logger.warning))
 
-        MisUtils.initAttempt()
-        while MisUtils.descAttempt():
-            self.response = self.session.send(prepareBody)
-            if self.response.status_code == 200:
-                break
-            else:
-                print(Logger.log('Retrying posting speech request...', level=Logger.warning))
-        if not MisUtils.descAttempt():
-            print(Logger.log('Up to max attempts!', ['Maybe you need to re-login'], level=Logger.error))
-            return False
-
-        return True
+        return self.formatSpeechList()
 
     def formatSpeechList(self):
         """
@@ -464,8 +486,8 @@ class Spider(object):
 
         for tempRow in tempSelected_[1:]:
             tempRow = tempRow.find_all('td')
-            buttonId = re.findall(self.buttonPattern, str(tempRow[-2]))[0]
-            speechRow = [buttonId]
+            # buttonId = re.findall(self.buttonPattern, str(tempRow[-1]))[0]
+            speechRow = ['Selected']
             for i in self.speechFilter:
                 item = re.findall(self.removeTd, str(tempRow[i]))
                 if len(item) == 0:
@@ -476,7 +498,7 @@ class Spider(object):
 
         for tempRow in tempSelectable_[1:]:
             tempRow = tempRow.find_all('td')
-            buttonId = re.findall(self.buttonPattern, str(tempRow[-2]))[0]
+            buttonId = re.findall(self.buttonPattern, str(tempRow[-1]))[0]
             speechRow = [buttonId]
             for i in self.speechFilter:
                 item = re.findall(self.removeTd, str(tempRow[i]))

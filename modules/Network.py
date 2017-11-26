@@ -83,6 +83,7 @@ class Network(object):
         self.x_ = []
         self.matrix_ = []
         self.tag_ = []
+        self.tag_set = []
         self.delta_ = []
         self.rate = 0.01
         self.push = 0.007
@@ -103,6 +104,7 @@ class Network(object):
                                       [0],
                                       [1]])):
         self.tag_ = np.array(tag_)
+        self.tag_set = set(self.tag_)
         return self
 
     def set_structure(self, structure):
@@ -166,7 +168,7 @@ class Network(object):
             else:
                 self.x_[index] = self.active(np.reshape(np.dot(self.weight_[index - 1], np.insert(self.x_[index - 1], -1, 1)), (self.structure[index], 1)))
 
-        return classify(self.x_[-1], self.tag_)
+        return classify(self.x_[-1], self.tag_set)
 
     def dump_weight(self):
         """
