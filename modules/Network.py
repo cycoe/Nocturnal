@@ -3,7 +3,7 @@
 
 import numpy as np
 import os
-from img2Vector import img2Vector
+from .img2Vector import img2Vector
 
 
 def ReLU(sigma):
@@ -68,9 +68,9 @@ def classify(output, tag_set):
     :return: 类别
     """
     min_index = 0
-    for i in range(len(tag_set)):
-        if norm2(output - tag_set[i]) < norm2(output - tag_set[min_index]):
-            min_index = i
+    for index in range(len(tag_set)):
+        if norm2(output - tag_set[index]) < norm2(output - tag_set[min_index]):
+            min_index = index
     return tag_set[min_index]
 
 
@@ -92,19 +92,17 @@ class Network(object):
         self.active = tanh
         self.active_diff = tanh_diff
 
-    def load_matrix(self, matrix_=np.array([[0, 0],
-                                            [1, 0],
-                                            [0, 1],
-                                            [1, 1]])):
+    def load_matrix(self, matrix_):
         self.matrix_ = np.array(matrix_)
         return self
 
-    def load_tag(self, tag_=np.array([[0],
-                                      [0],
-                                      [0],
-                                      [1]])):
+    def load_tag(self, tag_):
+        tag_set = []
+        for tag in tag_:
+            if tag not in tag_set:
+                tag_set.append(tag)
+        self.tag_set = np.array(tag_set)
         self.tag_ = np.array(tag_)
-        self.tag_set = set(self.tag_)
         return self
 
     def set_structure(self, structure):
@@ -135,7 +133,7 @@ class Network(object):
                 self.x_[index] = self.active(np.reshape(np.dot(self.weight_[index - 1], np.insert(self.x_[index - 1], -1, 1)), (self.structure[index], 1)))
         self.error = norm2(self.x_[-1] - self.tag_[sample_index])
 
-        return norm2(self.x_[-1] - self.tag_[sample_index])
+        return self.x_[-1]
 
     def backward(self, sample_index):
         """
@@ -168,7 +166,7 @@ class Network(object):
             else:
                 self.x_[index] = self.active(np.reshape(np.dot(self.weight_[index - 1], np.insert(self.x_[index - 1], -1, 1)), (self.structure[index], 1)))
 
-        return classify(self.x_[-1], self.tag_set)
+        return self.x_[-1]
 
     def dump_weight(self):
         """
@@ -199,7 +197,7 @@ def main():
     full_matrix = []
     full_tag_ = []
     for image_file in os.listdir('../sample'):
-        vectors_ = img2Vector('../sample/' + image_file)
+        vectors_ = img2Vector('../sample/' + image_file, image_file[:4])
         if vectors_:
             for index in range(4):
                 full_matrix.append(vectors_[index])
@@ -215,7 +213,7 @@ def main():
     fitting_tag_ = [full_tag_[index] for index in range(training_ratio, len(full_tag_))]
 
     network = Network()
-    network.load_matrix(np.array(training_matrix)).load_tag(np.array(training_tag_)).set_structure([390, 80, 7]).load_weight()
+    network.load_matrix(training_matrix).load_tag(training_tag_).set_structure([300, 200, 100, 7]).load_weight()
 
     cycle_count = 5000
     for i in range(cycle_count):
@@ -224,28 +222,24 @@ def main():
         for j in range(training_ratio):
             output = network.forward(j)
             network.backward(j)
-            output = [int(i + 0.5) for i in output]
-            target = [int(i) for i in training_tag_[j]]
             for bit in range(len(output)):
-                if output[bit] != target[bit]:
+                if int(output[bit] + 0.5) != training_tag_[j][bit]:
                     training_errors += 1
                     break
-            # training_errors += norm2(np.array(output) - np.array(training_tag_[j]))
 
-        for j in range(len(fitting_tag_)):
+        for j in range(fitting_ratio):
             output = network.classify(fitting_matrix[j])
-            output = [int(i + 0.5) for i in output]
-            target = [int(i) for i in fitting_tag_[j]]
             for bit in range(len(output)):
-                if output[bit] != target[bit]:
+                if int(output[bit]+0.5) != fitting_tag_[j][bit]:
                     fitting_errors += 1
                     break
-            # fitting_errors += norm2(np.array(output) - np.array(fitting_tag_[j]))
+
         training_error = str(training_errors / training_ratio)
         fitting_error = str(fitting_errors / fitting_ratio)
         print('(' + str(int(i/cycle_count*100)) + '%) ' + 'training error ratio = ' + training_error, end='')
         print('\t fitting error ratio = ' + fitting_error)
         network.dump_weight()
+
     #     with open('plot', 'a') as fr:
     #         fr.write(training_error)
     #         fr.write(',')
@@ -256,39 +250,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-    # training_matrix = []
-    # fitting_matrix = []
-    # training_tag_ = []
-    # fitting_tag_ = []
-    # for tag in os.listdir('../training'):
-    #     files_ = os.listdir('../training' + '/' + tag)
-    #     tag_temp = [float(i) for i in bin(ord(tag))[2:]]
-    #     if len(tag_temp) < 7:
-    #         tag_temp.insert(0, 0.0)
-    #     for sample_file in range(len(files_)):
-    #         sample = []
-    #         with open('../training' + '/' + tag + '/' + files_[sample_file]) as fr:
-    #             for char in fr.readline().strip():
-    #                 sample.append(float(char))
-    #         if sample_file < 0.7 * len(files_):
-    #             training_matrix.append(sample)
-    #             training_tag_.append(tag_temp)
-    #         else:
-    #             fitting_matrix.append(sample)
-    #             fitting_tag_.append(tag_temp)
-    # network = Network()
-    # network.set_structure([324, 40, 20, 7]).load_weight()
-    # for file in os.listdir('../training_ori'):
-    #     sample_ = img2Vector('../training_ori/' + file)
-    #     name = ''
-    #     for sample in sample_:
-    #         output = network.classify(np.reshape(np.array(sample), (network.structure[0], 1)))
-    #         output = [int(item + 0.5) for item in output]
-    #         count = 0
-    #         for index in range(len(output)):
-    #             count += 2**(6-index) * output[index]
-    #         output = chr(count)
-    #         name += output
-    #     print(name)
-    #     os.rename('../training_ori/' + file, '../training_ori/' + name + '.gif')

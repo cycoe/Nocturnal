@@ -7,6 +7,25 @@ from bs4 import BeautifulSoup
 from modules.UrlBean import UrlBean
 from modules.Logger import Logger
 from modules.MisUtils import MisUtils
+from modules.Network import Network
+from modules.img2Vector import img2Vector
+
+
+def load_tag():
+    tag_set = []
+    for index in range(48, 58):
+        tag = [int(item) for item in str(bin(index))[2:]]
+        if len(tag) < 7:
+            tag.insert(0, 0)
+        tag_set.append(tag)
+
+    for index in range(65, 91):
+        tag = [int(item) for item in str(bin(index))[2:]]
+        if len(tag) < 7:
+            tag.insert(0, 0)
+        tag_set.append(tag)
+
+    return tag_set
 
 
 class Spider(object):
@@ -16,6 +35,8 @@ class Spider(object):
 
     def __init__(self):
         self.session = Session()    # 实例化 session 对象，用于 handle 整个会话
+        self.network = Network()
+        self.network.load_tag(load_tag()).set_structure([300, 200, 100, 7]).load_weight()
 
         # 实例化验证码识别器对象
         # from modules.classifier import Classifier
@@ -23,7 +44,7 @@ class Spider(object):
         # self.classifier.loadTrainingMat()
 
         self.classFilter = [3, 4, 5, 6, 11, 12]
-        self.speechFilter = [0, 1, 3, 4, 5, 6, 7]
+        self.reportFilter = [0, 1, 3, 4, 5, 6, 7]
         self.VIEWSTATE = ''
         self.EVENTVALIDATION = ''
         self.response = None
@@ -138,10 +159,10 @@ class Spider(object):
         req = Request('POST', UrlBean.englishTestUrl, headers=headers, data=postData, params=payload)
         return self.session.prepare_request(req)
 
-    def prepareFetchSpeechList(self):
+    def prepareFetchReportList(self):
         headers = self.formatHeaders(referer=UrlBean.leftMenuReferer)
         payload = {'xh': MisUtils.confDict['userName']}
-        req = Request('GET', UrlBean.fetchSpeechListUrl, headers=headers, params=payload)
+        req = Request('GET', UrlBean.fetchReportListUrl, headers=headers, params=payload)
         return self.session.prepare_request(req)
 
     def login(self):
@@ -206,7 +227,12 @@ class Spider(object):
                     fr.write(chunk)
 
             print_vertify_code()
-            verCode = input("> input verify code: ")
+            verCode = ''
+            vectors_ = img2Vector('check.gif')
+            if vectors_:
+                for vector in vectors_:
+                    verCode += chr(int(''.join([str(int(item + 0.5)) for item in self.network.classify(vector)]), base=2))
+            print(verCode)
             # verCode = self.classifier.recognizer("check.gif")  # 识别验证码
 
             # 发送登陆请求
@@ -364,13 +390,13 @@ class Spider(object):
         else:
             return True
 
-    def fetchSpeechList(self):
+    def fetchReportList(self):
 
         payload = {'xh': MisUtils.confDict['userName']}
         prepareBody = self.prepare(referer=UrlBean.leftMenuReferer,
                                    originHost=None,
                                    method='GET',
-                                   url=UrlBean.fetchSpeechListUrl,
+                                   url=UrlBean.fetchReportListUrl,
                                    data=None,
                                    params=payload)
 
@@ -382,14 +408,14 @@ class Spider(object):
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
                 break
             else:
-                print(Logger.log('Retrying fetching speech list...', level=Logger.warning))
+                print(Logger.log('Retrying fetching report list...', level=Logger.warning))
         if not MisUtils.descAttempt():
             Logger.log('Up to max attempts!', ['Maybe you need to re-login'], level=Logger.error)
             return False
 
-        return self.formatSpeechList()
+        return self.formatReportList()
 
-    def postSpeech(self, buttonId):
+    def postReport(self, buttonId):
         # 获取验证码
         prepareBody = self.prepare(referer=UrlBean.jwglLoginUrl,
                                    originHost=None,
@@ -414,7 +440,12 @@ class Spider(object):
                 fr.write(chunk)
 
         print_vertify_code()
-        verCode = input("> input verify code: ")
+        verCode = ''
+        vectors_ = img2Vector('check.gif')
+        if vectors_:
+            for vector in vectors_:
+                verCode += chr(int(''.join([str(int(item + 0.5)) for item in self.network.classify(vector)]), base=2))
+        print(verCode)
 
         postData = {
             '__EVENTTARGET': buttonId,
@@ -424,10 +455,10 @@ class Spider(object):
             'txtyzm': verCode,
         }
         payload = {'xh': MisUtils.confDict['userName']}
-        prepareBody = self.prepare(referer=UrlBean.fetchSpeechListUrl + '?xh=' + MisUtils.confDict['userName'],
+        prepareBody = self.prepare(referer=UrlBean.fetchReportListUrl + '?xh=' + MisUtils.confDict['userName'],
                                    originHost=UrlBean.jwglOriginUrl,
                                    method='POST',
-                                   url=UrlBean.fetchSpeechListUrl,
+                                   url=UrlBean.fetchReportListUrl,
                                    data=postData,
                                    params=payload)
 
@@ -439,7 +470,7 @@ class Spider(object):
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
                 break
             else:
-                print(Logger.log('Retrying posting speech ...', level=Logger.warning))
+                print(Logger.log('Retrying posting report ...', level=Logger.warning))
         if not MisUtils.descAttempt():
             print(Logger.log('Up to max attempts!', ['Maybe you need to re-login'], level=Logger.error))
             return False
@@ -451,10 +482,10 @@ class Spider(object):
         #     '__EVENTVALIDATION': self.EVENTVALIDATION,
         #     'myscrollheight': '0',
         # }
-        # prepareBody = self.prepare(referer=UrlBean.speechDetailUrl,
+        # prepareBody = self.prepare(referer=UrlBean.reportDetailUrl,
         #                            originHost=UrlBean.jwglOriginUrl,
         #                            method='POST',
-        #                            url=UrlBean.speechDetailUrl,
+        #                            url=UrlBean.reportDetailUrl,
         #                            data=postData,
         #                            params=None)
         #
@@ -464,17 +495,17 @@ class Spider(object):
         #     if self.response.status_code == 200:
         #         break
         #     else:
-        #         print(Logger.log('Retrying posting speech request...', level=Logger.warning))
+        #         print(Logger.log('Retrying posting report request...', level=Logger.warning))
 
-        return self.formatSpeechList()
+        return self.formatReportList()
 
-    def formatSpeechList(self):
+    def formatReportList(self):
         """
-        format speech list to matrix
+        format report list to matrix
 
-        :return tempSelected_: return the HTML form of selected speech list
-        :return selected_: return the matrix form of selected speech list
-        :return selectable_: return the matrix form of selectable speech list
+        :return tempSelected_: return the HTML form of selected report list
+        :return selected_: return the matrix form of selected report list
+        :return selectable_: return the matrix form of selectable report list
         """
 
         htmlBody = BeautifulSoup(self.response.text, 'html.parser')
@@ -487,26 +518,26 @@ class Spider(object):
         for tempRow in tempSelected_[1:]:
             tempRow = tempRow.find_all('td')
             # buttonId = re.findall(self.buttonPattern, str(tempRow[-1]))[0]
-            speechRow = ['Selected']
-            for i in self.speechFilter:
+            reportRow = ['Selected']
+            for i in self.reportFilter:
                 item = re.findall(self.removeTd, str(tempRow[i]))
                 if len(item) == 0:
-                    speechRow.append('')
+                    reportRow.append('')
                 else:
-                    speechRow.append(item[0])
-            selected_.append(speechRow)
+                    reportRow.append(item[0])
+            selected_.append(reportRow)
 
         for tempRow in tempSelectable_[1:]:
             tempRow = tempRow.find_all('td')
             buttonId = re.findall(self.buttonPattern, str(tempRow[-1]))[0]
-            speechRow = [buttonId]
-            for i in self.speechFilter:
+            reportRow = [buttonId]
+            for i in self.reportFilter:
                 item = re.findall(self.removeTd, str(tempRow[i]))
                 if len(item) == 0:
-                    speechRow.append('')
+                    reportRow.append('')
                 else:
-                    speechRow.append(item[0])
-            selectable_.append(speechRow)
+                    reportRow.append(item[0])
+            selectable_.append(reportRow)
 
         return str(selectedHtml), selected_, selectable_
 

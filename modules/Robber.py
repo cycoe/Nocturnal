@@ -85,34 +85,34 @@ class Robber(object):
         print(classList)
 
     @checkStatus(getLoginStatus, getWechatLoginStatus)
-    def notifySpeech(self, threshold=3):
+    def notifyReport(self, threshold=3):
         # self.pushToAllGroup('开始报告余量监测...')
 
         timePattern = re.compile('(\d{1,2}:\d{2})?:\d{2}')
-        availableSpeechListCache = []
+        availableReportListCache = []
         while True:
-            availableSpeechList = []
-            speechList = self.spider.fetchSpeechList()
-            for row in speechList[1:]:
+            availableReportList = []
+            reportList = self.spider.fetchReportList()
+            for row in reportList[1:]:
                 tempRow = [row[0],
                            row[1],
                            row[2].split(' ')[0] + ' ' + re.findall(timePattern, row[2].split(' ')[1])[0] + '-' + re.findall(timePattern, row[3].split(' ')[1])[0],
                            row[4],
                            str(int(row[5]) - int(row[6]))]
                 if int(tempRow[4]) >= threshold:
-                    availableSpeechList.append(tempRow)
+                    availableReportList.append(tempRow)
 
-            if availableSpeechList and not find_one_in_list([item[1] for item in availableSpeechList], [item[1] for item in availableSpeechListCache]):
-                availableSpeechListCache = availableSpeechList[:]
-                availableSpeechList.insert(0, ['报告类别', '报告名称', '报告时间', '报告地点', '余量'])
-                # self.pushToAllGroup(OutputFormater.output(availableSpeechList, header='有报告余量！'))
-                print(OutputFormater.table(availableSpeechList))
+            if availableReportList and not find_one_in_list([item[1] for item in availableReportList], [item[1] for item in availableReportListCache]):
+                availableReportListCache = availableReportList[:]
+                availableReportList.insert(0, ['报告类别', '报告名称', '报告时间', '报告地点', '余量'])
+                # self.pushToAllGroup(OutputFormater.output(availableReportList, header='有报告余量！'))
+                print(OutputFormater.table(availableReportList))
             time.sleep(MisUtils.refreshSleep())
 
     @checkStatus(getLoginStatus)
-    def robSpeech(self):
+    def robReport(self):
         # while True:
-        #     flag = self.spider.fetchSpeechList()
+        #     flag = self.spider.fetchReportList()
         #     if flag:
         #         selectedHtml, selected_, selectable_ = flag
         #         selectable_ = [selectable for selectable in selectable_ if selectable[2] not in MisUtils.getSelected()]
@@ -122,42 +122,42 @@ class Robber(object):
         #     if buttonId_:
         #         random.shuffle(buttonId_)
         #         buttonId = buttonId_[0]
-        #         print(Logger.log('Robbing speech...', level=Logger.warning))
-        #         flag = self.spider.postSpeech(buttonId)
+        #         print(Logger.log('Robbing report...', level=Logger.warning))
+        #         flag = self.spider.postReport(buttonId)
         #         if not flag:
         #             return None
         #     newSelected_ = [selected[2] for selected in selected_ if selected[2] not in MisUtils.getSelected()]
         #     if newSelected_:
         #         MisUtils.mergeSelected(newSelected_)
-        #         print(Logger.log('Robbed a speech!', subContent_=newSelected_, level=Logger.error))
+        #         print(Logger.log('Robbed a report!', subContent_=newSelected_, level=Logger.error))
         #         if Mail.connectedToMail:
-        #             threading.Thread(target=Mail.send_mail, args=('Robbed a new speech', selectedHtml,)).start()
+        #             threading.Thread(target=Mail.send_mail, args=('Robbed a new report', selectedHtml,)).start()
         #     if len(buttonId_) < 2:
-        #         print(Logger.log('No speech to rob, dozing...', level=Logger.info))
+        #         print(Logger.log('No report to rob, dozing...', level=Logger.info))
         #         time.sleep(MisUtils.refreshSleep())
 
-        selectedHtml, selected_, selectable_ = self.spider.fetchSpeechList()
+        selectedHtml, selected_, selectable_ = self.spider.fetchReportList()
         selectable_ = [selectable for selectable in selectable_ if selectable[2] not in MisUtils.getSelected()]
         buttonId_ = [selectable[0] for selectable in selectable_ if int(selectable[6]) > int(selectable[7])]
         while True:
             if buttonId_:
                 random.shuffle(buttonId_)
                 buttonId = buttonId_[0]
-                print(Logger.log('Robbing speech...', level=Logger.warning))
-                selectedHtml, selected_, selectable_ = self.spider.postSpeech(buttonId)
+                print(Logger.log('Robbing reports...', level=Logger.warning))
+                selectedHtml, selected_, selectable_ = self.spider.postReport(buttonId)
                 selectable_ = [selectable for selectable in selectable_ if selectable[2] not in MisUtils.getSelected()]
             else:
-                selectedHtml, selected_, selectable_ = self.spider.fetchSpeechList()
+                selectedHtml, selected_, selectable_ = self.spider.fetchReportList()
                 selectable_ = [selectable for selectable in selectable_ if selectable[2] not in MisUtils.getSelected()]
             newSelected_ = [selected[2] for selected in selected_ if selected[2] not in MisUtils.getSelected()]
             if newSelected_:
                 MisUtils.mergeSelected(newSelected_)
-                print(Logger.log('Robbed a speech!', subContent_=newSelected_, level=Logger.error))
+                print(Logger.log('Robbed new reports!', subContent_=newSelected_, level=Logger.error))
                 if Mail.connectedToMail:
-                    threading.Thread(target=Mail.send_mail, args=('Robbed a new speech', selectedHtml,)).start()
+                    threading.Thread(target=Mail.send_mail, args=('Robbed new reports', selectedHtml,)).start()
             buttonId_ = [selectable[0] for selectable in selectable_ if int(selectable[6]) > int(selectable[7])]
             if not buttonId_:
-                print(Logger.log('No speech to rob, dozing...', level=Logger.info))
+                print(Logger.log('No report to rob, dozing...', level=Logger.info))
                 time.sleep(MisUtils.refreshSleep())
 
     @checkStatus(getLoginStatus)

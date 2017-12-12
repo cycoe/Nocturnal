@@ -15,7 +15,7 @@ class UrlBean(object):
     leftMenuReferer = "http://graduate.buct.edu.cn:8080/pyxx/leftmenu.aspx"    # 左侧菜单地址
     fetchScheduleUrl = "http://graduate.buct.edu.cn:8080/pyxx/pygl/kbcx_xs.aspx"   # 课程表获取地址
     englishTestUrl = "http://graduate.buct.edu.cn:8080/pyxx/grgl/djkssq.aspx"  # 英语等级考试地址
-    fetchSpeechListUrl = "http://graduate.buct.edu.cn:8080/pyxx/txhdgl/hdlist.aspx"    # 讲座列表获取地址
-    speechDetailUrl = "http://graduate.buct.edu.cn:8080/pyxx/txhdgl/hdxxdetail.aspx"   # 讲座详情地址
+    fetchReportListUrl = "http://graduate.buct.edu.cn:8080/pyxx/txhdgl/hdlist.aspx"    # 讲座列表获取地址
+    # reportDetailUrl = "http://graduate.buct.edu.cn:8080/pyxx/txhdgl/hdxxdetail.aspx"   # 讲座详情地址
     fetchGradeUrl = "http://jwgl.buct.edu.cn/xscjcx.aspx"  # 成绩获取地址
 
