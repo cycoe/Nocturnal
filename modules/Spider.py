@@ -231,7 +231,7 @@ class Spider(object):
             vectors_ = img2Vector('check.gif')
             if vectors_:
                 for vector in vectors_:
-                    verCode += chr(int(''.join([str(int(item + 0.5)) for item in self.network.classify(vector)]), base=2))
+                    verCode += chr(int(''.join([str(item) for item in self.network.classify(vector)]), base=2))
             print(verCode)
             # verCode = self.classifier.recognizer("check.gif")  # 识别验证码
 
@@ -444,7 +444,7 @@ class Spider(object):
         vectors_ = img2Vector('check.gif')
         if vectors_:
             for vector in vectors_:
-                verCode += chr(int(''.join([str(int(item + 0.5)) for item in self.network.classify(vector)]), base=2))
+                verCode += chr(int(''.join([str(item) for item in self.network.classify(vector)]), base=2))
         print(verCode)
 
         postData = {

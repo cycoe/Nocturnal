@@ -60,6 +60,13 @@ def norm2(point):
     return np.vdot(point, point)
 
 
+def get_distance(point1, point2):
+    distance = 0
+    for index in range(len(point1)):
+        distance += (point1[index] - point2[index]) ** 2
+    return distance
+
+
 def classify(output, tag_set):
     """
     分类函数
@@ -69,7 +76,7 @@ def classify(output, tag_set):
     """
     min_index = 0
     for index in range(len(tag_set)):
-        if norm2(output - tag_set[index]) < norm2(output - tag_set[min_index]):
+        if get_distance(output, tag_set[index]) < get_distance(output, tag_set[min_index]):
             min_index = index
     return tag_set[min_index]
 
@@ -166,7 +173,7 @@ class Network(object):
             else:
                 self.x_[index] = self.active(np.reshape(np.dot(self.weight_[index - 1], np.insert(self.x_[index - 1], -1, 1)), (self.structure[index], 1)))
 
-        return self.x_[-1]
+        return classify(self.x_[-1], self.tag_set)
 
     def dump_weight(self):
         """
