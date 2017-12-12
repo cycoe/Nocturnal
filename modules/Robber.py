@@ -64,14 +64,17 @@ class Robber(object):
             self.wechatId_.append(itchat.search_friends(wechatUser)[0]['UserName'])
         Robber.wechatLoginStatus = True
 
-    def emailLogin(self):
+    @staticmethod
+    def emailLogin():
         MisUtils.setEmailInfo()
         print(Logger.log('Sending a test mail to your mailbox...', subContent_=[
             'Check the trash box if you haven\'t received the test mail',
-            'Sender mail address: class_robber@cycoe.win',
+            'Sender mail address: ' + MisUtils.sender,
             'Nick name: class_robber'
         ], level=Logger.info))
         Mail.send_mail('Just test connection.', 'Test connection between class robber and mail server. No reply')
+        if Mail.connectedToMail:
+            MisUtils.dumpConfFile()
 
     @checkStatus(getLoginStatus, getWechatLoginStatus)
     def pushToAllGroup(self, msg):

@@ -509,8 +509,7 @@ class Spider(object):
         """
 
         htmlBody = BeautifulSoup(self.response.text, 'html.parser')
-        selectedHtml = htmlBody.find_all('table', class_='GridBackColor')[0]
-        tempSelected_ = selectedHtml.find_all('tr', nowrap='nowrap')
+        tempSelected_ = htmlBody.find_all('table', class_='GridBackColor')[0].find_all('tr', nowrap='nowrap')
         tempSelectable_ = htmlBody.find_all('table', class_='GridBackColor')[1].find_all('tr', nowrap='nowrap')
         selected_ = []
         selectable_ = []
@@ -539,7 +538,11 @@ class Spider(object):
                     reportRow.append(item[0])
             selectable_.append(reportRow)
 
-        return str(selectedHtml), selected_, selectable_
+        selectedHtml = [''.join(['<td>' + item + '</td>' for item in selected]) for selected in selected_]
+        selectedHtml = ''.join(['<tr>' + selected + '</tr>' for selected in selectedHtml])
+        selectedHtml = '<table border="1" bordercolor="#999999">' + selectedHtml + '</table>'
+
+        return selectedHtml, selected_, selectable_
 
     def formatClassList(self):
 

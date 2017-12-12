@@ -29,7 +29,7 @@ class MisUtils(object):
     logPath = 'robber.log'
     confFile = 'robber.conf'
     blackList = 'blackList'
-    sender = 'class_robber@cycoe.win'
+    sender = 'class_robber@cycoe.cc'
     emailPassword = 'class_robber'
     host = 'smtp.ym.163.com'
 

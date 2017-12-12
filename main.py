@@ -120,9 +120,9 @@ def printQRCode():
     wechatURI = pyqrcode.create(MisUtils.wechatURI)
     alipayURI = pyqrcode.create(MisUtils.alipayURI)
     print(Logger.log(String['thanks_to_donate']))
-    print(OutputFormater.table([['Via wechat'], ['|'], ['V']], verticalSpacer=False, horizontalSpacer=False, padding=10))
+    print(OutputFormater.table([['Via Wechat'], ['|'], ['V']], verticalSpacer=False, horizontalSpacer=False, padding=10))
     print(wechatURI.terminal(quiet_zone=1))
-    print(OutputFormater.table([['Via alipay'], ['|'], ['V']], verticalSpacer=False, horizontalSpacer=False, padding=10))
+    print(OutputFormater.table([['Via Alipay'], ['|'], ['V']], verticalSpacer=False, horizontalSpacer=False, padding=10))
     print(alipayURI.terminal(quiet_zone=1))
 
 
