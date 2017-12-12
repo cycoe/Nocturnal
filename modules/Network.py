@@ -193,60 +193,60 @@ class Network(object):
                 self.weight_[index] = weight
 
 
-def main():
-    full_matrix = []
-    full_tag_ = []
-    for image_file in os.listdir('../sample'):
-        vectors_ = img2Vector('../sample/' + image_file, image_file[:4])
-        if vectors_:
-            for index in range(4):
-                full_matrix.append(vectors_[index])
-                tag = [int(item) for item in str(bin(ord(image_file[index])))[2:]]
-                if len(tag) < 7:
-                    tag.insert(0, 0)
-                full_tag_.append(tag)
-    training_ratio = int(len(full_matrix) * 0.7)
-    fitting_ratio = len(full_matrix) - training_ratio
-    training_matrix = [full_matrix[index] for index in range(training_ratio)]
-    training_tag_ = [full_tag_[index] for index in range(training_ratio)]
-    fitting_matrix = [full_matrix[index] for index in range(training_ratio, len(full_matrix))]
-    fitting_tag_ = [full_tag_[index] for index in range(training_ratio, len(full_tag_))]
-
-    network = Network()
-    network.load_matrix(training_matrix).load_tag(training_tag_).set_structure([300, 200, 100, 7]).load_weight()
-
-    cycle_count = 5000
-    for i in range(cycle_count):
-        training_errors = 0
-        fitting_errors = 0
-        for j in range(training_ratio):
-            output = network.forward(j)
-            network.backward(j)
-            for bit in range(len(output)):
-                if int(output[bit] + 0.5) != training_tag_[j][bit]:
-                    training_errors += 1
-                    break
-
-        for j in range(fitting_ratio):
-            output = network.classify(fitting_matrix[j])
-            for bit in range(len(output)):
-                if int(output[bit]+0.5) != fitting_tag_[j][bit]:
-                    fitting_errors += 1
-                    break
-
-        training_error = str(training_errors / training_ratio)
-        fitting_error = str(fitting_errors / fitting_ratio)
-        print('(' + str(int(i/cycle_count*100)) + '%) ' + 'training error ratio = ' + training_error, end='')
-        print('\t fitting error ratio = ' + fitting_error)
-        network.dump_weight()
-
-    #     with open('plot', 'a') as fr:
-    #         fr.write(training_error)
-    #         fr.write(',')
-    #         fr.write(fitting_error)
-    #         fr.write('\n')
-    #     # print(network.delta_)
-
-
-if __name__ == '__main__':
-    main()
+# def main():
+#     full_matrix = []
+#     full_tag_ = []
+#     for image_file in os.listdir('../sample'):
+#         vectors_ = img2Vector('../sample/' + image_file, image_file[:4])
+#         if vectors_:
+#             for index in range(4):
+#                 full_matrix.append(vectors_[index])
+#                 tag = [int(item) for item in str(bin(ord(image_file[index])))[2:]]
+#                 if len(tag) < 7:
+#                     tag.insert(0, 0)
+#                 full_tag_.append(tag)
+#     training_ratio = int(len(full_matrix) * 0.7)
+#     fitting_ratio = len(full_matrix) - training_ratio
+#     training_matrix = [full_matrix[index] for index in range(training_ratio)]
+#     training_tag_ = [full_tag_[index] for index in range(training_ratio)]
+#     fitting_matrix = [full_matrix[index] for index in range(training_ratio, len(full_matrix))]
+#     fitting_tag_ = [full_tag_[index] for index in range(training_ratio, len(full_tag_))]
+#
+#     network = Network()
+#     network.load_matrix(training_matrix).load_tag(training_tag_).set_structure([300, 200, 100, 7]).load_weight()
+#
+#     cycle_count = 5000
+#     for i in range(cycle_count):
+#         training_errors = 0
+#         fitting_errors = 0
+#         for j in range(training_ratio):
+#             output = network.forward(j)
+#             network.backward(j)
+#             for bit in range(len(output)):
+#                 if int(output[bit] + 0.5) != training_tag_[j][bit]:
+#                     training_errors += 1
+#                     break
+#
+#         for j in range(fitting_ratio):
+#             output = network.classify(fitting_matrix[j])
+#             for bit in range(len(output)):
+#                 if int(output[bit]+0.5) != fitting_tag_[j][bit]:
+#                     fitting_errors += 1
+#                     break
+#
+#         training_error = str(training_errors / training_ratio)
+#         fitting_error = str(fitting_errors / fitting_ratio)
+#         print('(' + str(int(i/cycle_count*100)) + '%) ' + 'training error ratio = ' + training_error, end='')
+#         print('\t fitting error ratio = ' + fitting_error)
+#         network.dump_weight()
+#
+#     #     with open('plot', 'a') as fr:
+#     #         fr.write(training_error)
+#     #         fr.write(',')
+#     #         fr.write(fitting_error)
+#     #         fr.write('\n')
+#     #     # print(network.delta_)
+#
+#
+# if __name__ == '__main__':
+#     main()
