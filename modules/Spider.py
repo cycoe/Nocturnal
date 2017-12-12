@@ -497,7 +497,7 @@ class Spider(object):
         #     else:
         #         print(Logger.log('Retrying posting report request...', level=Logger.warning))
 
-        return self.formatReportList()
+        return True
 
     def formatReportList(self):
         """

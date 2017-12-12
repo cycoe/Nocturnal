@@ -136,29 +136,26 @@ class Robber(object):
         #         print(Logger.log('No report to rob, dozing...', level=Logger.info))
         #         time.sleep(MisUtils.refreshSleep())
 
-        selectedHtml, selected_, selectable_ = self.spider.fetchReportList()
-        selectable_ = [selectable for selectable in selectable_ if selectable[2] not in MisUtils.getSelected()]
-        buttonId_ = [selectable[0] for selectable in selectable_ if int(selectable[6]) > int(selectable[7])]
         while True:
+            selectedHtml, selected_, selectable_ = self.spider.fetchReportList()
+            selectable_ = [selectable for selectable in selectable_ if selectable[2] not in MisUtils.getSelected()]
+            buttonId_ = [selectable[0] for selectable in selectable_ if int(selectable[6]) > int(selectable[7])]
+
             if buttonId_:
                 random.shuffle(buttonId_)
                 buttonId = buttonId_[0]
                 print(Logger.log('Robbing reports...', level=Logger.warning))
-                selectedHtml, selected_, selectable_ = self.spider.postReport(buttonId)
-                selectable_ = [selectable for selectable in selectable_ if selectable[2] not in MisUtils.getSelected()]
+                self.spider.postReport(buttonId)
             else:
-                selectedHtml, selected_, selectable_ = self.spider.fetchReportList()
-                selectable_ = [selectable for selectable in selectable_ if selectable[2] not in MisUtils.getSelected()]
+                print(Logger.log('No report to rob, dozing...', level=Logger.info))
+                time.sleep(MisUtils.refreshSleep())
+
             newSelected_ = [selected[2] for selected in selected_ if selected[2] not in MisUtils.getSelected()]
             if newSelected_:
                 MisUtils.mergeSelected(newSelected_)
                 print(Logger.log('Robbed new reports!', subContent_=newSelected_, level=Logger.error))
                 if Mail.connectedToMail:
                     threading.Thread(target=Mail.send_mail, args=('Robbed new reports', selectedHtml,)).start()
-            buttonId_ = [selectable[0] for selectable in selectable_ if int(selectable[6]) > int(selectable[7])]
-            if not buttonId_:
-                print(Logger.log('No report to rob, dozing...', level=Logger.info))
-                time.sleep(MisUtils.refreshSleep())
 
     @checkStatus(getLoginStatus)
     def robClass(self, classIdList):
