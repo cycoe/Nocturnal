@@ -430,9 +430,9 @@ class Spider(object):
             if codeImg.status_code == 200:
                 break
             else:
-                Logger.log("retrying fetching vertify code...", level=Logger.warning)
+                print(Logger.log("retrying fetching vertify code...", level=Logger.error))
         if not MisUtils.descAttempt():
-            Logger.log('Up to max attempts!', ['Maybe remote server unreachable'], level=Logger.error)
+            print(Logger.log('Up to max attempts!', ['Maybe remote server unreachable'], level=Logger.error))
             return False
 
         with open('check.gif', 'wb') as fr:  # 保存验证码图片
