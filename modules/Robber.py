@@ -13,6 +13,7 @@ from modules.Logger import Logger
 from modules.Mail import Mail
 from modules.listUtils import find_one_in_list
 from modules.MisUtils import MisUtils
+from modules.String import String
 
 
 def checkStatus(*check_):
@@ -30,7 +31,7 @@ def checkStatus(*check_):
             if flag:
                 func(self, *args)
             else:
-                print(Logger.log('Login first!', level=Logger.error))
+                print(Logger.log(String['login_first'], level=Logger.error))
         return return_wrapper
     return func_wrapper
 
@@ -67,12 +68,12 @@ class Robber(object):
     @staticmethod
     def emailLogin():
         MisUtils.setEmailInfo()
-        print(Logger.log('Sending a test mail to your mailbox...', subContent_=[
-            'Check the trash box if you haven\'t received the test mail',
-            'Sender mail address: ' + MisUtils.sender,
-            'Nick name: class_robber'
+        print(Logger.log(String['sending_a_test_mail'], subContent_=[
+            String['check_in_trash_box'],
+            String['sender_mail_address'] + MisUtils.sender,
+            String['nickname'] + 'class_robber'
         ], level=Logger.info))
-        Mail.send_mail('Just test connection.', 'Test connection between class robber and mail server. No reply')
+        Mail.send_mail(String['just_test_connection'], String['test_connection'])
         if Mail.connectedToMail:
             MisUtils.dumpConfFile()
 
@@ -140,25 +141,29 @@ class Robber(object):
         #         time.sleep(MisUtils.refreshSleep())
 
         while True:
-            selectedHtml, selected_, selectable_ = self.spider.fetchReportList()
+            selected_, selectable_ = self.spider.fetchReportList()
             selectable_ = [selectable for selectable in selectable_ if selectable[2] not in MisUtils.getSelected()]
             buttonId_ = [selectable[0] for selectable in selectable_ if int(selectable[6]) > int(selectable[7])]
 
             if buttonId_:
                 random.shuffle(buttonId_)
                 buttonId = buttonId_[0]
-                print(Logger.log('Robbing reports...', level=Logger.warning))
+                print(Logger.log(String['robbing_report'], level=Logger.warning))
                 self.spider.postReport(buttonId)
             else:
-                print(Logger.log('No report to rob, dozing...', level=Logger.info))
+                print(Logger.log(String['dozing'], level=Logger.info))
                 time.sleep(MisUtils.refreshSleep())
 
             newSelected_ = [selected[2] for selected in selected_ if selected[2] not in MisUtils.getSelected()]
             if newSelected_:
                 MisUtils.mergeSelected(newSelected_)
-                print(Logger.log('Robbed new reports!', subContent_=newSelected_, level=Logger.error))
+                print(Logger.log(String['robbed_new_reports'], subContent_=newSelected_, level=Logger.error))
+                selectedHtml = [''.join(['<td>' + item + '</td>' for item in selected]) for selected in newSelected_]
+                selectedHtml = ''.join(['<tr>' + selected + '</tr>' for selected in selectedHtml])
+                selectedHtml = '<table border="1" bordercolor="#999999" border="1" style="background-color:#F0F0E8;\
+                border-color:#999999;font-size:X-Small;width:100%;border-collapse:collapse;">' + selectedHtml + '</table>'
                 if Mail.connectedToMail:
-                    threading.Thread(target=Mail.send_mail, args=('Robbed new reports', selectedHtml,)).start()
+                    threading.Thread(target=Mail.send_mail, args=(String['robbed_new_reports'], selectedHtml,)).start()
 
     @checkStatus(getLoginStatus)
     def robClass(self, classIdList):
@@ -174,6 +179,6 @@ class Robber(object):
 
     def clean(self):
         self.spider.clean()
-        print(Logger.log('Site clearing...', ['exiting...'], level=Logger.error))
+        print(Logger.log(String['site_cleaning'], [String['exiting']], level=Logger.error))
         exit(0)
 

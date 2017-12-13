@@ -25,7 +25,7 @@ class Logger(object):
             subContent_ = ['-> ' + subContent for subContent in subContent_]
             output += '\n'.join(subContent_)
 
-        if level == 2:
+        if level == 2 or level == 1:
             with open(MisUtils.logPath, 'a') as fr:
                 fr.write(output + '\n')
 

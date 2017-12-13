@@ -17,27 +17,28 @@ class MisUtils(object):
     """
     管理配置的类
     """
-	
-	# 参数设置
-    refreshSleep = getRandomTime(10)	# 刷新的间隔时间
-    wechatPushSleep = getRandomTime(1)	# 发送两条微信消息之间的间隔
+
+    # 参数设置
+    refreshSleep = getRandomTime(10)    # 刷新的间隔时间
+    wechatPushSleep = getRandomTime(1)  # 发送两条微信消息之间的间隔
     maxAttempt = 100					# 最大递归次数
+    attempt = maxAttempt
 
     # wechatGroup_ = ['研究生的咸♂鱼生活']		# 讲座推送的微信群名称
     # wechatUser_ = ['邱大帅全宇宙粉丝后援会']	# 讲座推送的用户名称
-	
-	version = 'V 3.0'
-	author = 'Cycoe'				# 作者
-	platform = platform.system()	# 运行平台
+
+    version = 'V 3.0'
+    author = 'Cycoe'				# 作者
+    platform = platform.system()    # 运行平台
     logPath = 'robber.log'			# 日志文件路径
     confFile = 'robber.conf'		# 配置文件路径
     blackList = 'blackList'			# 报告黑名单文件路径
-    sender = 'class_robber@cycoe.cc'	# 邮件发送邮箱
+    sender = 'class_robber@cycoe.cc'    # 邮件发送邮箱
     emailPassword = 'class_robber'		# 邮件发送密码
     host = 'smtp.ym.163.com'			# 邮件接受邮箱
 
-    wechatURI = 'wxp://f2f0PYx27X0CWU1yiBhSKeHHgYzfA27iOicM'	# 微信二维码 URI
-    alipayURI = 'HTTPS://QR.ALIPAY.COM/FKX01669SBV7NA4ALTVPE8'	# 支付宝二维码 URI
+    wechatURI = 'wxp://f2f0PYx27X0CWU1yiBhSKeHHgYzfA27iOicM'    # 微信二维码 URI
+    alipayURI = 'HTTPS://QR.ALIPAY.COM/FKX01669SBV7NA4ALTVPE8'  # 支付宝二维码 URI
 
     confDict = {
         'userName': '',
@@ -85,13 +86,13 @@ class MisUtils(object):
         MisUtils.attempt -= 1
         if MisUtils.attempt > 0:
             return True
-        else:
-            if Mail.connectedToMail:
-                threading.Thread(target=Mail.send_mail, args=('Class robber halted', Logger.log(
-                    'Class robber halted because of up to max attempts',
-                    ['Check your login status', 'Check the response of server']
-                ),)).start()
-            return False
+        # else:
+        #     if Mail.connectedToMail:
+        #         threading.Thread(target=Mail.send_mail, args=('Class robber halted', Logger.log(
+        #             'Class robber halted because of up to max attempts',
+        #             ['Check your login status', 'Check the response of server']
+        #         ),)).start()
+        #     return False
 
     @staticmethod
     def getSelected():

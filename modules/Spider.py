@@ -9,6 +9,7 @@ from modules.Logger import Logger
 from modules.MisUtils import MisUtils
 from modules.Network import Network
 from modules.img2Vector import img2Vector
+from modules.String import String
 
 
 def load_tag():
@@ -185,22 +186,22 @@ class Spider(object):
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
                 break
-            Logger.log("Retrying fetching login page viewState...", level=Logger.warning)
+            print(Logger.log(String['failed_fetch_login'], [String['retrying']], level=Logger.warning))
         if not MisUtils.descAttempt():
-            Logger.log('Up to max attempts!', ['Maybe remote server unreachable'], level=Logger.error)
+            print(Logger.log(String['max_attempts'], [String['server_unreachable']], level=Logger.error))
             return False
 
         if MisUtils.checkConfFile():
             MisUtils.loadConfFile()
         if MisUtils.confDict['userName'] == '' and MisUtils.confDict['password'] == '':
-            MisUtils.confDict['userName'] = input("> UserName: ")
-            MisUtils.confDict['password'] = input("> Password: ")
+            MisUtils.confDict['userName'] = input("> " + String['username'])
+            MisUtils.confDict['password'] = input("> " + String['password'])
         # 登录主循环
         reInput = False  # 是否需要重新输入用户名和密码
         while True:
             if reInput:
-                MisUtils.confDict['userName'] = input("> UserName: ")
-                MisUtils.confDict['password'] = input("> Password: ")
+                MisUtils.confDict['userName'] = input("> " + String['username'])
+                MisUtils.confDict['password'] = input("> " + String['password'])
                 reInput = False
 
             # 获取验证码
@@ -217,22 +218,22 @@ class Spider(object):
                 if codeImg.status_code == 200:
                     break
                 else:
-                    Logger.log("retrying fetching vertify code...", level=Logger.warning)
+                    print(Logger.log(String['failed_fetch_vertify_code'], [String['retrying']], level=Logger.warning))
             if not MisUtils.descAttempt():
-                Logger.log('Up to max attempts!', ['Maybe remote server unreachable'], level=Logger.error)
+                print(Logger.log(String['max_attempts'], [String['server_unreachable']], level=Logger.error))
                 return False
 
             with open('check.gif', 'wb') as fr:  # 保存验证码图片
                 for chunk in codeImg:
                     fr.write(chunk)
 
-            print_vertify_code()
+            # print_vertify_code()
             verCode = ''
             vectors_ = img2Vector('check.gif')
             if vectors_:
                 for vector in vectors_:
                     verCode += chr(int(''.join([str(item) for item in self.network.classify(vector)]), base=2))
-            print(verCode)
+            # print(verCode)
             # verCode = self.classifier.recognizer("check.gif")  # 识别验证码
 
             # 发送登陆请求
@@ -258,25 +259,25 @@ class Spider(object):
                 if self.response.status_code == 200:
                     break
             if not MisUtils.descAttempt():
-                Logger.log('Up to max attempts!', ['Maybe remote server unreachable'], level=Logger.error)
+                print(Logger.log(String['max_attempts'], [String['server_unreachable']], level=Logger.error))
                 return False
 
             if re.search('用户名不存在', self.response.text):
-                print(Logger.log('No such a user!', ['Cleaning password file'], level=Logger.error))
+                print(Logger.log(String['no_such_a_user'], [String['clean_password']], level=Logger.error))
                 reInput = True
 
             elif re.search('密码错误', self.response.text):
-                print(Logger.log('Wrong password!', ['Cleaning password file'], level=Logger.error))
+                print(Logger.log(String['wrong_password'], [String['clean_password']], level=Logger.error))
                 reInput = True
 
             elif re.search('请输入验证码', self.response.text):
-                print(Logger.log('Please input vertify code!', ['Retrying...'], level=Logger.error))
+                print(Logger.log(String['empty_vertify_code'], [String['retrying']], level=Logger.error))
 
             elif re.search('验证码错误', self.response.text):
-                print(Logger.log('Wrong vertify code!', ['Retrying...'], level=Logger.error))
+                print(Logger.log(String['wrong_vertify_code'], [String['retrying']], level=Logger.error))
 
             else:
-                print(Logger.log('Login successfully!', ['UserName: ' + MisUtils.confDict['userName']], level=Logger.error))
+                print(Logger.log(String['login_successfully'], [String['username'] + MisUtils.confDict['userName']], level=Logger.error))
                 MisUtils.dumpConfFile()
                 break
 
@@ -302,7 +303,7 @@ class Spider(object):
             else:
                 print(Logger.log('retrying fetching class list...'))
         if not MisUtils.descAttempt():
-            Logger.log('Up to max attempts!', ['Maybe you need to re-login'], level=Logger.error)
+            print(Logger.log('Up to max attempts!', ['Maybe you need to re-login'], level=Logger.error))
             return False
 
         return self.formatClassList()
@@ -408,9 +409,9 @@ class Spider(object):
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
                 break
             else:
-                print(Logger.log('Retrying fetching report list...', level=Logger.warning))
+                print(Logger.log(String['failed_fetch_report'], [String['retrying']], level=Logger.warning))
         if not MisUtils.descAttempt():
-            Logger.log('Up to max attempts!', ['Maybe you need to re-login'], level=Logger.error)
+            print(Logger.log(String['max_attempts'], [String['re-login']], level=Logger.error))
             return False
 
         return self.formatReportList()
@@ -430,22 +431,20 @@ class Spider(object):
             if codeImg.status_code == 200:
                 break
             else:
-                print(Logger.log("retrying fetching vertify code...", level=Logger.error))
+                print(Logger.log(String['failed_fetch_vertify_code'], [String['retrying']], level=Logger.error))
         if not MisUtils.descAttempt():
-            print(Logger.log('Up to max attempts!', ['Maybe remote server unreachable'], level=Logger.error))
+            print(Logger.log(String['max_attempts'], [String['server_unreachable']], level=Logger.error))
             return False
 
         with open('check.gif', 'wb') as fr:  # 保存验证码图片
             for chunk in codeImg:
                 fr.write(chunk)
 
-        print_vertify_code()
         verCode = ''
         vectors_ = img2Vector('check.gif')
         if vectors_:
             for vector in vectors_:
                 verCode += chr(int(''.join([str(item) for item in self.network.classify(vector)]), base=2))
-        print(verCode)
 
         postData = {
             '__EVENTTARGET': buttonId,
@@ -470,9 +469,9 @@ class Spider(object):
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
                 break
             else:
-                print(Logger.log('Retrying posting report ...', level=Logger.warning))
+                print(Logger.log(String['failed_post_report'], [String['retrying']], level=Logger.warning))
         if not MisUtils.descAttempt():
-            print(Logger.log('Up to max attempts!', ['Maybe you need to re-login'], level=Logger.error))
+            print(Logger.log(String['max_attempts'], [String['re-login']], level=Logger.error))
             return False
 
         # postData = {
@@ -538,11 +537,7 @@ class Spider(object):
                     reportRow.append(item[0])
             selectable_.append(reportRow)
 
-        selectedHtml = [''.join(['<td>' + item + '</td>' for item in selected]) for selected in selected_]
-        selectedHtml = ''.join(['<tr>' + selected + '</tr>' for selected in selectedHtml])
-        selectedHtml = '<table border="1" bordercolor="#999999">' + selectedHtml + '</table>'
-
-        return selectedHtml, selected_, selectable_
+        return selected_, selectable_
 
     def formatClassList(self):
 

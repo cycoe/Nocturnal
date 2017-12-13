@@ -59,7 +59,7 @@ def cycle():
     while True:
         command = input('>>> ')
         if not ArgvsParser.run(command):
-            print(Logger.log(String['wrong_argument'], level=Logger.error))
+            print(Logger.log(String['wrong_argument'], level=Logger.warning))
 
 
 def outputWelcome():
