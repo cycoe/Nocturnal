@@ -154,11 +154,12 @@ class Robber(object):
                 print(Logger.log(String['dozing'], level=Logger.info))
                 time.sleep(MisUtils.refreshSleep())
 
-            newSelected_ = [selected[2] for selected in selected_ if selected[2] not in MisUtils.getSelected()]
-            if newSelected_:
-                MisUtils.mergeSelected(newSelected_)
-                print(Logger.log(String['robbed_new_reports'], subContent_=newSelected_, level=Logger.error))
-                selectedHtml = [''.join(['<td>' + item + '</td>' for item in selected]) for selected in newSelected_]
+            new_selected_ = [selected for selected in selected_ if selected[2] not in MisUtils.getSelected()]
+            new_selected_item_ = [selected[2] for selected in new_selected_]
+            if new_selected_item_:
+                MisUtils.mergeSelected(new_selected_item_)
+                print(Logger.log(String['robbed_new_reports'], subContent_=new_selected_item_, level=Logger.error))
+                selectedHtml = [''.join(['<td>' + item + '</td>' for item in selected]) for selected in new_selected_]
                 selectedHtml = ''.join(['<tr>' + selected + '</tr>' for selected in selectedHtml])
                 selectedHtml = '<table border="1" bordercolor="#999999" border="1" style="background-color:#F0F0E8;\
                 border-color:#999999;font-size:X-Small;width:100%;border-collapse:collapse;">' + selectedHtml + '</table>'
