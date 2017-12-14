@@ -130,8 +130,12 @@ def donate():
         choice = input('> ')
         if choice == '1':
             MisUtils.show_qrcode('alipay.png')
+            print(Logger.log(String['thanks_to_support']))
+            break
         elif choice == '2':
             MisUtils.show_qrcode('wechat.png')
+            print(Logger.log(String['thanks_to_support']))
+            break
         elif choice == '3':
             print(Logger.log(String['remember_to_donate']))
             break
