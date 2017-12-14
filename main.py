@@ -125,7 +125,7 @@ def donate():
     print(Logger.log(String['thanks_to_donate'], [
         '1. ' + String['alipay'],
         '2. ' + String['wechat'],
-        '3. ' + String['no_now']], level=Logger.info))
+        '3. ' + String['not_now']], level=Logger.info))
     while True:
         choice = input('> ')
         if choice == '1':
