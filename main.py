@@ -67,6 +67,7 @@ def outputWelcome():
         ['Class Robber ' + MisUtils.version],
         ['By ' + MisUtils.author],
         ['Site: cycoe.cc'],
+        ['GitHub: https://github.com/cycoe/class_robber'],
         ['License: MIT 3.0']
     ], padding=5, horizontalSpacer=False))
 
