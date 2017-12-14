@@ -47,12 +47,12 @@ def initArgvs():
     ArgvsParser.connect(['report', 's'], robReport)
     ArgvsParser.connect(['class', 'c'], robAllClass)
     # ArgvsParser.connect(['englishTest', 'et'], robEnglish)
-    ArgvsParser.connect(['login', 'l'], login)
+    # ArgvsParser.connect(['login', 'l'], login)
     # ArgvsParser.connect(['notifyReport', 'ns'], notifyReport)
     # ArgvsParser.connect(['wechatLogin', 'wl'], wechatLogin)
     ArgvsParser.connect(['quit', 'q'], quit_)
     ArgvsParser.connect(['emailLogin', 'el'], emailLogin)
-    ArgvsParser.connect(['donate', 'd'], printQRCode)
+    ArgvsParser.connect(['donate', 'd'], donate)
 
 
 def cycle():
@@ -76,7 +76,7 @@ def outputHelp():
     print(OutputFormater.table([
         ['command', 'abbr.', 'description'],
         ['help', 'h', 'print helps'],
-        ['login', 'l', 'login web'],
+        # ['login', 'l', 'login web'],
         ['emailLogin', 'el', 'login email to send notification'],
         ['report', 's', 'report robbing mode'],
         # ['class', 'c', 'class robbing mode'],
@@ -85,8 +85,8 @@ def outputHelp():
     ], gravity=OutputFormater.center, padding=2))
 
 
-def login():
-    robber.login()
+# def login():
+#     robber.login()
 
 
 def wechatLogin():
@@ -117,14 +117,12 @@ def emailLogin():
     robber.emailLogin()
 
 
-def printQRCode():
+def donate():
+    print(OutputFormater.table([
+        []
+    ]))
     wechatURI = pyqrcode.create(MisUtils.wechatURI)
     alipayURI = pyqrcode.create(MisUtils.alipayURI)
-    print(Logger.log(String['thanks_to_donate']))
-    print(OutputFormater.table([['Via Wechat'], ['|'], ['V']], verticalSpacer=False, horizontalSpacer=False, padding=10))
-    print(wechatURI.terminal(quiet_zone=1))
-    print(OutputFormater.table([['Via Alipay'], ['|'], ['V']], verticalSpacer=False, horizontalSpacer=False, padding=10))
-    print(alipayURI.terminal(quiet_zone=1))
 
 
 def quit_():

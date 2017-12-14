@@ -181,7 +181,7 @@ class Spider(object):
 
         MisUtils.initAttempt()
         while MisUtils.descAttempt():
-            self.response = self.session.send(prepareBody)
+            self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
             self.VIEWSTATE = self.getVIEWSTATE()
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
@@ -214,7 +214,7 @@ class Spider(object):
 
             MisUtils.initAttempt()
             while MisUtils.descAttempt():
-                codeImg = self.session.send(prepareBody)  # 获取验证码图片
+                codeImg = self.session.send(prepareBody, timeout=MisUtils.timeout)  # 获取验证码图片
                 if codeImg.status_code == 200:
                     break
                 else:
@@ -255,7 +255,7 @@ class Spider(object):
 
             MisUtils.initAttempt()
             while MisUtils.descAttempt():
-                self.response = self.session.send(prepareBody)
+                self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
                 if self.response.status_code == 200:
                     break
             if not MisUtils.descAttempt():
@@ -295,7 +295,7 @@ class Spider(object):
 
         MisUtils.initAttempt()
         while MisUtils.descAttempt():
-            self.response = self.session.send(prepareBody)
+            self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
             self.VIEWSTATE = self.getVIEWSTATE()
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
@@ -325,7 +325,7 @@ class Spider(object):
                                    params=payload)
 
         while True:
-            self.response = self.session.send(prepareBody)
+            self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
             if self.response.status_code == 200:
                 print('Post class successfully')
                 break
@@ -345,7 +345,7 @@ class Spider(object):
                                    params=payload)
 
         while True:
-            self.response = self.session.send(prepareBody)
+            self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
             if self.response.status_code == 200:
                 break
             else:
@@ -360,7 +360,7 @@ class Spider(object):
     def getEnglishTest(self):
 
         while True:
-            self.response = self.session.send(self.prepareGetEnglishTest())
+            self.response = self.session.send(self.prepareGetEnglishTest(), timeout=MisUtils.timeout)
             self.VIEWSTATE = self.getVIEWSTATE()
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
@@ -371,7 +371,7 @@ class Spider(object):
     def postEnglishTest(self):
 
         while True:
-            self.response = self.session.send(self.preparePostEnglishTest())
+            self.response = self.session.send(self.preparePostEnglishTest(), timeout=MisUtils.timeout)
             if self.response.status_code == 200:
                 print("Request english test successfully!")
                 break
@@ -403,7 +403,7 @@ class Spider(object):
 
         MisUtils.initAttempt()
         while MisUtils.descAttempt():
-            self.response = self.session.send(prepareBody)
+            self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
             self.VIEWSTATE = self.getVIEWSTATE()
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
@@ -427,7 +427,7 @@ class Spider(object):
 
         MisUtils.initAttempt()
         while MisUtils.descAttempt():
-            codeImg = self.session.send(prepareBody)  # 获取验证码图片
+            codeImg = self.session.send(prepareBody, timeout=MisUtils.timeout)  # 获取验证码图片
             if codeImg.status_code == 200:
                 break
             else:
@@ -463,7 +463,7 @@ class Spider(object):
 
         MisUtils.initAttempt()
         while MisUtils.descAttempt():
-            self.response = self.session.send(prepareBody)
+            self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
             self.VIEWSTATE = self.getVIEWSTATE()
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:

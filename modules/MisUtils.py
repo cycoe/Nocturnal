@@ -21,6 +21,7 @@ class MisUtils(object):
     # 参数设置
     refreshSleep = getRandomTime(10)    # 刷新的间隔时间
     wechatPushSleep = getRandomTime(1)  # 发送两条微信消息之间的间隔
+    timeout = 10
     maxAttempt = 100					# 最大递归次数
     attempt = maxAttempt
 
