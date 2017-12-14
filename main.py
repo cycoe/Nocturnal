@@ -118,11 +118,25 @@ def emailLogin():
 
 
 def donate():
-    print(OutputFormater.table([
-        []
-    ]))
     wechatURI = pyqrcode.create(MisUtils.wechatURI)
     alipayURI = pyqrcode.create(MisUtils.alipayURI)
+    wechatURI.png('wechat.png', scale=10)
+    alipayURI.png('alipay.png', scale=10)
+    print(Logger.log(String['thanks_to_donate'], [
+        '1. ' + String['alipay'],
+        '2. ' + String['wechat'],
+        '3. ' + String['no_now']], level=Logger.info))
+    while True:
+        choice = input('> ')
+        if choice == '1':
+            MisUtils.show_qrcode('alipay.png')
+        elif choice == '2':
+            MisUtils.show_qrcode('wechat.png')
+        elif choice == '3':
+            print(Logger.log(String['remember_to_donate']))
+            break
+        else:
+            print(Logger.log(String['wrong_argument'], level=Logger.warning))
 
 
 def quit_():

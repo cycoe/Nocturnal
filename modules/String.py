@@ -38,4 +38,8 @@ String = {
     'check_your_email_address': '请检查你的邮箱地址是否正确: ',
     'cannot_handle_decode': '无法对邮件的编码进行解析',
     'check_your_computer_name': '请将你的电脑主机名设为英文',
+    'alipay': '支付宝',
+    'wechat': '微信',
+    'no_now': '先不了',
+    'remember_to_donate': '觉得好用别忘了赏我一杯咖啡钱哦',
 }

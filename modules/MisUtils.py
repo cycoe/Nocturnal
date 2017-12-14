@@ -4,7 +4,7 @@
 import random
 import os
 import platform
-import pyqrcode
+from PIL import Image
 
 
 def getRandomTime(sleepTime):
@@ -117,11 +117,7 @@ class MisUtils(object):
                 fr.write(oriSelected + '\n')
 
     @staticmethod
-    def format_qrcode(uri):
-        qrcode = pyqrcode.create(uri)
-        qrcode_string = qrcode.terminal(quiet_zone=1)
-        if platform.system() == 'Windows':
-            pass
-        else:
-            return qrcode_string
+    def show_qrcode(img_path):
+        img = Image.open(img_path)
+        img.show()
 
