@@ -4,6 +4,7 @@
 *.conf
 .idea
 check.gif
+*.png
 dist
 build
 blackList
