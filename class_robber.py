@@ -144,8 +144,8 @@ def donate():
 
 
 def quit_():
-    print(Logger.log(String['site_cleaning'], [String['exiting']], level=Logger.error))
     robber.clean()
+    print(Logger.log(String['site_cleaning'], [String['exiting']], level=Logger.error))
     exit(0)
 
 
