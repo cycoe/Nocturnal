@@ -32,6 +32,7 @@ String = {
     'dozing': '没有报告可抢，开始休眠...',
     'robbed_new_reports': '抢到新报告',
     'site_cleaning': '清理现场...',
+    'close_session': '关闭会话...',
     'exiting': '正在退出...',
     'have_send_a_mail': '已向你的邮箱中发送通知邮件',
     'to_mail': '目标邮箱: ',

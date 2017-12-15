@@ -576,6 +576,7 @@ class Spider(object):
         """
         爬取结束关闭会话
         """
+        print(Logger.log(String['close_session']))
         self.session.close()
 
 
