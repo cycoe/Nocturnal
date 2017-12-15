@@ -431,7 +431,7 @@ class Spider(object):
             if codeImg.status_code == 200:
                 break
             else:
-                print(Logger.log(String['failed_fetch_vertify_code'], [String['retrying']], level=Logger.error))
+                print(Logger.log(String['failed_fetch_vertify_code'], [String['retrying']], level=Logger.warning))
         if not MisUtils.descAttempt():
             print(Logger.log(String['max_attempts'], [String['server_unreachable']], level=Logger.error))
             return False

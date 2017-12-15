@@ -160,7 +160,7 @@ class Robber(object):
                     if not flag:
                         break
                 else:
-                    print(Logger.log(String['dozing'], level=Logger.info))
+                    print(Logger.log(String['dozing']))
                     time.sleep(MisUtils.refreshSleep())
 
                 new_selected_ = [selected for selected in selected_ if selected[2] not in MisUtils.getSelected()]
