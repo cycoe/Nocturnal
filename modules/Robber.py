@@ -174,7 +174,7 @@ class Robber(object):
                     border-color:#999999;font-size:X-Small;width:100%;border-collapse:collapse;">' + selectedHtml + '</table>'
                     if Mail.connectedToMail:
                         threading.Thread(target=Mail.send_mail, args=(String['robbed_new_reports'], selectedHtml,)).start()
-            self.spider.clean()
+            self.clean()
 
     @checkStatus(getLoginStatus)
     def robClass(self, classIdList):
@@ -190,5 +190,3 @@ class Robber(object):
 
     def clean(self):
         self.spider.clean()
-        print(Logger.log(String['site_cleaning'], [String['exiting']], level=Logger.error))
-        exit(0)

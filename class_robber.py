@@ -144,7 +144,9 @@ def donate():
 
 
 def quit_():
+    print(Logger.log(String['site_cleaning'], [String['exiting']], level=Logger.error))
     robber.clean()
+    exit(0)
 
 
 if __name__ == "__main__":
