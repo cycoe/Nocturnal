@@ -90,10 +90,7 @@ class Spider(object):
         :returns: 页面的 __VIEWSTATE
         """
         VIEWSTATE = re.findall(self.viewStatePattern, self.response.text)
-        if len(VIEWSTATE) > 0:
-            return VIEWSTATE
-        else:
-            return None
+        return VIEWSTATE if len(VIEWSTATE) > 0 else None
 
     def getEVENTVALIDATION(self):
         """
@@ -102,10 +99,7 @@ class Spider(object):
         :returns: 页面的 __EVENTVALIDATION
         """
         EVENTVALIDATION = re.findall(self.eventValidationPattern, self.response.text)
-        if len(EVENTVALIDATION) > 0:
-            return EVENTVALIDATION
-        else:
-            return None
+        return EVENTVALIDATION if len(EVENTVALIDATION) > 0 else None
 
     def prepare(self,
                 referer=None,
@@ -160,12 +154,6 @@ class Spider(object):
         req = Request('POST', UrlBean.englishTestUrl, headers=headers, data=postData, params=payload)
         return self.session.prepare_request(req)
 
-    def prepareFetchReportList(self):
-        headers = self.formatHeaders(referer=UrlBean.leftMenuReferer)
-        payload = {'xh': MisUtils.confDict['userName']}
-        req = Request('GET', UrlBean.fetchReportListUrl, headers=headers, params=payload)
-        return self.session.prepare_request(req)
-
     def login(self):
         """
         登录教务网
@@ -187,7 +175,7 @@ class Spider(object):
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
                 break
             print(Logger.log(String['failed_fetch_login'], [String['retrying']], level=Logger.warning))
-        if not MisUtils.descAttempt():
+        if not MisUtils.get_attempt():
             print(Logger.log(String['max_attempts'], [String['server_unreachable']], level=Logger.error))
             return False
 
@@ -219,7 +207,7 @@ class Spider(object):
                     break
                 else:
                     print(Logger.log(String['failed_fetch_vertify_code'], [String['retrying']], level=Logger.warning))
-            if not MisUtils.descAttempt():
+            if not MisUtils.get_attempt():
                 print(Logger.log(String['max_attempts'], [String['server_unreachable']], level=Logger.error))
                 return False
 
@@ -258,7 +246,7 @@ class Spider(object):
                 self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
                 if self.response.status_code == 200:
                     break
-            if not MisUtils.descAttempt():
+            if not MisUtils.get_attempt():
                 print(Logger.log(String['max_attempts'], [String['server_unreachable']], level=Logger.error))
                 return False
 
@@ -302,7 +290,7 @@ class Spider(object):
                 break
             else:
                 print(Logger.log('retrying fetching class list...'))
-        if not MisUtils.descAttempt():
+        if not MisUtils.get_attempt():
             print(Logger.log('Up to max attempts!', ['Maybe you need to re-login'], level=Logger.error))
             return False
 
@@ -410,7 +398,7 @@ class Spider(object):
                 break
             else:
                 print(Logger.log(String['failed_fetch_report'], [String['retrying']], level=Logger.warning))
-        if not MisUtils.descAttempt():
+        if not MisUtils.get_attempt():
             print(Logger.log(String['max_attempts'], [String['re-login']], level=Logger.error))
             return False
 
@@ -432,7 +420,7 @@ class Spider(object):
                 break
             else:
                 print(Logger.log(String['failed_fetch_vertify_code'], [String['retrying']], level=Logger.warning))
-        if not MisUtils.descAttempt():
+        if not MisUtils.get_attempt():
             print(Logger.log(String['max_attempts'], [String['server_unreachable']], level=Logger.error))
             return False
 
@@ -470,7 +458,7 @@ class Spider(object):
                 break
             else:
                 print(Logger.log(String['failed_post_report'], [String['retrying']], level=Logger.warning))
-        if not MisUtils.descAttempt():
+        if not MisUtils.get_attempt():
             print(Logger.log(String['max_attempts'], [String['re-login']], level=Logger.error))
             return False
 
@@ -519,10 +507,7 @@ class Spider(object):
             reportRow = ['Selected']
             for i in self.reportFilter:
                 item = re.findall(self.removeTd, str(tempRow[i]))
-                if len(item) == 0:
-                    reportRow.append('')
-                else:
-                    reportRow.append(item[0])
+                reportRow.append(item[0] if item else '')
             selected_.append(reportRow)
 
         for tempRow in tempSelectable_[1:]:
@@ -531,10 +516,7 @@ class Spider(object):
             reportRow = [buttonId]
             for i in self.reportFilter:
                 item = re.findall(self.removeTd, str(tempRow[i]))
-                if len(item) == 0:
-                    reportRow.append('')
-                else:
-                    reportRow.append(item[0])
+                reportRow.append(item[0] if item else '')
             selectable_.append(reportRow)
 
         return selected_, selectable_
