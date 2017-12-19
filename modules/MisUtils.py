@@ -2,8 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import random
+import time
 import os
 import re
+import sys
 import platform
 from PIL import Image
 from modules.Logger import Logger
@@ -24,6 +26,7 @@ class MisUtils(object):
     # 参数设置
     refreshSleep = getRandomTime(10)    # 刷新的间隔时间
     wechatPushSleep = getRandomTime(1)  # 发送两条微信消息之间的间隔
+    animationSleep = 0.5                # 等待动画的刷新时间
     timeout = 10                        # 连接超时时间
     maxAttempt = 100					# 最大递归次数
     attempt = maxAttempt
@@ -90,7 +93,7 @@ class MisUtils(object):
         for item in list(MisUtils.confDict.keys())[2:]:
             current = MisUtils.confDict[item]
             while True:
-                buffer = input('> ' + String[item] + '(' + String['current'] + ': ' + current + '): ')
+                buffer = MisUtils.read_line('> ' + String[item] + '(' + String['current'] + ': ' + current + '): ')
                 if not buffer and current:
                     break
                 elif re.search(MisUtils.pattern[item], buffer):
@@ -138,3 +141,23 @@ class MisUtils(object):
         img = Image.open(img_path)
         img.show()
 
+    @staticmethod
+    def read_line(tip='', strip=True):
+        sys.stdout.write(tip)
+        sys.stdout.flush()
+        result = sys.stdin.readline()
+        if strip:
+            result = result.strip('\n')
+
+        return result
+
+    @staticmethod
+    def wait_animation(sleep_time):
+        symbol = ['-', '\\', '|', '/']
+        sep = ' '
+        for index in range(int(sleep_time / MisUtils.animationSleep)):
+            sys.stdout.write(symbol[index % len(symbol)] + sep)
+            sys.stdout.flush()
+            time.sleep(MisUtils.animationSleep)
+            sys.stdout.write('\b' * (len(symbol[index % len(symbol)] + sep)))
+            sys.stdout.flush()

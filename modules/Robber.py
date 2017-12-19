@@ -159,7 +159,7 @@ class Robber(object):
                         break
                 else:
                     print(Logger.log(String['dozing']))
-                    time.sleep(MisUtils.refreshSleep())
+                    MisUtils.wait_animation(MisUtils.refreshSleep())
 
                 new_selected_ = [selected for selected in selected_ if selected[2] not in MisUtils.getSelected()]
                 new_selected_item_ = [selected[2] for selected in new_selected_]
