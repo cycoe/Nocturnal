@@ -3,8 +3,11 @@
 
 import random
 import os
+import re
 import platform
 from PIL import Image
+from modules.Logger import Logger
+from modules.String import String
 
 
 def getRandomTime(sleepTime):
@@ -21,7 +24,7 @@ class MisUtils(object):
     # 参数设置
     refreshSleep = getRandomTime(10)    # 刷新的间隔时间
     wechatPushSleep = getRandomTime(1)  # 发送两条微信消息之间的间隔
-    timeout = 10
+    timeout = 10                        # 连接超时时间
     maxAttempt = 100					# 最大递归次数
     attempt = maxAttempt
 
@@ -31,12 +34,8 @@ class MisUtils(object):
     version = 'V 3.0'
     author = 'Cycoe'				# 作者
     platform = platform.system()    # 运行平台
-    logPath = 'robber.log'			# 日志文件路径
     confFile = 'robber.conf'		# 配置文件路径
     blackList = 'blackList'			# 报告黑名单文件路径
-    sender = 'class_robber@cycoe.cc'    # 邮件发送邮箱
-    emailPassword = 'class_robber'		# 邮件发送密码
-    host = 'smtp.ym.163.com'			# 邮件接受邮箱
 
     wechatURI = 'wxp://f2f0PYx27X0CWU1yiBhSKeHHgYzfA27iOicM'    # 微信二维码 URI
     alipayURI = 'HTTPS://QR.ALIPAY.COM/FKX01669SBV7NA4ALTVPE8'  # 支付宝二维码 URI
@@ -45,6 +44,18 @@ class MisUtils(object):
         'userName': '',
         'password': '',
         'receiver': '',
+        'sender': 'class_robber@cycoe.cc',
+        'sender_password': 'class_robber',
+        'sender_host': 'smtp.ym.163.com',
+        'sender_port': '25',
+    }
+
+    pattern = {
+        'receiver': '.+@.+(\..+)+',
+        'sender': '.+@.+(\..+)+',
+        'sender_password': '.*',
+        'sender_host': 'smtp(\..+)+',
+        'sender_port': '\d+',
     }
 
     @staticmethod
@@ -76,7 +87,17 @@ class MisUtils(object):
     def setEmailInfo():
         if MisUtils.checkConfFile():
             MisUtils.loadConfFile()
-        MisUtils.confDict['receiver'] = input('> receiver email: ')
+        for item in list(MisUtils.confDict.keys())[2:]:
+            current = MisUtils.confDict[item]
+            while True:
+                buffer = input('> ' + String[item] + '(' + String['current'] + ': ' + current + '): ')
+                if not buffer and current:
+                    break
+                elif re.search(MisUtils.pattern[item], buffer):
+                    MisUtils.confDict[item] = buffer
+                    break
+                else:
+                    print(Logger.log(String['check_spell'], level=Logger.warning))
 
     @staticmethod
     def initAttempt():
@@ -85,7 +106,7 @@ class MisUtils(object):
     @staticmethod
     def descAttempt():
         MisUtils.attempt -= 1
-        return True if MisUtils.get_attempt() else False
+        return MisUtils.get_attempt()
 
     @staticmethod
     def get_attempt():

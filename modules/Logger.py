@@ -3,8 +3,6 @@
 
 import time
 
-from modules.MisUtils import MisUtils
-
 
 level_ = ['<i>', '<w>', '<e>']
 
@@ -14,6 +12,8 @@ class Logger(object):
     info = 0
     warning = 1
     error = 2
+
+    log_path = 'robber.log'
 
     @staticmethod
     def log(content, subContent_=None, level=info):
@@ -26,7 +26,7 @@ class Logger(object):
             output += '\n'.join(subContent_)
 
         if level in [Logger.error, Logger.warning]:
-            with open(MisUtils.logPath, 'a') as fr:
+            with open(Logger.log_path, 'a') as fr:
                 fr.write(output + '\n')
 
         return output
