@@ -57,7 +57,7 @@ def initArgvs():
 
 def cycle():
     while True:
-        command = MisUtils.read_line('>>> ')
+        command = input('>>> ')
         if not ArgvsParser.run(command):
             print(Logger.log(String['wrong_argument'], level=Logger.warning))
 
@@ -127,7 +127,7 @@ def donate():
         '2. ' + String['wechat'],
         '3. ' + String['not_now']]))
     while True:
-        choice = MisUtils.read_line('> ')
+        choice = input('> ')
         if choice == '1':
             MisUtils.show_qrcode('alipay.png')
             print(Logger.log(String['thanks_to_support']))

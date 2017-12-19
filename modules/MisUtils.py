@@ -142,22 +142,12 @@ class MisUtils(object):
         img.show()
 
     @staticmethod
-    def read_line(tip='', strip=True):
-        sys.stdout.write(tip)
-        sys.stdout.flush()
-        result = sys.stdin.readline()
-        if strip:
-            result = result.strip('\n')
-
-        return result
-
-    @staticmethod
     def wait_animation(sleep_time):
-        symbol = ['-', '\\', '|', '/']
-        sep = ' '
+        symbol = ['-', '\\', '|', '/']  # 动画显示的符号
+        sep = ' '                       # 动画与光标之间的分隔
         for index in range(int(sleep_time / MisUtils.animationSleep)):
             sys.stdout.write(symbol[index % len(symbol)] + sep)
-            sys.stdout.flush()
+            sys.stdout.flush()          # 清空缓冲区
             time.sleep(MisUtils.animationSleep)
             sys.stdout.write('\b' * (len(symbol[index % len(symbol)] + sep)))
             sys.stdout.flush()

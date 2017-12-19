@@ -182,14 +182,14 @@ class Spider(object):
         if MisUtils.checkConfFile():
             MisUtils.loadConfFile()
         if MisUtils.confDict['userName'] == '' and MisUtils.confDict['password'] == '':
-            MisUtils.confDict['userName'] = MisUtils.read_line("> " + String['username'])
-            MisUtils.confDict['password'] = MisUtils.read_line("> " + String['password'])
+            MisUtils.confDict['userName'] = input("> " + String['username'])
+            MisUtils.confDict['password'] = input("> " + String['password'])
         # 登录主循环
         reInput = False  # 是否需要重新输入用户名和密码
         while True:
             if reInput:
-                MisUtils.confDict['userName'] = MisUtils.read_line("> " + String['username'])
-                MisUtils.confDict['password'] = MisUtils.read_line("> " + String['password'])
+                MisUtils.confDict['userName'] = input("> " + String['username'])
+                MisUtils.confDict['password'] = input("> " + String['password'])
                 reInput = False
 
             # 获取验证码
