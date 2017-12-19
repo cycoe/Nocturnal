@@ -61,6 +61,14 @@ class MisUtils(object):
         'sender_port': '\d+',
     }
 
+    signal = {
+        'report': False,
+    }
+
+    status = {
+        'report': False,
+    }
+
     @staticmethod
     def checkConfFile():
         return os.path.exists(MisUtils.confFile)
@@ -93,7 +101,7 @@ class MisUtils(object):
         for item in list(MisUtils.confDict.keys())[2:]:
             current = MisUtils.confDict[item]
             while True:
-                buffer = MisUtils.read_line('> ' + String[item] + '(' + String['current'] + ': ' + current + '): ')
+                buffer = input('> ' + String[item] + '(' + String['current'] + ': ' + current + '): ')
                 if not buffer and current:
                     break
                 elif re.search(MisUtils.pattern[item], buffer):

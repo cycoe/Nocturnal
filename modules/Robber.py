@@ -54,6 +54,9 @@ class Robber(object):
     # def login(self):
     #     Robber.loginStatus = self.spider.login()
 
+    def login(self):
+        self.spider.login()
+
     def wechatLogin(self):
         itchat.auto_login(enableCmdQR=2)
         for wechatGroup in MisUtils.wechatGroup_:
@@ -138,9 +141,8 @@ class Robber(object):
         #         print(Logger.log('No report to rob, dozing...', level=Logger.info))
         #         time.sleep(MisUtils.refreshSleep())
 
+        MisUtils.status['report'] = True
         while True:
-            self.spider = Spider()
-            self.spider.login()
             while True:
                 flag = self.spider.fetchReportList()
                 if flag:
@@ -172,7 +174,14 @@ class Robber(object):
                     border-color:#999999;font-size:X-Small;width:100%;border-collapse:collapse;">' + selectedHtml + '</table>'
                     if Mail.connectedToMail:
                         threading.Thread(target=Mail.send_mail, args=(String['robbed_new_reports'], selectedHtml,)).start()
+
+                if not MisUtils.signal['report']:
+                    MisUtils.status['report'] = False
+                    self.clean()
+                    return None
             self.clean()
+            self.spider.open_session()
+            self.login()
 
     @checkStatus(getLoginStatus)
     def robClass(self, classIdList):

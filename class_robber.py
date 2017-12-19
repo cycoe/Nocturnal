@@ -8,6 +8,8 @@ from modules.Logger import Logger
 from modules.MisUtils import MisUtils
 from modules.String import String
 import pyqrcode
+import threading
+
 
 #
 #                            _ooOoo_
@@ -44,7 +46,7 @@ def main():
 
 def initArgvs():
     ArgvsParser.connect(['help', 'h'], outputHelp)
-    ArgvsParser.connect(['report', 's'], robReport)
+    ArgvsParser.connect(['report', 'r'], robReport)
     ArgvsParser.connect(['class', 'c'], robAllClass)
     # ArgvsParser.connect(['englishTest', 'et'], robEnglish)
     # ArgvsParser.connect(['login', 'l'], login)
@@ -53,11 +55,13 @@ def initArgvs():
     ArgvsParser.connect(['quit', 'q'], quit_)
     ArgvsParser.connect(['emailLogin', 'el'], emailLogin)
     ArgvsParser.connect(['donate', 'd'], donate)
+    ArgvsParser.connect(['stop'], stop_report)
+    ArgvsParser.connect(['get'], get_report)
 
 
 def cycle():
     while True:
-        command = input('>>> ')
+        command = input('[' + str(len([status for status in MisUtils.status.values() if status])) + '] >>> ')
         if not ArgvsParser.run(command):
             print(Logger.log(String['wrong_argument'], level=Logger.warning))
 
@@ -102,7 +106,18 @@ def notifyReport():
 
 
 def robReport():
-    robber.robReport()
+    if not MisUtils.status['report']:
+        MisUtils.signal['report'] = True
+        robber.login()
+        threading.Thread(target=robber.robReport, args=()).start()
+
+
+def stop_report():
+    MisUtils.signal['report'] = False
+
+
+def get_report():
+    print(MisUtils.status['report'])
 
 
 # def robClass():

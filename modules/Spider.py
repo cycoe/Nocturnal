@@ -55,6 +55,9 @@ class Spider(object):
         self.viewStatePattern = re.compile('<.*name="__VIEWSTATE".*value="(.*)?".*/>')
         self.eventValidationPattern = re.compile('<.*name="__EVENTVALIDATION".*value="(.*)?".*/>')
 
+    def open_session(self):
+        self.session = Session()  # 实例化 session 对象，用于 handle 整个会话
+
     @staticmethod
     def formatHeaders(referer=None, contentLength=None, originHost=None):
         """
