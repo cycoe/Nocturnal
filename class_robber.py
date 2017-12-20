@@ -78,7 +78,7 @@ def outputHelp():
         ['help', 'h', 'print helps'],
         # ['login', 'l', 'login web'],
         ['emailLogin', 'el', 'login email to send notification'],
-        ['report', 's', 'report robbing mode'],
+        ['report', 'r', 'report robbing mode'],
         # ['class', 'c', 'class robbing mode'],
         ['donate', 'd', 'support developer a cup of coffee'],
         ['quit', 'q', 'quit robber']
