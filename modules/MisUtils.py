@@ -150,12 +150,35 @@ class MisUtils(object):
         img.show()
 
     @staticmethod
-    def wait_animation(sleep_time):
+    def wait_animation(wait_method):
         symbol = ['-', '\\', '|', '/']  # 动画显示的符号
         sep = ' '                       # 动画与光标之间的分隔
-        for index in range(int(sleep_time / MisUtils.animationSleep)):
-            sys.stdout.write(symbol[index % len(symbol)] + sep)
-            sys.stdout.flush()          # 清空缓冲区
-            time.sleep(MisUtils.animationSleep)
-            sys.stdout.write('\b' * (len(symbol[index % len(symbol)] + sep)))
-            sys.stdout.flush()
+
+        while True:
+            result = False
+            for item in symbol:
+                result = wait_method()
+                if result:
+                    sys.stdout.write(item + sep)
+                    sys.stdout.flush()  # 清空缓冲区
+                    time.sleep(MisUtils.animationSleep)
+                    sys.stdout.write('\b' * (len(item + sep)))
+                    sys.stdout.flush()
+                else:
+                    break
+            if not result:
+                sys.stdout.write('\n')
+                sys.stdout.flush()
+                break
+
+    # @staticmethod
+    # def wait_animation(sleep_time):
+    #     symbol = ['-', '\\', '|', '/']  # 动画显示的符号
+    #     sep = ' '                       # 动画与光标之间的分隔
+    #
+    #     for index in range(int(sleep_time / MisUtils.animationSleep)):
+    #         sys.stdout.write(symbol[index % len(symbol)] + sep)
+    #         sys.stdout.flush()          # 清空缓冲区
+    #         time.sleep(MisUtils.animationSleep)
+    #         sys.stdout.write('\b' * (len(symbol[index % len(symbol)] + sep)))
+    #         sys.stdout.flush()

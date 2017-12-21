@@ -33,8 +33,11 @@ import threading
 #        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 #                      Buddha Bless, No Bug !
 
+def print_(content):
+    pass
 
-robber = Robber()
+
+robber = Robber(print_)
 
 
 def main():
@@ -47,16 +50,11 @@ def main():
 def initArgvs():
     ArgvsParser.connect(['help', 'h'], outputHelp)
     ArgvsParser.connect(['report', 'r'], robReport)
-    ArgvsParser.connect(['class', 'c'], robAllClass)
-    # ArgvsParser.connect(['englishTest', 'et'], robEnglish)
-    # ArgvsParser.connect(['login', 'l'], login)
-    # ArgvsParser.connect(['notifyReport', 'ns'], notifyReport)
-    # ArgvsParser.connect(['wechatLogin', 'wl'], wechatLogin)
     ArgvsParser.connect(['quit', 'q'], quit_)
     ArgvsParser.connect(['emailLogin', 'el'], emailLogin)
     ArgvsParser.connect(['donate', 'd'], donate)
     ArgvsParser.connect(['stop'], stop_report)
-    ArgvsParser.connect(['get'], get_report)
+    ArgvsParser.connect(['status', 's'], get_status)
 
 
 def cycle():
@@ -80,29 +78,11 @@ def outputHelp():
     print(OutputFormater.table([
         ['command', 'abbr.', 'description'],
         ['help', 'h', 'print helps'],
-        # ['login', 'l', 'login web'],
         ['emailLogin', 'el', 'login email to send notification'],
         ['report', 's', 'report robbing mode'],
-        # ['class', 'c', 'class robbing mode'],
         ['donate', 'd', 'support developer a cup of coffee'],
         ['quit', 'q', 'quit robber']
     ], gravity=OutputFormater.center, padding=2))
-
-
-# def login():
-#     robber.login()
-
-
-def wechatLogin():
-    robber.wechatLogin()
-
-
-def robAllClass():
-    robber.getClassIdList(None)
-
-
-def notifyReport():
-    robber.notifyReport()
 
 
 def robReport():
@@ -114,10 +94,14 @@ def robReport():
 
 def stop_report():
     MisUtils.signal['report'] = False
+    print(Logger.log('正在关闭所有后台任务... '), end='')
+    MisUtils.wait_animation(lambda: MisUtils.status['report'])
 
 
-def get_report():
-    print(MisUtils.status['report'])
+def get_status():
+    process = list(MisUtils.status.keys())
+    status = ['running' if item else 'stop' for item in list(MisUtils.status.values())]
+    print(OutputFormater.table(list(zip(process, status)), gravity=OutputFormater.left, padding=2))
 
 
 # def robClass():
@@ -159,6 +143,7 @@ def donate():
 
 
 def quit_():
+    stop_report()
     robber.clean()
     print(Logger.log(String['site_cleaning'], [String['exiting']], level=Logger.error))
     exit(0)

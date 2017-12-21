@@ -41,8 +41,9 @@ class Spider(object):
     WRONG_VERTIFY_CODE = 4
     LOGIN_SUCCESSFULLY = 5
 
-    def __init__(self):
+    def __init__(self, output):
         self.session = Session()    # 实例化 session 对象，用于 handle 整个会话
+        self.output = output
         self.network = Network()
         self.network.load_tag(load_tag()).set_structure([300, 200, 100, 7]).load_weight()
 
@@ -180,9 +181,9 @@ class Spider(object):
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
                 break
-            print(Logger.log(String['failed_fetch_login'], [String['retrying']], level=Logger.warning))
+            self.output(Logger.log(String['failed_fetch_login'], [String['retrying']], level=Logger.warning))
         if not MisUtils.get_attempt():
-            print(Logger.log(String['max_attempts'], [String['server_unreachable']], level=Logger.error))
+            self.output(Logger.log(String['max_attempts'], [String['server_unreachable']], level=Logger.error))
             return Spider.MAX_ATTEMPT
 
     def login(self, username, password):
@@ -204,22 +205,22 @@ class Spider(object):
             if codeImg.status_code == 200:
                 break
             else:
-                print(Logger.log(String['failed_fetch_vertify_code'], [String['retrying']], level=Logger.warning))
+                self.output(Logger.log(String['failed_fetch_vertify_code'], [String['retrying']], level=Logger.warning))
         if not MisUtils.get_attempt():
-            print(Logger.log(String['max_attempts'], [String['server_unreachable']], level=Logger.error))
+            self.output(Logger.log(String['max_attempts'], [String['server_unreachable']], level=Logger.error))
             return Spider.MAX_ATTEMPT
 
         with open('check.gif', 'wb') as fr:  # 保存验证码图片
             for chunk in codeImg:
                 fr.write(chunk)
 
-        # print_vertify_code()
+        # self.output_vertify_code()
         verCode = ''
         vectors_ = img2Vector('check.gif')
         if vectors_:
             for vector in vectors_:
                 verCode += chr(int(''.join([str(item) for item in self.network.classify(vector)]), base=2))
-        # print(verCode)
+        # self.output(verCode)
         # verCode = self.classifier.recognizer("check.gif")  # 识别验证码
 
         # 发送登陆请求
@@ -246,27 +247,27 @@ class Spider(object):
                 break
 
         if not MisUtils.get_attempt():
-            print(Logger.log(String['max_attempts'], [String['server_unreachable']], level=Logger.error))
+            self.output(Logger.log(String['max_attempts'], [String['server_unreachable']], level=Logger.error))
             return Spider.MAX_ATTEMPT
 
         if re.search('用户名不存在', self.response.text):
-            print(Logger.log(String['no_such_a_user'], [String['clean_password']], level=Logger.error))
+            self.output(Logger.log(String['no_such_a_user'], [String['clean_password']], level=Logger.error))
             return Spider.NO_SUCH_A_USER
 
         elif re.search('密码错误', self.response.text):
-            print(Logger.log(String['wrong_password'], [String['clean_password']], level=Logger.error))
+            self.output(Logger.log(String['wrong_password'], [String['clean_password']], level=Logger.error))
             return Spider.WRONG_PASSWORD
 
         elif re.search('请输入验证码', self.response.text):
-            print(Logger.log(String['empty_vertify_code'], [String['retrying']], level=Logger.error))
+            self.output(Logger.log(String['empty_vertify_code'], [String['retrying']], level=Logger.error))
             return Spider.EMPTY_VERTIFY_CODE
 
         elif re.search('验证码错误', self.response.text):
-            print(Logger.log(String['wrong_vertify_code'], [String['retrying']], level=Logger.error))
+            self.output(Logger.log(String['wrong_vertify_code'], [String['retrying']], level=Logger.error))
             return Spider.WRONG_VERTIFY_CODE
 
         else:
-            print(Logger.log(String['login_successfully'], [String['username'] + MisUtils.confDict['userName']], level=Logger.error))
+            self.output(Logger.log(String['login_successfully'], [String['username'] + MisUtils.confDict['userName']], level=Logger.error))
             return Spider.LOGIN_SUCCESSFULLY
 
     def fetchClassList(self):
@@ -287,9 +288,9 @@ class Spider(object):
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
                 break
             else:
-                print(Logger.log('retrying fetching class list...'))
+                self.output(Logger.log('retrying fetching class list...'))
         if not MisUtils.get_attempt():
-            print(Logger.log('Up to max attempts!', ['Maybe you need to re-login'], level=Logger.error))
+            self.output(Logger.log('Up to max attempts!', ['Maybe you need to re-login'], level=Logger.error))
             return False
 
         return self.formatClassList()
@@ -313,10 +314,10 @@ class Spider(object):
         while True:
             self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
             if self.response.status_code == 200:
-                print('Post class successfully')
+                self.output('Post class successfully')
                 break
             else:
-                print('Retrying...')
+                self.output('Retrying...')
 
         return self.formatClassList()
 
@@ -335,7 +336,7 @@ class Spider(object):
             if self.response.status_code == 200:
                 break
             else:
-                print("Retrying fetching schedule...")
+                self.output("Retrying fetching schedule...")
 
         soup = BeautifulSoup(self.response.text, 'html.parser')
         with open('schedule.md', 'w') as fr:
@@ -352,17 +353,17 @@ class Spider(object):
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
                 break
             else:
-                print("Retrying fetching English test view status...")
+                self.output("Retrying fetching English test view status...")
 
     def postEnglishTest(self):
 
         while True:
             self.response = self.session.send(self.preparePostEnglishTest(), timeout=MisUtils.timeout)
             if self.response.status_code == 200:
-                print("Request english test successfully!")
+                self.output("Request english test successfully!")
                 break
             else:
-                print("Retrying...")
+                self.output("Retrying...")
 
     def getEnglishTestStatus(self):
 
@@ -395,9 +396,9 @@ class Spider(object):
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
                 break
             else:
-                print(Logger.log(String['failed_fetch_report'], [String['retrying']], level=Logger.warning))
+                self.output(Logger.log(String['failed_fetch_report'], [String['retrying']], level=Logger.warning))
         if not MisUtils.get_attempt():
-            print(Logger.log(String['max_attempts'], [String['re-login']], level=Logger.error))
+            self.output(Logger.log(String['max_attempts'], [String['re-login']], level=Logger.error))
             return False
 
         return self.formatReportList()
@@ -417,9 +418,9 @@ class Spider(object):
             if codeImg.status_code == 200:
                 break
             else:
-                print(Logger.log(String['failed_fetch_vertify_code'], [String['retrying']], level=Logger.warning))
+                self.output(Logger.log(String['failed_fetch_vertify_code'], [String['retrying']], level=Logger.warning))
         if not MisUtils.get_attempt():
-            print(Logger.log(String['max_attempts'], [String['server_unreachable']], level=Logger.error))
+            self.output(Logger.log(String['max_attempts'], [String['server_unreachable']], level=Logger.error))
             return False
 
         with open('check.gif', 'wb') as fr:  # 保存验证码图片
@@ -455,9 +456,9 @@ class Spider(object):
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
                 break
             else:
-                print(Logger.log(String['failed_post_report'], [String['retrying']], level=Logger.warning))
+                self.output(Logger.log(String['failed_post_report'], [String['retrying']], level=Logger.warning))
         if not MisUtils.get_attempt():
-            print(Logger.log(String['max_attempts'], [String['re-login']], level=Logger.error))
+            self.output(Logger.log(String['max_attempts'], [String['re-login']], level=Logger.error))
             return False
 
         # postData = {
@@ -480,7 +481,7 @@ class Spider(object):
         #     if self.response.status_code == 200:
         #         break
         #     else:
-        #         print(Logger.log('Retrying posting report request...', level=Logger.warning))
+        #         self.output(Logger.log('Retrying posting report request...', level=Logger.warning))
 
         return True
 
@@ -556,7 +557,7 @@ class Spider(object):
         """
         爬取结束关闭会话
         """
-        print(Logger.log(String['close_session']))
+        self.output(Logger.log(String['close_session']))
         self.session.close()
 
 

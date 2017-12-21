@@ -28,7 +28,7 @@ def checkStatus(*check_):
             if flag:
                 func(self, *args)
             else:
-                print(Logger.log(String['login_first'], level=Logger.error))
+                self.output(Logger.log(String['login_first'], level=Logger.error))
         return return_wrapper
     return func_wrapper
 
@@ -46,8 +46,9 @@ class Robber(object):
     loginStatus = False
     wechatLoginStatus = False
 
-    def __init__(self):
-        self.spider = Spider()
+    def __init__(self, output):
+        self.spider = Spider(output)
+        self.output = output
 
         self.wechatId_ = []
 
@@ -78,21 +79,21 @@ class Robber(object):
             elif result is Spider.WRONG_VERTIFY_CODE:
                 pass
             elif result is Spider.LOGIN_SUCCESSFULLY:
+                MisUtils.dumpConfFile()
                 break
 
-    def wechatLogin(self):
-        itchat.auto_login(enableCmdQR=2)
-        for wechatGroup in MisUtils.wechatGroup_:
-            self.wechatId_.append(itchat.search_chatrooms(wechatGroup)[0]['UserName'])
-        for wechatUser in MisUtils.wechatUser_:
-            self.wechatId_.append(itchat.search_friends(wechatUser)[0]['UserName'])
-        Robber.wechatLoginStatus = True
+    # def wechatLogin(self):
+    #     itchat.auto_login(enableCmdQR=2)
+    #     for wechatGroup in MisUtils.wechatGroup_:
+    #         self.wechatId_.append(itchat.search_chatrooms(wechatGroup)[0]['UserName'])
+    #     for wechatUser in MisUtils.wechatUser_:
+    #         self.wechatId_.append(itchat.search_friends(wechatUser)[0]['UserName'])
+    #     Robber.wechatLoginStatus = True
 
-    @staticmethod
-    def emailLogin():
-        print(Logger.log(String['change_mail']))
+    def emailLogin(self):
+        self.output(Logger.log(String['change_mail']))
         MisUtils.setEmailInfo()
-        print(Logger.log(String['sending_a_test_mail'], subContent_=[
+        self.output(Logger.log(String['sending_a_test_mail'], subContent_=[
             String['check_in_trash_box'],
             String['sender_mail_address'] + MisUtils.confDict['sender'],
             String['nickname'] + 'class_robber'
@@ -101,16 +102,16 @@ class Robber(object):
         if Mail.connectedToMail:
             MisUtils.dumpConfFile()
 
-    @checkStatus(getLoginStatus, getWechatLoginStatus)
-    def pushToAllGroup(self, msg):
-        for wechatId in self.wechatId_:
-            itchat.send(msg, toUserName=wechatId)
-            time.sleep(MisUtils.wechatPushSleep())
+    # @checkStatus(getLoginStatus, getWechatLoginStatus)
+    # def pushToAllGroup(self, msg):
+    #     for wechatId in self.wechatId_:
+    #         itchat.send(msg, toUserName=wechatId)
+    #         time.sleep(MisUtils.wechatPushSleep())
 
-    @checkStatus(getLoginStatus)
-    def getClassIdList(self, listFile):
-        classList = self.spider.fetchClassList()
-        print(classList)
+    # @checkStatus(getLoginStatus)
+    # def getClassIdList(self, listFile):
+    #     classList = self.spider.fetchClassList()
+    #     self.output(classList)
 
     # @checkStatus(getLoginStatus, getWechatLoginStatus)
     # def notifyReport(self, threshold=3):
@@ -134,7 +135,7 @@ class Robber(object):
     #             availableReportListCache = availableReportList[:]
     #             availableReportList.insert(0, ['报告类别', '报告名称', '报告时间', '报告地点', '余量'])
     #             # self.pushToAllGroup(OutputFormater.output(availableReportList, header='有报告余量！'))
-    #             print(OutputFormater.table(availableReportList))
+    #             self.output(OutputFormater.table(availableReportList))
     #         time.sleep(MisUtils.refreshSleep())
 
     # @checkStatus(getLoginStatus)
@@ -153,19 +154,19 @@ class Robber(object):
                 if buttonId_:
                     random.shuffle(buttonId_)
                     buttonId = buttonId_[0]
-                    print(Logger.log(String['robbing_report'], level=Logger.warning))
+                    self.output(Logger.log(String['robbing_report'], level=Logger.warning))
                     flag = self.spider.postReport(buttonId)
                     if not flag:
                         break
                 else:
-                    print(Logger.log(String['dozing']))
-                    MisUtils.wait_animation(MisUtils.refreshSleep())
+                    self.output(Logger.log(String['dozing']))
+                    time.sleep(MisUtils.refreshSleep())
 
                 new_selected_ = [selected for selected in selected_ if selected[2] not in MisUtils.getSelected()]
                 new_selected_item_ = [selected[2] for selected in new_selected_]
                 if new_selected_item_:
                     MisUtils.mergeSelected(new_selected_item_)
-                    print(Logger.log(String['robbed_new_reports'], subContent_=new_selected_item_, level=Logger.error))
+                    self.output(Logger.log(String['robbed_new_reports'], subContent_=new_selected_item_, level=Logger.error))
                     selectedHtml = [''.join(['<td>' + item + '</td>' for item in selected]) for selected in new_selected_]
                     selectedHtml = ''.join(['<tr>' + selected + '</tr>' for selected in selectedHtml])
                     selectedHtml = '<table border="1" bordercolor="#999999" border="1" style="background-color:#F0F0E8;\
@@ -174,24 +175,28 @@ class Robber(object):
                         threading.Thread(target=Mail.send_mail, args=(String['robbed_new_reports'], selectedHtml,)).start()
 
                 if not MisUtils.signal['report']:
-                    MisUtils.status['report'] = False
-                    self.clean()
-                    return None
+                    break
+
+            if not MisUtils.signal['report']:
+                MisUtils.status['report'] = False
+                self.clean()
+                break
+
             self.clean()
             self.spider.open_session()
             self.login()
 
-    @checkStatus(getLoginStatus)
-    def robClass(self, classIdList):
-        for classId in classIdList:
-            self.spider.postClass(classId)
+    # @checkStatus(getLoginStatus)
+    # def robClass(self, classIdList):
+    #     for classId in classIdList:
+    #         self.spider.postClass(classId)
 
-    @checkStatus(getLoginStatus)
-    def robEnglishTest(self):
-        self.spider.getEnglishTest()
-        print(self.spider.getEnglishTestStatus())
-        self.spider.postEnglishTest()
-        print(self.spider.getEnglishTestStatus())
+    # @checkStatus(getLoginStatus)
+    # def robEnglishTest(self):
+    #     self.spider.getEnglishTest()
+    #     self.output(self.spider.getEnglishTestStatus())
+    #     self.spider.postEnglishTest()
+    #     self.output(self.spider.getEnglishTestStatus())
 
     def clean(self):
         self.spider.clean()
