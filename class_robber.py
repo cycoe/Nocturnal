@@ -104,14 +104,6 @@ def get_status():
     print(OutputFormater.table(list(zip(process, status)), gravity=OutputFormater.left, padding=2))
 
 
-# def robClass():
-#     robber.getClassIdList(argvsParser.listFile)
-
-
-def robEnglish():
-    robber.robEnglishTest()
-
-
 def emailLogin():
     robber.emailLogin()
 
