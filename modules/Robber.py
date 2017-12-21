@@ -184,7 +184,11 @@ class Robber(object):
 
             self.clean()
             self.spider.open_session()
-            self.login()
+            result = self.spider.login(MisUtils.confDict['userName'], MisUtils.confDict['password'])
+            if result is Spider.NO_SUCH_A_USER or result is Spider.WRONG_PASSWORD:
+                MisUtils.status['report'] = False
+                self.clean()
+                break
 
     # @checkStatus(getLoginStatus)
     # def robClass(self, classIdList):
