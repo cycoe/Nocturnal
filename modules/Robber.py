@@ -51,11 +51,34 @@ class Robber(object):
 
         self.wechatId_ = []
 
-    # def login(self):
-    #     Robber.loginStatus = self.spider.login()
-
     def login(self):
-        self.spider.login()
+        self.spider.prepare_login()
+        if MisUtils.checkConfFile():
+            MisUtils.loadConfFile()
+
+        # 是否需要重新输入用户名和密码
+        if MisUtils.confDict['userName'] == '' or MisUtils.confDict['password'] == '':
+            reInput = True
+        else:
+            reInput = False
+
+        while True:
+            if reInput:
+                MisUtils.confDict['userName'] = input("> " + String['username'])
+                MisUtils.confDict['password'] = input("> " + String['password'])
+                reInput = False
+
+            result = self.spider.login(MisUtils.confDict['userName'], MisUtils.confDict['password'])
+            if result is Spider.NO_SUCH_A_USER:
+                reInput = True
+            elif result is Spider.WRONG_PASSWORD:
+                reInput = True
+            elif result is Spider.EMPTY_VERTIFY_CODE:
+                pass
+            elif result is Spider.WRONG_VERTIFY_CODE:
+                pass
+            elif result is Spider.LOGIN_SUCCESSFULLY:
+                break
 
     def wechatLogin(self):
         itchat.auto_login(enableCmdQR=2)
@@ -116,31 +139,6 @@ class Robber(object):
 
     # @checkStatus(getLoginStatus)
     def robReport(self):
-        # while True:
-        #     flag = self.spider.fetchReportList()
-        #     if flag:
-        #         selectedHtml, selected_, selectable_ = flag
-        #         selectable_ = [selectable for selectable in selectable_ if selectable[2] not in MisUtils.getSelected()]
-        #     else:
-        #         return None
-        #     buttonId_ = [selectable[0] for selectable in selectable_ if int(selectable[6]) > int(selectable[7])]
-        #     if buttonId_:
-        #         random.shuffle(buttonId_)
-        #         buttonId = buttonId_[0]
-        #         print(Logger.log('Robbing report...', level=Logger.warning))
-        #         flag = self.spider.postReport(buttonId)
-        #         if not flag:
-        #             return None
-        #     newSelected_ = [selected[2] for selected in selected_ if selected[2] not in MisUtils.getSelected()]
-        #     if newSelected_:
-        #         MisUtils.mergeSelected(newSelected_)
-        #         print(Logger.log('Robbed a report!', subContent_=newSelected_, level=Logger.error))
-        #         if Mail.connectedToMail:
-        #             threading.Thread(target=Mail.send_mail, args=('Robbed a new report', selectedHtml,)).start()
-        #     if len(buttonId_) < 2:
-        #         print(Logger.log('No report to rob, dozing...', level=Logger.info))
-        #         time.sleep(MisUtils.refreshSleep())
-
         MisUtils.status['report'] = True
         while True:
             while True:

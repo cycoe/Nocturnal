@@ -34,6 +34,13 @@ class Spider(object):
     爬虫体
     """
 
+    MAX_ATTEMPT = 0
+    NO_SUCH_A_USER = 1
+    WRONG_PASSWORD = 2
+    EMPTY_VERTIFY_CODE = 3
+    WRONG_VERTIFY_CODE = 4
+    LOGIN_SUCCESSFULLY = 5
+
     def __init__(self):
         self.session = Session()    # 实例化 session 对象，用于 handle 整个会话
         self.network = Network()
@@ -157,11 +164,7 @@ class Spider(object):
         req = Request('POST', UrlBean.englishTestUrl, headers=headers, data=postData, params=payload)
         return self.session.prepare_request(req)
 
-    def login(self):
-        """
-        登录教务网
-        """
-
+    def prepare_login(self):
         # 在登录前请求一次登录页面，获取网页的隐藏表单数据
         prepareBody = self.prepare(referer=None,
                                    originHost=None,
@@ -180,99 +183,91 @@ class Spider(object):
             print(Logger.log(String['failed_fetch_login'], [String['retrying']], level=Logger.warning))
         if not MisUtils.get_attempt():
             print(Logger.log(String['max_attempts'], [String['server_unreachable']], level=Logger.error))
-            return False
+            return Spider.MAX_ATTEMPT
 
-        if MisUtils.checkConfFile():
-            MisUtils.loadConfFile()
-        if MisUtils.confDict['userName'] == '' and MisUtils.confDict['password'] == '':
-            MisUtils.confDict['userName'] = input("> " + String['username'])
-            MisUtils.confDict['password'] = input("> " + String['password'])
-        # 登录主循环
-        reInput = False  # 是否需要重新输入用户名和密码
-        while True:
-            if reInput:
-                MisUtils.confDict['userName'] = input("> " + String['username'])
-                MisUtils.confDict['password'] = input("> " + String['password'])
-                reInput = False
+    def login(self, username, password):
+        """
+        登录教务网
+        """
 
-            # 获取验证码
-            prepareBody = self.prepare(referer=UrlBean.jwglLoginUrl,
-                                       originHost=None,
-                                       method='GET',
-                                       url=UrlBean.verifyCodeUrl,
-                                       data=None,
-                                       params=None)
+        # 获取验证码
+        prepareBody = self.prepare(referer=UrlBean.jwglLoginUrl,
+                                   originHost=None,
+                                   method='GET',
+                                   url=UrlBean.verifyCodeUrl,
+                                   data=None,
+                                   params=None)
 
-            MisUtils.initAttempt()
-            while MisUtils.descAttempt():
-                codeImg = self.session.send(prepareBody, timeout=MisUtils.timeout)  # 获取验证码图片
-                if codeImg.status_code == 200:
-                    break
-                else:
-                    print(Logger.log(String['failed_fetch_vertify_code'], [String['retrying']], level=Logger.warning))
-            if not MisUtils.get_attempt():
-                print(Logger.log(String['max_attempts'], [String['server_unreachable']], level=Logger.error))
-                return False
-
-            with open('check.gif', 'wb') as fr:  # 保存验证码图片
-                for chunk in codeImg:
-                    fr.write(chunk)
-
-            # print_vertify_code()
-            verCode = ''
-            vectors_ = img2Vector('check.gif')
-            if vectors_:
-                for vector in vectors_:
-                    verCode += chr(int(''.join([str(item) for item in self.network.classify(vector)]), base=2))
-            # print(verCode)
-            # verCode = self.classifier.recognizer("check.gif")  # 识别验证码
-
-            # 发送登陆请求
-            postData = {
-                '__VIEWSTATE': self.VIEWSTATE,
-                '__EVENTVALIDATION': self.EVENTVALIDATION,
-                '_ctl0:txtusername': MisUtils.confDict['userName'],
-                '_ctl0:txtpassword': MisUtils.confDict['password'],
-                '_ctl0:txtyzm': verCode,
-                '_ctl0:ImageButton1.x': '43',
-                '_ctl0:ImageButton1.y': '21',
-            }
-            prepareBody = self.prepare(referer=UrlBean.jwglLoginUrl,
-                                       originHost=UrlBean.jwglOriginUrl,
-                                       method='POST',
-                                       url=UrlBean.jwglLoginUrl,
-                                       data=postData,
-                                       params=None)
-
-            MisUtils.initAttempt()
-            while MisUtils.descAttempt():
-                self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
-                if self.response.status_code == 200:
-                    break
-            if not MisUtils.get_attempt():
-                print(Logger.log(String['max_attempts'], [String['server_unreachable']], level=Logger.error))
-                return False
-
-            if re.search('用户名不存在', self.response.text):
-                print(Logger.log(String['no_such_a_user'], [String['clean_password']], level=Logger.error))
-                reInput = True
-
-            elif re.search('密码错误', self.response.text):
-                print(Logger.log(String['wrong_password'], [String['clean_password']], level=Logger.error))
-                reInput = True
-
-            elif re.search('请输入验证码', self.response.text):
-                print(Logger.log(String['empty_vertify_code'], [String['retrying']], level=Logger.error))
-
-            elif re.search('验证码错误', self.response.text):
-                print(Logger.log(String['wrong_vertify_code'], [String['retrying']], level=Logger.error))
-
+        MisUtils.initAttempt()
+        while MisUtils.descAttempt():
+            codeImg = self.session.send(prepareBody, timeout=MisUtils.timeout)  # 获取验证码图片
+            if codeImg.status_code == 200:
+                break
             else:
-                print(Logger.log(String['login_successfully'], [String['username'] + MisUtils.confDict['userName']], level=Logger.error))
-                MisUtils.dumpConfFile()
+                print(Logger.log(String['failed_fetch_vertify_code'], [String['retrying']], level=Logger.warning))
+        if not MisUtils.get_attempt():
+            print(Logger.log(String['max_attempts'], [String['server_unreachable']], level=Logger.error))
+            return Spider.MAX_ATTEMPT
+
+        with open('check.gif', 'wb') as fr:  # 保存验证码图片
+            for chunk in codeImg:
+                fr.write(chunk)
+
+        # print_vertify_code()
+        verCode = ''
+        vectors_ = img2Vector('check.gif')
+        if vectors_:
+            for vector in vectors_:
+                verCode += chr(int(''.join([str(item) for item in self.network.classify(vector)]), base=2))
+        # print(verCode)
+        # verCode = self.classifier.recognizer("check.gif")  # 识别验证码
+
+        # 发送登陆请求
+        postData = {
+            '__VIEWSTATE': self.VIEWSTATE,
+            '__EVENTVALIDATION': self.EVENTVALIDATION,
+            '_ctl0:txtusername': username,
+            '_ctl0:txtpassword': password,
+            '_ctl0:txtyzm': verCode,
+            '_ctl0:ImageButton1.x': '43',
+            '_ctl0:ImageButton1.y': '21',
+        }
+        prepareBody = self.prepare(referer=UrlBean.jwglLoginUrl,
+                                   originHost=UrlBean.jwglOriginUrl,
+                                   method='POST',
+                                   url=UrlBean.jwglLoginUrl,
+                                   data=postData,
+                                   params=None)
+
+        MisUtils.initAttempt()
+        while MisUtils.descAttempt():
+            self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
+            if self.response.status_code == 200:
                 break
 
-        return True
+        if not MisUtils.get_attempt():
+            print(Logger.log(String['max_attempts'], [String['server_unreachable']], level=Logger.error))
+            return Spider.MAX_ATTEMPT
+
+        if re.search('用户名不存在', self.response.text):
+            print(Logger.log(String['no_such_a_user'], [String['clean_password']], level=Logger.error))
+            return Spider.NO_SUCH_A_USER
+
+        elif re.search('密码错误', self.response.text):
+            print(Logger.log(String['wrong_password'], [String['clean_password']], level=Logger.error))
+            return Spider.WRONG_PASSWORD
+
+        elif re.search('请输入验证码', self.response.text):
+            print(Logger.log(String['empty_vertify_code'], [String['retrying']], level=Logger.error))
+            return Spider.EMPTY_VERTIFY_CODE
+
+        elif re.search('验证码错误', self.response.text):
+            print(Logger.log(String['wrong_vertify_code'], [String['retrying']], level=Logger.error))
+            return Spider.WRONG_VERTIFY_CODE
+
+        else:
+            print(Logger.log(String['login_successfully'], [String['username'] + MisUtils.confDict['userName']], level=Logger.error))
+            return Spider.LOGIN_SUCCESSFULLY
 
     def fetchClassList(self):
 
