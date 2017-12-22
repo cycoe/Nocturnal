@@ -139,7 +139,7 @@ class Robber(object):
     #         time.sleep(MisUtils.refreshSleep())
 
     # @checkStatus(getLoginStatus)
-    def robReport(self):
+    def robReport(self, callback):
         MisUtils.status['report'] = True
         while True:
             while True:
@@ -189,6 +189,7 @@ class Robber(object):
                 MisUtils.status['report'] = False
                 self.clean()
                 break
+        callback()
 
     # @checkStatus(getLoginStatus)
     # def robClass(self, classIdList):
