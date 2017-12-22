@@ -56,7 +56,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.messageLayout = QtWidgets.QGridLayout()
 
         self.loginButton = QtWidgets.QPushButton('登陆')
-        self.emailLoginButton = QtWidgets.QPushButton('邮箱')
+        self.emailLoginButton = QtWidgets.QPushButton('登陆邮箱')
         self.robReportButton = QtWidgets.QPushButton('抢报告')
         self.logShower = QtWidgets.QTextBrowser()
 
@@ -124,19 +124,20 @@ class MainWindow(QtWidgets.QMainWindow):
         while True:
             result = self.robber.spider.login(MisUtils.confDict['userName'], MisUtils.confDict['password'])
             if result is Spider.NO_SUCH_A_USER:
-                self.loginButton.setText('用户名不存在')
+                self.statusBar().showMessage('用户名不存在')
                 break
             elif result is Spider.WRONG_PASSWORD:
-                self.loginButton.setText('密码错误')
+                self.statusBar().showMessage('密码错误')
                 break
             elif result is Spider.EMPTY_VERTIFY_CODE:
                 pass
             elif result is Spider.WRONG_VERTIFY_CODE:
                 pass
             elif result is Spider.LOGIN_SUCCESSFULLY:
-                self.loginButton.setText('登陆成功')
+                self.statusBar().showMessage('登陆成功')
                 MisUtils.dumpConfFile()
                 break
+        self.loginButton.setText('登陆')
         self.loginButton.setEnabled(True)
 
     @QtCore.pyqtSlot()
@@ -148,15 +149,16 @@ class MainWindow(QtWidgets.QMainWindow):
         result = Mail.send_mail(String['just_test_connection'], String['test_connection'])
         if result is Mail.HAVE_SEND_A_MAIL:
             MisUtils.dumpConfFile()
-            self.emailLoginButton.setText(String['have_send_a_mail'])
+            self.statusBar().showMessage(String['have_send_a_mail'])
         elif result is Mail.FAILED_SEND_EMAIL:
-            self.emailLoginButton.setText(String['failed_send_email'])
+            self.statusBar().showMessage(String['failed_send_email'])
         elif result is Mail.CANNOT_HANDLE_DECODE:
-            self.emailLoginButton.setText(String['cannot_handle_decode'])
+            self.statusBar().showMessage(String['cannot_handle_decode'])
         elif result is Mail.HOST_ERROR:
-            self.emailLoginButton.setText(String['host_error'])
+            self.statusBar().showMessage(String['host_error'])
         elif result is Mail.ADDRESS_DOESNT_EXIST:
-            self.emailLoginButton.setText(String['address_doesnt_exist'])
+            self.statusBar().showMessage(String['address_doesnt_exist'])
+        self.emailLoginButton.setText('登陆邮箱')
         self.emailLoginButton.setEnabled(True)
 
     def email_login_button_callback(self):
