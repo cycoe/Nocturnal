@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import time
-import itchat
 import random
 import threading
 
@@ -187,6 +186,44 @@ class Robber(object):
             result = self.spider.login(MisUtils.confDict['userName'], MisUtils.confDict['password'])
             if result is Spider.NO_SUCH_A_USER or result is Spider.WRONG_PASSWORD:
                 MisUtils.status['report'] = False
+                self.clean()
+                break
+        callback()
+
+    def fetchGrade(self, callback, output):
+        MisUtils.status['grade'] = True
+        originGrade = ''
+        while True:
+            while True:
+                flag = self.spider.fetchGrade()
+                if flag:
+                    grade = flag
+                else:
+                    break
+
+                if grade != originGrade:
+                    # output(grade)
+                    if Mail.connectedToMail:
+                        threading.Thread(target=Mail.send_mail, args=(String['robbed_new_reports'], grade,)).start()
+
+                else:
+                    time.sleep(3)
+
+                originGrade = grade
+
+                if not MisUtils.signal['grade']:
+                    break
+
+            if not MisUtils.signal['grade']:
+                MisUtils.status['grade'] = False
+                self.clean()
+                break
+
+            self.clean()
+            self.spider.open_session()
+            result = self.spider.login(MisUtils.confDict['userName'], MisUtils.confDict['password'])
+            if result is Spider.NO_SUCH_A_USER or result is Spider.WRONG_PASSWORD:
+                MisUtils.status['grade'] = False
                 self.clean()
                 break
         callback()

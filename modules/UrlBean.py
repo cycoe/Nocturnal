@@ -17,5 +17,4 @@ class UrlBean(object):
     englishTestUrl = "http://graduate.buct.edu.cn:8080/pyxx/grgl/djkssq.aspx"  # 英语等级考试地址
     fetchReportListUrl = "http://graduate.buct.edu.cn:8080/pyxx/txhdgl/hdlist.aspx"    # 讲座列表获取地址
     # reportDetailUrl = "http://graduate.buct.edu.cn:8080/pyxx/txhdgl/hdxxdetail.aspx"   # 讲座详情地址
-    fetchGradeUrl = "http://jwgl.buct.edu.cn/xscjcx.aspx"  # 成绩获取地址
-
+    fetchGradeUrl = "http://graduate.buct.edu.cn:8080/pyxx/grgl/xskccjcx.aspx"  # 成绩获取地址

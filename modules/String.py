@@ -20,6 +20,7 @@ String = {
     'empty_vertify_code': '请输入验证码',
     'login_successfully': '登录成功',
     'failed_fetch_report': '抓取报告列表失败',
+    'failed_fetch_grade': '抓取成绩列表失败',
     're-login': '可能需要重新登录',
     'failed_post_report': '提交抢报告请求失败',
     'login_first': '请先登录',

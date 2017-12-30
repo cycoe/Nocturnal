@@ -378,8 +378,28 @@ class Spider(object):
         else:
             return True
 
-    def fetchReportList(self):
+    def fetchGrade(self):
+        payload = {'xh': MisUtils.confDict['userName']}
+        prepareBody = self.prepare(referer=UrlBean.leftMenuReferer,
+                                   originHost=UrlBean.jwglOriginUrl,
+                                   method='GET',
+                                   url=UrlBean.fetchGradeUrl,
+                                   data=None,
+                                   params=payload)
 
+        MisUtils.initAttempt()
+        while MisUtils.descAttempt():
+            self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
+            if self.response.status_code == 200:
+                break
+            else:
+                self.output(Logger.log(String['failed_fetch_grade'], [String['retrying']], level=Logger.warning))
+        if not MisUtils.get_attempt():
+            self.output(Logger.log(String['max_attempts'], [String['re-login']], level=Logger.error))
+            return False
+        return self.formatGradeList()
+
+    def fetchReportList(self):
         payload = {'xh': MisUtils.confDict['userName']}
         prepareBody = self.prepare(referer=UrlBean.leftMenuReferer,
                                    originHost=None,
@@ -484,6 +504,10 @@ class Spider(object):
         #         self.output(Logger.log('Retrying posting report request...', level=Logger.warning))
 
         return True
+
+    def formatGradeList(self):
+        htmlBody = BeautifulSoup(self.response.text, 'html.parser')
+        return str(htmlBody.find_all('table', class_='GridViewStyle')[0]) + str(htmlBody.find_all('table', class_='GridViewStyle')[1])
 
     def formatReportList(self):
         """

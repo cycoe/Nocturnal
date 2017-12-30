@@ -140,7 +140,7 @@ class Network(object):
                 self.x_[index] = self.active(np.reshape(np.dot(self.weight_[index - 1], np.insert(self.x_[index - 1], -1, 1)), (self.structure[index], 1)))
         self.error = norm2(self.x_[-1] - self.tag_[sample_index])
 
-        return self.x_[-1]
+        return classify(self.x_[-1], self.tag_set)
 
     def backward(self, sample_index):
         """
@@ -229,15 +229,15 @@ class Network(object):
 #         for j in range(training_ratio):
 #             output = network.forward(j)
 #             network.backward(j)
-#             for bit in range(len(output)):
-#                 if int(output[bit] + 0.5) != training_tag_[j][bit]:
+#             for index in range(len(output)):
+#                 if output[index] != training_tag_[j][index]:
 #                     training_errors += 1
 #                     break
 #
 #         for j in range(fitting_ratio):
 #             output = network.classify(fitting_matrix[j])
-#             for bit in range(len(output)):
-#                 if int(output[bit]+0.5) != fitting_tag_[j][bit]:
+#             for index in range(len(output)):
+#                 if output[index] != fitting_tag_[j][index]:
 #                     fitting_errors += 1
 #                     break
 #
@@ -246,14 +246,14 @@ class Network(object):
 #         print('(' + str(int(i/cycle_count*100)) + '%) ' + 'training error ratio = ' + training_error, end='')
 #         print('\t fitting error ratio = ' + fitting_error)
 #         network.dump_weight()
-#
-#     #     with open('plot', 'a') as fr:
-#     #         fr.write(training_error)
-#     #         fr.write(',')
-#     #         fr.write(fitting_error)
-#     #         fr.write('\n')
-#     #     # print(network.delta_)
-#
-#
-# if __name__ == '__main__':
-#     main()
+
+    #     with open('plot', 'a') as fr:
+    #         fr.write(training_error)
+    #         fr.write(',')
+    #         fr.write(fitting_error)
+    #         fr.write('\n')
+    #     # print(network.delta_)
+
+
+if __name__ == '__main__':
+    main()

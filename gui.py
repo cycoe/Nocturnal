@@ -56,9 +56,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.messageLayout = QtWidgets.QGridLayout()
 
         self.loginButton = QtWidgets.QPushButton('登陆')
-        self.emailLoginButton = QtWidgets.QPushButton('登陆邮箱')
-        self.robReportButton = QtWidgets.QPushButton('抢报告')
+        self.emailLoginButton = QtWidgets.QPushButton('绑定邮箱')
+        self.robReportButton = QtWidgets.QPushButton('点击运行')
+        self.robReportLabel = QtWidgets.QLabel('抢报告')
+        self.fetchGradeButton = QtWidgets.QPushButton('点击运行')
+        self.fetchGradeLabel = QtWidgets.QLabel('成绩监控')
         self.logShower = QtWidgets.QTextBrowser()
+        self.gradeShower = QtWidgets.QTextBrowser()
 
         self.robber = Robber(self.log_shower_callback)
 
@@ -88,22 +92,30 @@ class MainWindow(QtWidgets.QMainWindow):
             self.controlLayout.addWidget(self.inputLine_[key], index, 1, 1, 1)
             self.inputLine_[key].setFixedHeight(30)
             self.inputLine_[key].setMinimumWidth(200)
+            if key == 'password' or key == 'sender_password':
+                self.inputLine_[key].setEchoMode(QtWidgets.QLineEdit.Password)
 
         self.controlLayout.addWidget(self.loginButton, 1, 2, 1, 1)
         self.controlLayout.addWidget(self.emailLoginButton, 6, 2, 1, 1)
-        self.controlLayout.addWidget(self.robReportButton, 7, 0, 1, 3)
+        self.controlLayout.addWidget(self.robReportLabel, 7, 0, 1, 1)
+        self.controlLayout.addWidget(self.robReportButton, 7, 1, 1, 2)
+        self.controlLayout.addWidget(self.fetchGradeLabel, 8, 0, 1, 1)
+        self.controlLayout.addWidget(self.fetchGradeButton, 8, 1, 1, 2)
 
         self.messageLayout.addWidget(self.logShower, 0, 0, 1, 1)
+        self.messageLayout.addWidget(self.gradeShower, 1, 0, 1, 1)
+        self.gradeShower.setReadOnly(True)
         self.logShower.setReadOnly(True)
 
     def set_connect(self):
         self.loginButton.clicked.connect(self.login_button_clicked)
         self.emailLoginButton.clicked.connect(self.email_login_button_clicked)
         self.robReportButton.clicked.connect(self.rob_report_button_clicked)
+        self.fetchGradeButton.clicked.connect(self.fetch_grade_button_clicked)
 
     @QtCore.pyqtSlot()
     def rob_report_button_clicked(self):
-        if self.robReportButton.text() == '抢报告':
+        if self.robReportButton.text() == '点击运行':
             self.login_button_clicked()
             self.loginButton.setEnabled(False)
             MisUtils.signal['report'] = True
@@ -113,6 +125,19 @@ class MainWindow(QtWidgets.QMainWindow):
             self.robReportButton.setText('正在停止...')
             self.robReportButton.setEnabled(False)
             MisUtils.signal['report'] = False
+
+    @QtCore.pyqtSlot()
+    def fetch_grade_button_clicked(self):
+        if self.fetchGradeButton.text() == '点击运行':
+            self.login_button_clicked()
+            self.loginButton.setEnabled(False)
+            MisUtils.signal['grade'] = True
+            self.fetchGradeButton.setText('点击停止')
+            threading.Thread(target=self.robber.fetchGrade, args=(self.fetch_grade_button_callback, self.grade_output_callback,)).start()
+        elif self.fetchGradeButton.text() == '点击停止':
+            self.fetchGradeButton.setText('正在停止...')
+            self.fetchGradeButton.setEnabled(False)
+            MisUtils.signal['grade'] = False
 
     @QtCore.pyqtSlot()
     def login_button_clicked(self):
@@ -165,13 +190,21 @@ class MainWindow(QtWidgets.QMainWindow):
         self.emailLoginButton.setEnabled(True)
 
     def rob_report_button_callback(self):
-        self.robReportButton.setText('抢报告')
+        self.robReportButton.setText('点击运行')
         self.robReportButton.setEnabled(True)
         self.loginButton.setEnabled(True)
 
     def log_shower_callback(self, content):
         self.logShower.append(content)
         self.logShower.ensureCursorVisible()
+
+    def fetch_grade_button_callback(self):
+        self.fetchGradeButton.setText('点击运行')
+        self.fetchGradeButton.setEnabled(True)
+        self.loginButton.setEnabled(True)
+
+    def grade_output_callback(self, content):
+        self.gradeShower.setText(content)
 
 
 def main():

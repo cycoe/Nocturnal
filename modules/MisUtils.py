@@ -39,6 +39,7 @@ class MisUtils(object):
     platform = platform.system()    # 运行平台
     confFile = 'robber.conf'		# 配置文件路径
     blackList = 'blackList'			# 报告黑名单文件路径
+    gradeCachePath = 'gradeCache'       # 成绩缓存文件
 
     wechatURI = 'wxp://f2f0PYx27X0CWU1yiBhSKeHHgYzfA27iOicM'    # 微信二维码 URI
     alipayURI = 'HTTPS://QR.ALIPAY.COM/FKX01669SBV7NA4ALTVPE8'  # 支付宝二维码 URI
@@ -63,10 +64,12 @@ class MisUtils(object):
 
     signal = {
         'report': False,
+        'grade': False,
     }
 
     status = {
         'report': False,
+        'grade': False,
     }
 
     @staticmethod
@@ -143,6 +146,20 @@ class MisUtils(object):
         with open(MisUtils.blackList, 'w') as fr:
             for oriSelected in oriSelected_:
                 fr.write(oriSelected + '\n')
+
+    @staticmethod
+    def dump_content(content, path):
+        with open(path, 'w') as fr:
+            fr.write(content)
+
+    @staticmethod
+    def read_content(path):
+        if not os.path.exists(path):
+            return ''
+        with open(path, 'r') as fr:
+            content = fr.readlines()
+        content = '\n'.join(content)
+        return content
 
     @staticmethod
     def show_qrcode(img_path):
