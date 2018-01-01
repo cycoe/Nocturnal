@@ -49,8 +49,9 @@ def main():
 
 def initArgvs():
     ArgvsParser.connect(['help', 'h'], outputHelp)
-    ArgvsParser.connect(['report', 'r'], robReport)
+    ArgvsParser.connect(['report', 'r'], rob_report)
     ArgvsParser.connect(['grade', 'g'], fetch_grade)
+    ArgvsParser.connect(['class', 'c'], rob_class)
     ArgvsParser.connect(['quit', 'q'], quit_)
     ArgvsParser.connect(['emailLogin', 'el'], emailLogin)
     ArgvsParser.connect(['donate', 'd'], donate)
@@ -86,7 +87,7 @@ def outputHelp():
     ], gravity=OutputFormater.center, padding=2))
 
 
-def robReport():
+def rob_report():
     if not MisUtils.status['report']:
         MisUtils.signal['report'] = True
         robber.login()
@@ -98,7 +99,13 @@ def fetch_grade():
     if not MisUtils.status['grade']:
         MisUtils.signal['grade'] = True
         robber.login()
-        threading.Thread(target=robber.fetchGrade, args=(lambda: None, print,)).start()
+        threading.Thread(target=robber.fetchGrade, args=(lambda: None, lambda x: None,)).start()
+
+
+def rob_class():
+    if not MisUtils.status['class']:
+        MisUtils.signal['class'] = True
+        robber.rob_class(lambda: None)
 
 
 def stop_report():

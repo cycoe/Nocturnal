@@ -272,13 +272,13 @@ class Spider(object):
 
     def fetchClassList(self):
 
-        params = {'xh': MisUtils.confDict['userName']}
+        payload = {'xh': MisUtils.confDict['userName']}
         prepareBody = self.prepare(referer=UrlBean.leftMenuReferer,
                                    originHost=None,
                                    method='GET',
                                    url=UrlBean.fetchClassListUrl,
                                    data=None,
-                                   params=params)
+                                   params=payload)
 
         MisUtils.initAttempt()
         while MisUtils.descAttempt():
@@ -288,9 +288,9 @@ class Spider(object):
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
                 break
             else:
-                self.output(Logger.log('retrying fetching class list...'))
+                self.output(Logger.log('retrying fetching class list...', level=Logger.warning))
         if not MisUtils.get_attempt():
-            self.output(Logger.log('Up to max attempts!', ['Maybe you need to re-login'], level=Logger.error))
+            self.output(Logger.log(String['max_attempts'], [String['re-login']], level=Logger.error))
             return False
 
         return self.formatClassList()
@@ -320,84 +320,6 @@ class Spider(object):
                 self.output('Retrying...')
 
         return self.formatClassList()
-
-    def fetchSchedule(self):
-
-        payload = {'xh': MisUtils.confDict['userName']}
-        prepareBody = self.prepare(referer=UrlBean.leftMenuReferer,
-                                   originHost=None,
-                                   method='GET',
-                                   url=UrlBean.fetchScheduleUrl,
-                                   data=None,
-                                   params=payload)
-
-        while True:
-            self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
-            if self.response.status_code == 200:
-                break
-            else:
-                self.output("Retrying fetching schedule...")
-
-        soup = BeautifulSoup(self.response.text, 'html.parser')
-        with open('schedule.md', 'w') as fr:
-            fr.write(str(soup.find_all('table', class_='GridViewStyle')[0]))
-
-        return self
-
-    def getEnglishTest(self):
-
-        while True:
-            self.response = self.session.send(self.prepareGetEnglishTest(), timeout=MisUtils.timeout)
-            self.VIEWSTATE = self.getVIEWSTATE()
-            self.EVENTVALIDATION = self.getEVENTVALIDATION()
-            if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
-                break
-            else:
-                self.output("Retrying fetching English test view status...")
-
-    def postEnglishTest(self):
-
-        while True:
-            self.response = self.session.send(self.preparePostEnglishTest(), timeout=MisUtils.timeout)
-            if self.response.status_code == 200:
-                self.output("Request english test successfully!")
-                break
-            else:
-                self.output("Retrying...")
-
-    def getEnglishTestStatus(self):
-
-        htmlbody = BeautifulSoup(self.response.text, 'html.parser')
-        htmlbody = htmlbody.find_all('table', class_='GridBackColor')[0]
-        tempList = htmlbody.find_all('tr')
-        self.buttonId = re.findall('<a href=".*" id="(.*)?">.*</a>', str(tempList[1].find('a')))
-        if tempList[1].find('img', border='0', alt='申请当前考试') is not None:
-            return False
-        elif tempList[1].find('img', border='0', alt='取消考试申请') is not None:
-            return True
-        else:
-            return True
-
-    def fetchGrade(self):
-        payload = {'xh': MisUtils.confDict['userName']}
-        prepareBody = self.prepare(referer=UrlBean.leftMenuReferer,
-                                   originHost=UrlBean.jwglOriginUrl,
-                                   method='GET',
-                                   url=UrlBean.fetchGradeUrl,
-                                   data=None,
-                                   params=payload)
-
-        MisUtils.initAttempt()
-        while MisUtils.descAttempt():
-            self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
-            if self.response.status_code == 200:
-                break
-            else:
-                self.output(Logger.log(String['failed_fetch_grade'], [String['retrying']], level=Logger.warning))
-        if not MisUtils.get_attempt():
-            self.output(Logger.log(String['max_attempts'], [String['re-login']], level=Logger.error))
-            return False
-        return self.formatGradeList()
 
     def fetchReportList(self):
         payload = {'xh': MisUtils.confDict['userName']}
@@ -505,9 +427,104 @@ class Spider(object):
 
         return True
 
+    def fetchSchedule(self):
+
+        payload = {'xh': MisUtils.confDict['userName']}
+        prepareBody = self.prepare(referer=UrlBean.leftMenuReferer,
+                                   originHost=None,
+                                   method='GET',
+                                   url=UrlBean.fetchScheduleUrl,
+                                   data=None,
+                                   params=payload)
+
+        while True:
+            self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
+            if self.response.status_code == 200:
+                break
+            else:
+                self.output("Retrying fetching schedule...")
+
+        soup = BeautifulSoup(self.response.text, 'html.parser')
+        with open('schedule.md', 'w') as fr:
+            fr.write(str(soup.find_all('table', class_='GridViewStyle')[0]))
+
+        return self
+
+    def getEnglishTest(self):
+
+        while True:
+            self.response = self.session.send(self.prepareGetEnglishTest(), timeout=MisUtils.timeout)
+            self.VIEWSTATE = self.getVIEWSTATE()
+            self.EVENTVALIDATION = self.getEVENTVALIDATION()
+            if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
+                break
+            else:
+                self.output("Retrying fetching English test view status...")
+
+    def postEnglishTest(self):
+
+        while True:
+            self.response = self.session.send(self.preparePostEnglishTest(), timeout=MisUtils.timeout)
+            if self.response.status_code == 200:
+                self.output("Request english test successfully!")
+                break
+            else:
+                self.output("Retrying...")
+
+    def getEnglishTestStatus(self):
+
+        htmlbody = BeautifulSoup(self.response.text, 'html.parser')
+        htmlbody = htmlbody.find_all('table', class_='GridBackColor')[0]
+        tempList = htmlbody.find_all('tr')
+        self.buttonId = re.findall('<a href=".*" id="(.*)?">.*</a>', str(tempList[1].find('a')))
+        if tempList[1].find('img', border='0', alt='申请当前考试') is not None:
+            return False
+        elif tempList[1].find('img', border='0', alt='取消考试申请') is not None:
+            return True
+        else:
+            return True
+
+    def fetchGrade(self):
+        payload = {'xh': MisUtils.confDict['userName']}
+        prepareBody = self.prepare(referer=UrlBean.leftMenuReferer,
+                                   originHost=UrlBean.jwglOriginUrl,
+                                   method='GET',
+                                   url=UrlBean.fetchGradeUrl,
+                                   data=None,
+                                   params=payload)
+
+        MisUtils.initAttempt()
+        while MisUtils.descAttempt():
+            self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
+            if self.response.status_code == 200:
+                break
+            else:
+                self.output(Logger.log(String['failed_fetch_grade'], [String['retrying']], level=Logger.warning))
+        if not MisUtils.get_attempt():
+            self.output(Logger.log(String['max_attempts'], [String['re-login']], level=Logger.error))
+            return False
+
+        return self.formatGradeList()
+
     def formatGradeList(self):
         htmlBody = BeautifulSoup(self.response.text, 'html.parser')
-        return str(htmlBody.find_all('table', class_='GridViewStyle')[0]) + str(htmlBody.find_all('table', class_='GridViewStyle')[1])
+        grade_dict = {
+            '学位课程': htmlBody.find_all('table', class_='GridViewStyle')[0],
+            '选修课程': htmlBody.find_all('table', class_='GridViewStyle')[1],
+        }
+        for key in grade_dict.keys():
+            grade_lines = grade_dict[key].find_all('tr', class_='GridViewRowStyle')
+            grade_dict[key] = {}
+            for grade_line in grade_lines:
+                grade_item = grade_line.find_all('td')
+                grade_item = [re.findall(self.removeTd, str(item))[0] for item in grade_item]
+                grade_dict[key][grade_item[0]] = {
+                    '课程学分': grade_item[1],
+                    '选修学期': grade_item[2],
+                    '成绩': grade_item[3]
+                }
+
+        return grade_dict
 
     def formatReportList(self):
         """
@@ -550,32 +567,32 @@ class Spider(object):
             fr.write(self.response.text)
 
         htmlBody = BeautifulSoup(self.response.text, 'html.parser')
-        tempList = htmlBody.find_all('tr', nowrap='nowrap')[:-1]
-        classList = []
-        for tempRow in tempList:
-            if tempRow.find('img', border='0', alt='选择当前课程') is not None:
-                checkStatus = 0
-            elif tempRow.find('img', border='0', alt='退选当前课程') is not None:
-                checkStatus = 1
-            else:
-                checkStatus = -1
-
-            if re.search('<a.*id="(.*)?".*><img.*>.*</a>', str(tempRow)):
-                buttonId = re.findall('<a.*id="(.*)?".*><img.*>.*</a>', str(tempRow))[0]
-            else:
-                buttonId = None
-
-            tempRow = tempRow.find_all('td')
-            classRow = [checkStatus, buttonId]
-            for i in self.remainList:
-                item = re.findall('<td.*>(.*)?</td>', str(tempRow[i]))
-                if len(item) == 0:
-                    classRow.append('')
-                else:
-                    classRow.append(item[0])
-            classList.append(classRow)
-
-        return classList
+        # tempList = htmlBody.find_all('tr', nowrap='nowrap')[:-1]
+        # classList = []
+        # for tempRow in tempList:
+        #     if tempRow.find('img', border='0', alt='选择当前课程') is not None:
+        #         checkStatus = 0
+        #     elif tempRow.find('img', border='0', alt='退选当前课程') is not None:
+        #         checkStatus = 1
+        #     else:
+        #         checkStatus = -1
+        #
+        #     if re.search('<a.*id="(.*)?".*><img.*>.*</a>', str(tempRow)):
+        #         buttonId = re.findall('<a.*id="(.*)?".*><img.*>.*</a>', str(tempRow))[0]
+        #     else:
+        #         buttonId = None
+        #
+        #     tempRow = tempRow.find_all('td')
+        #     classRow = [checkStatus, buttonId]
+        #     for i in self.remainList:
+        #         item = re.findall('<td.*>(.*)?</td>', str(tempRow[i]))
+        #         if len(item) == 0:
+        #             classRow.append('')
+        #         else:
+        #             classRow.append(item[0])
+        #     classList.append(classRow)
+        #
+        # return classList
 
     def clean(self):
         """

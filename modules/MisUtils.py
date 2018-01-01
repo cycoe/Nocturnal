@@ -39,8 +39,8 @@ class MisUtils(object):
     author = 'Cycoe'				# 作者
     platform = platform.system()    # 运行平台
     confFile = 'robber.conf'		# 配置文件路径
-    blackList = 'blackList'			# 报告黑名单文件路径
-    gradeCachePath = 'gradeCache'       # 成绩缓存文件
+    blackList = 'blackList.cache'	# 报告黑名单文件路径
+    grade_cache_path = 'grade.cache'       # 成绩缓存文件
 
     wechatURI = 'wxp://f2f0PYx27X0CWU1yiBhSKeHHgYzfA27iOicM'    # 微信二维码 URI
     alipayURI = 'HTTPS://QR.ALIPAY.COM/FKX01669SBV7NA4ALTVPE8'  # 支付宝二维码 URI
@@ -52,7 +52,7 @@ class MisUtils(object):
         'sender': 'class_robber@cycoe.cc',
         'sender_password': 'class_robber',
         'sender_host': 'smtp.ym.163.com',
-        'sender_port': 25,
+        'sender_port': '25',
     }
 
     pattern = {
@@ -66,11 +66,13 @@ class MisUtils(object):
     signal = {
         'report': False,
         'grade': False,
+        'class': False,
     }
 
     status = {
         'report': False,
         'grade': False,
+        'class': False,
     }
 
 
@@ -91,12 +93,32 @@ class MisUtils(object):
             with open(MisUtils.confFile, 'r') as fp:
                 MisUtils.confDict = json.load(fp)
         except json.decoder.JSONDecodeError:
-            os.rmdir(MisUtils.confFile)
+            os.remove(MisUtils.confFile)
 
     @staticmethod
     def dumpConfFile():
         with open(MisUtils.confFile, 'w') as fp:
             fp.write(json.dumps(MisUtils.confDict, indent=4))
+
+    @staticmethod
+    def check_grade_cache():
+        return os.path.exists(MisUtils.grade_cache_path)
+
+    @staticmethod
+    def load_grade_cache():
+        try:
+            with open(MisUtils.grade_cache_path, 'r') as fp:
+                grade_cache = json.load(fp)
+        except json.decoder.JSONDecodeError:
+            os.remove(MisUtils.grade_cache_path)
+            grade_cache = {}
+        return grade_cache
+
+    @staticmethod
+    def dump_grade_cache(grade_cache):
+        with open(MisUtils.grade_cache_path, 'w') as fp:
+            fp.write(json.dumps(grade_cache, indent=4))
+        return True
 
     @staticmethod
     def setEmailInfo():

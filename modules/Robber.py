@@ -190,9 +190,14 @@ class Robber(object):
                 break
         callback()
 
+    def rob_class(self, callback):
+        MisUtils.status['class'] = True
+        self.login()
+        self.spider.fetchClassList()
+        callback()
+
     def fetchGrade(self, callback, output):
         MisUtils.status['grade'] = True
-        originGrade = ''
         while True:
             while True:
                 flag = self.spider.fetchGrade()
@@ -201,15 +206,16 @@ class Robber(object):
                 else:
                     break
 
-                if grade != originGrade:
+                if grade != (MisUtils.load_grade_cache() if MisUtils.check_grade_cache() else {}):
                     output(grade)
-                    if Mail.connectedToMail:
-                        threading.Thread(target=Mail.send_mail, args=(String['robbed_new_reports'], grade,)).start()
+                    print('new grade')
+                    # if Mail.connectedToMail:
+                    #     threading.Thread(target=Mail.send_mail, args=(String['robbed_new_reports'], grade,)).start()
 
                 else:
-                    time.sleep(3)
+                    time.sleep(10)
 
-                originGrade = grade
+                MisUtils.dump_grade_cache(grade)
 
                 if not MisUtils.signal['grade']:
                     break
@@ -227,11 +233,6 @@ class Robber(object):
                 self.clean()
                 break
         callback()
-
-    # @checkStatus(getLoginStatus)
-    # def robClass(self, classIdList):
-    #     for classId in classIdList:
-    #         self.spider.postClass(classId)
 
     # @checkStatus(getLoginStatus)
     # def robEnglishTest(self):

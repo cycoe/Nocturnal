@@ -2,12 +2,12 @@
 *.html
 *.log
 *.conf
+*.cache
 .idea
 check.gif
 *.png
 dist
 build
-blackList
 ############################################
 
 # Byte-compiled / optimized / DLL files
