@@ -50,6 +50,7 @@ def main():
 def initArgvs():
     ArgvsParser.connect(['help', 'h'], outputHelp)
     ArgvsParser.connect(['report', 'r'], robReport)
+    ArgvsParser.connect(['grade', 'g'], fetch_grade)
     ArgvsParser.connect(['quit', 'q'], quit_)
     ArgvsParser.connect(['emailLogin', 'el'], emailLogin)
     ArgvsParser.connect(['donate', 'd'], donate)
@@ -89,13 +90,22 @@ def robReport():
     if not MisUtils.status['report']:
         MisUtils.signal['report'] = True
         robber.login()
-        threading.Thread(target=robber.robReport, args=()).start()
+        threading.Thread(target=robber.robReport, args=(lambda: None,)).start()
+
+
+
+def fetch_grade():
+    if not MisUtils.status['grade']:
+        MisUtils.signal['grade'] = True
+        robber.login()
+        threading.Thread(target=robber.fetchGrade, args=(lambda: None, print,)).start()
 
 
 def stop_report():
     MisUtils.signal['report'] = False
+    MisUtils.signal['grade'] = False
     print(Logger.log('正在关闭所有后台任务... '), end='')
-    MisUtils.wait_animation(lambda: MisUtils.status['report'])
+    MisUtils.wait_animation(MisUtils.get_status)
 
 
 def get_status():

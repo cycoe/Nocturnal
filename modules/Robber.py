@@ -202,7 +202,7 @@ class Robber(object):
                     break
 
                 if grade != originGrade:
-                    # output(grade)
+                    output(grade)
                     if Mail.connectedToMail:
                         threading.Thread(target=Mail.send_mail, args=(String['robbed_new_reports'], grade,)).start()
 

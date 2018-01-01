@@ -6,6 +6,7 @@ import time
 import os
 import re
 import sys
+import json
 import platform
 from PIL import Image
 from modules.Logger import Logger
@@ -51,7 +52,7 @@ class MisUtils(object):
         'sender': 'class_robber@cycoe.cc',
         'sender_password': 'class_robber',
         'sender_host': 'smtp.ym.163.com',
-        'sender_port': '25',
+        'sender_port': 25,
     }
 
     pattern = {
@@ -72,30 +73,30 @@ class MisUtils(object):
         'grade': False,
     }
 
+
+    @staticmethod
+    def get_status():
+        result = False
+        for item in MisUtils.status.values():
+            result = result or item
+        return result
+
     @staticmethod
     def checkConfFile():
         return os.path.exists(MisUtils.confFile)
 
     @staticmethod
     def loadConfFile():
-        with open(MisUtils.confFile) as fr:
-            content_ = fr.readlines()
-            for content in content_:
-                pair_ = content.split(':')
-                pair_ = [pair.strip() for pair in pair_]
-                if len(pair_) == 2:
-                    MisUtils.confDict[pair_[0]] = pair_[1]
-                elif len(pair_) == 1:
-                    MisUtils.confDict[pair_[0]] = ''
+        try:
+            with open(MisUtils.confFile, 'r') as fp:
+                MisUtils.confDict = json.load(fp)
+        except json.decoder.JSONDecodeError:
+            os.rmdir(MisUtils.confFile)
 
     @staticmethod
     def dumpConfFile():
-        with open(MisUtils.confFile, 'w') as fr:
-            for key in MisUtils.confDict.keys():
-                fr.write(str(key))
-                fr.write(': ')
-                fr.write(str(MisUtils.confDict[key]))
-                fr.write('\n')
+        with open(MisUtils.confFile, 'w') as fp:
+            fp.write(json.dumps(MisUtils.confDict, indent=4))
 
     @staticmethod
     def setEmailInfo():
