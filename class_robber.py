@@ -37,7 +37,7 @@ def print_(content):
     pass
 
 
-robber = Robber(print_)
+robber = Robber(print)
 
 
 def main():
@@ -51,6 +51,9 @@ def initArgvs():
     ArgvsParser.connect(['help', 'h'], outputHelp)
     ArgvsParser.connect(['report', 'r'], rob_report)
     ArgvsParser.connect(['grade', 'g'], fetch_grade)
+    ArgvsParser.connect(['add', 'a'], add_class_key)
+    ArgvsParser.connect(['list', 'l'], list_class_key)
+    ArgvsParser.connect(['delete', 'de'], delete_class_key)
     ArgvsParser.connect(['class', 'c'], rob_class)
     ArgvsParser.connect(['quit', 'q'], quit_)
     ArgvsParser.connect(['emailLogin', 'el'], emailLogin)
@@ -82,6 +85,10 @@ def outputHelp():
         ['help', 'h', 'print helps'],
         ['emailLogin', 'el', 'login email to send notification'],
         ['report', 's', 'report robbing mode'],
+        ['class', 'c', 'class robbing mode'],
+        ['add', 'a', 'add keys for class robbing'],
+        ['delete', 'de', 'delete keys for class robbing'],
+        ['list', 'l', 'list keys for class robbing'],
         ['donate', 'd', 'support developer a cup of coffee'],
         ['quit', 'q', 'quit robber']
     ], gravity=OutputFormater.center, padding=2))
@@ -103,9 +110,8 @@ def fetch_grade():
 
 
 def rob_class():
-    if not MisUtils.status['class']:
-        MisUtils.signal['class'] = True
-        robber.rob_class(lambda: None)
+    robber.login()
+    robber.rob_class()
 
 
 def stop_report():
@@ -119,6 +125,35 @@ def get_status():
     process = list(MisUtils.status.keys())
     status = ['running' if item else 'stop' for item in list(MisUtils.status.values())]
     print(OutputFormater.table(list(zip(process, status)), gravity=OutputFormater.left, padding=2))
+
+
+def add_class_key():
+    class_key = []
+    if MisUtils.check_file_exists(MisUtils.class_cache_path):
+        class_key = MisUtils.load_table(MisUtils.class_cache_path)
+    key_ = []
+    for i in range(10):
+        key = input('please input {}th key\n> '.format(str(i + 1)))
+        if key:
+            key_.append(key)
+        else:
+            break
+    class_key.append(key_)
+    MisUtils.dump_table(class_key, MisUtils.class_cache_path)
+
+
+def list_class_key():
+    class_key = [[]]
+    if MisUtils.check_file_exists(MisUtils.class_cache_path):
+        class_key = MisUtils.load_table(MisUtils.class_cache_path)
+    print('\n'.join(['<{}> '.format(str(index + 1)) + ', '.join(class_key[index]) for index in range(len(class_key))]))
+    return class_key
+
+def delete_class_key():
+    class_key = list_class_key()
+    choice = input('input the number  of the key to delete\n> ')
+    del class_key[int(choice) - 1]
+    MisUtils.dump_table(class_key, MisUtils.class_cache_path)
 
 
 def emailLogin():

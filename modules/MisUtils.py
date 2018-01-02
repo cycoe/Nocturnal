@@ -40,7 +40,8 @@ class MisUtils(object):
     platform = platform.system()    # 运行平台
     confFile = 'robber.conf'		# 配置文件路径
     blackList = 'blackList.cache'	# 报告黑名单文件路径
-    grade_cache_path = 'grade.cache'       # 成绩缓存文件
+    grade_cache_path = 'grade.cache'    # 成绩缓存文件
+    class_cache_path = 'class.cache'    # class keys
 
     wechatURI = 'wxp://f2f0PYx27X0CWU1yiBhSKeHHgYzfA27iOicM'    # 微信二维码 URI
     alipayURI = 'HTTPS://QR.ALIPAY.COM/FKX01669SBV7NA4ALTVPE8'  # 支付宝二维码 URI
@@ -66,13 +67,11 @@ class MisUtils(object):
     signal = {
         'report': False,
         'grade': False,
-        'class': False,
     }
 
     status = {
         'report': False,
         'grade': False,
-        'class': False,
     }
 
 
@@ -82,6 +81,10 @@ class MisUtils(object):
         for item in MisUtils.status.values():
             result = result or item
         return result
+
+    @staticmethod
+    def check_file_exists(path):
+        return os.path.exists(path)
 
     @staticmethod
     def checkConfFile():
@@ -183,6 +186,23 @@ class MisUtils(object):
             content = fr.readlines()
         content = '\n'.join(content)
         return content
+
+    @staticmethod
+    def dump_table(table, path):
+        table = '\n'.join([', '.join(line) for line in table])
+        with open(path, 'w') as fp:
+            fp.write(table)
+
+    @staticmethod
+    def load_table(path):
+        table = []
+        if not os.path.exists(path):
+            return table
+        with open(path, 'r') as fp:
+            table = fp.readlines()
+        table = [line.split(', ') for line in table]
+        table = [[item.strip() for item in line] for line in table]
+        return table
 
     @staticmethod
     def show_qrcode(img_path):

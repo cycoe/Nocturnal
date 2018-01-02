@@ -295,10 +295,10 @@ class Spider(object):
 
         return self.formatClassList()
 
-    def postClass(self, classId):
+    def postClass(self, button_id):
 
         postData = {
-            '__EVENTTARGET': 'dgData__ctl' + classId + '_Linkbutton1',
+            '__EVENTTARGET': button_id,
             '__EVENTARGUMENT': '',
             '__VIEWSTATE': self.VIEWSTATE,
             '__EVENTVALIDATION': self.EVENTVALIDATION,
@@ -311,15 +311,19 @@ class Spider(object):
                                    data=postData,
                                    params=payload)
 
-        while True:
+        MisUtils.initAttempt()
+        while MisUtils.descAttempt():
             self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
             if self.response.status_code == 200:
                 self.output('Post class successfully')
                 break
             else:
                 self.output('Retrying...')
+        if not MisUtils.get_attempt():
+            self.output(Logger.log(String['max_attempts'], [String['re-login']], level=Logger.error))
+            return False
 
-        return self.formatClassList()
+        return True
 
     def fetchReportList(self):
         payload = {'xh': MisUtils.confDict['userName']}
@@ -567,6 +571,27 @@ class Spider(object):
             fr.write(self.response.text)
 
         htmlBody = BeautifulSoup(self.response.text, 'html.parser')
+        tempTable_ = htmlBody.find_all('table', class_='GridBackColor')[0].find_all('tr', nowrap='nowrap')
+        selectable_ = []
+        selected_ = []
+
+        for tempRow in tempTable_[0:]:
+            tempRow = tempRow.find_all('td')
+            buttonId = re.findall(self.buttonPattern, str(tempRow[-1]))[0] if re.search(self.buttonPattern, str(tempRow[-1])) else ''
+            classRow = [buttonId]
+            for i in self.classFilter:
+                item = re.findall(self.removeTd, str(tempRow[i]))
+                classRow.append(item[0] if item else '')
+
+            if re.search('.*选择当前课程.*', str(tempRow)):
+                selectable_.append(classRow)
+            elif re.search('.*退选当前课程.*', str(tempRow)):
+                selected_.append(classRow)
+            else:
+                break
+
+        return selectable_, selected_
+
         # tempList = htmlBody.find_all('tr', nowrap='nowrap')[:-1]
         # classList = []
         # for tempRow in tempList:

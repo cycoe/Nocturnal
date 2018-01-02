@@ -10,6 +10,7 @@ from modules.Logger import Logger
 from modules.Mail import Mail
 from modules.MisUtils import MisUtils
 from modules.String import String
+from modules.listUtils import filter_with_keys, sort_class
 
 
 def checkStatus(*check_):
@@ -190,11 +191,45 @@ class Robber(object):
                 break
         callback()
 
-    def rob_class(self, callback):
-        MisUtils.status['class'] = True
-        self.login()
-        self.spider.fetchClassList()
-        callback()
+    def rob_class(self):
+        while True:
+            while True:
+                flag = self.spider.fetchClassList()
+                if flag is not False:
+                    selectable_, selected_ = flag
+                else:
+                    break
+
+                class_key = MisUtils.load_table(MisUtils.class_cache_path)
+                temp_selectable_ = []
+                for key in class_key:
+                    temp_selectable_.extend(filter_with_keys(selectable_, key))
+                filter_selectable_ = []
+                for line in temp_selectable_:
+                    if line not in filter_selectable_:
+                        filter_selectable_.append(line)
+
+                if not filter_selectable_:
+                    self.output(Logger.log('No class to rob', subContent_=['exiting...'], level=Logger.error))
+                    return True
+
+                button_id, wait = sort_class(filter_selectable_)
+                self.output(Logger.log('Robbing class...', level=Logger.warning))
+                flag = self.spider.postClass(button_id)
+                if not flag:
+                    break
+                if wait:
+                    self.output(Logger.log('dozing...', level=Logger.info))
+                    time.sleep(MisUtils.refreshSleep)
+
+            self.clean()
+            self.spider.open_session()
+            result = self.spider.login(MisUtils.confDict['userName'], MisUtils.confDict['password'])
+            if result is Spider.NO_SUCH_A_USER or result is Spider.WRONG_PASSWORD:
+                self.clean()
+                break
+
+        return False
 
     def fetchGrade(self, callback, output):
         MisUtils.status['grade'] = True
