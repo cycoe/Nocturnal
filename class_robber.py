@@ -146,15 +146,32 @@ def list_class_key():
     class_key = [[]]
     if MisUtils.check_file_exists(MisUtils.class_cache_path):
         class_key = MisUtils.load_table(MisUtils.class_cache_path)
+    print('======================')
     print('\n'.join(['<{}> '.format(str(index + 1)) + ', '.join(class_key[index]) for index in range(len(class_key))]))
+    print('======================')
     return class_key
 
 def delete_class_key():
     class_key = list_class_key()
-    choice = input('input the number  of the key to delete\n> ')
-    del class_key[int(choice) - 1]
-    MisUtils.dump_table(class_key, MisUtils.class_cache_path)
+    if not class_key:
+        print('Class key list is empty')
+        return False
+    while True:
+        choice = input('Input the number  of the key to delete\n> ')
+        try:
+            choice = int(choice)
+        except ValueError as e:
+            print('Not a number!')
+            continue
+        if 0 < choice <= len(class_key):
+            del class_key[int(choice) - 1]
+            MisUtils.dump_table(class_key, MisUtils.class_cache_path)
+            break
+        else:
+            print('Index out of range!')
+            continue
 
+    return True
 
 def emailLogin():
     robber.emailLogin()
