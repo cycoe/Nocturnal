@@ -35,7 +35,7 @@ class MisUtils(object):
     # wechatGroup_ = ['研究生的咸♂鱼生活']		# 讲座推送的微信群名称
     # wechatUser_ = ['邱大帅全宇宙粉丝后援会']	# 讲座推送的用户名称
 
-    version = 'V 3.0'
+    version = 'V 4.0'
     author = 'Cycoe'				# 作者
     platform = platform.system()    # 运行平台
     confFile = 'robber.conf'		# 配置文件路径

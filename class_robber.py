@@ -81,7 +81,7 @@ def outputHelp():
         ['command', 'abbr.', 'description'],
         ['help', 'h', 'print helps'],
         ['emailLogin', 'el', 'login email to send notification'],
-        ['report', 's', 'report robbing mode'],
+        ['report', 'r', 'report robbing mode'],
         ['class', 'c', 'class robbing mode'],
         ['add', 'a', 'add keys for class robbing'],
         ['delete', 'de', 'delete keys for class robbing'],
