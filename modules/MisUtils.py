@@ -104,26 +104,6 @@ class MisUtils(object):
             fp.write(json.dumps(MisUtils.confDict, indent=4))
 
     @staticmethod
-    def check_grade_cache():
-        return os.path.exists(MisUtils.grade_cache_path)
-
-    @staticmethod
-    def load_grade_cache():
-        try:
-            with open(MisUtils.grade_cache_path, 'r') as fp:
-                grade_cache = json.load(fp)
-        except json.decoder.JSONDecodeError:
-            os.remove(MisUtils.grade_cache_path)
-            grade_cache = {}
-        return grade_cache
-
-    @staticmethod
-    def dump_grade_cache(grade_cache):
-        with open(MisUtils.grade_cache_path, 'w') as fp:
-            fp.write(json.dumps(grade_cache, indent=4))
-        return True
-
-    @staticmethod
     def setEmailInfo():
         if MisUtils.checkConfFile():
             MisUtils.loadConfFile()
@@ -175,17 +155,32 @@ class MisUtils(object):
 
     @staticmethod
     def dump_content(content, path):
-        with open(path, 'w') as fr:
-            fr.write(content)
+        with open(path, 'w') as fp:
+            fp.write(content)
 
     @staticmethod
-    def read_content(path):
+    def load_content(path):
         if not os.path.exists(path):
             return ''
-        with open(path, 'r') as fr:
-            content = fr.readlines()
+        with open(path, 'r') as fp:
+            content = fp.readlines()
         content = '\n'.join(content)
         return content
+
+    @staticmethod
+    def dump_list(list_, path):
+        with open(path, 'w') as fp:
+            fp.write('\n'.join(list_))
+
+    @staticmethod
+    def load_list(path):
+        list_ = []
+        if not os.path.exists(path):
+            return list_
+        with open(path, 'r') as fp:
+            list_ = fp.readlines()
+        list_ = [item.strip('\n') for item in list_]
+        return list_
 
     @staticmethod
     def dump_table(table, path):
@@ -201,8 +196,36 @@ class MisUtils(object):
         with open(path, 'r') as fp:
             table = fp.readlines()
         table = [line.split(', ') for line in table]
-        table = [[item.strip() for item in line] for line in table]
+        table = [[item.strip('\n') for item in line] for line in table]
         return table
+
+    @staticmethod
+    def load_dict(path):
+        dict_ = {}
+        if not os.path.exists(path):
+            return dict_
+        try:
+            with open(path, 'r') as fp:
+                dict_ = json.load(fp)
+        except json.decoder.JSONDecodeError:
+            os.remove(MisUtils.grade_cache_path)
+
+        return dict_
+
+    @staticmethod
+    def dump_dict(dict_, path):
+        with open(path, 'w') as fp:
+            fp.write(json.dumps(dict_, indent=4))
+        return True
+
+    @staticmethod
+    def table_to_html(table):
+        html = [''.join(['<td>' + item + '</td>' for item in line]) for line in table]
+        html = ''.join(['<tr>' + line + '</tr>' for line in html])
+        html = '<table border="1" bordercolor="#999999" border="1" style="background-color:#F0F0E8;\
+        border-color:#999999;font-size:X-Small;width:100%;border-collapse:collapse;">' + html + '</table>'
+
+        return html
 
     @staticmethod
     def show_qrcode(img_path):

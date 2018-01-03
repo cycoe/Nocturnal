@@ -98,7 +98,6 @@ def rob_report():
         threading.Thread(target=robber.robReport, args=(lambda: None,)).start()
 
 
-
 def fetch_grade():
     if not MisUtils.status['grade']:
         MisUtils.signal['grade'] = True

@@ -512,23 +512,14 @@ class Spider(object):
 
     def formatGradeList(self):
         htmlBody = BeautifulSoup(self.response.text, 'html.parser')
-        grade_dict = {
-            '学位课程': htmlBody.find_all('table', class_='GridViewStyle')[0],
-            '选修课程': htmlBody.find_all('table', class_='GridViewStyle')[1],
-        }
-        for key in grade_dict.keys():
-            grade_lines = grade_dict[key].find_all('tr', class_='GridViewRowStyle')
-            grade_dict[key] = {}
-            for grade_line in grade_lines:
-                grade_item = grade_line.find_all('td')
-                grade_item = [re.findall(self.removeTd, str(item))[0] for item in grade_item]
-                grade_dict[key][grade_item[0]] = {
-                    '课程学分': grade_item[1],
-                    '选修学期': grade_item[2],
-                    '成绩': grade_item[3]
-                }
+        comp_grade = htmlBody.find_all('table', class_='GridViewStyle')[0]      # compulsory course grades
+        elect_grade = htmlBody.find_all('table', class_='GridViewStyle')[1]     # elective course grades
 
-        return grade_dict
+        grade = comp_grade.find_all('tr', class_='GridViewRowStyle')
+        grade.extend(elect_grade.find_all('tr', class_='GridViewRowStyle'))
+        grade = [[re.findall(self.removeTd, str(item))[0] for item in grade_line.find_all('td')] for grade_line in grade]
+
+        return grade
 
     def formatReportList(self):
         """

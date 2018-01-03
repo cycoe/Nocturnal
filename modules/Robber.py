@@ -167,10 +167,7 @@ class Robber(object):
                 if new_selected_item_:
                     MisUtils.mergeSelected(new_selected_item_)
                     self.output(Logger.log(String['robbed_new_reports'], subContent_=new_selected_item_, level=Logger.error))
-                    selectedHtml = [''.join(['<td>' + item + '</td>' for item in selected]) for selected in new_selected_]
-                    selectedHtml = ''.join(['<tr>' + selected + '</tr>' for selected in selectedHtml])
-                    selectedHtml = '<table border="1" bordercolor="#999999" border="1" style="background-color:#F0F0E8;\
-                    border-color:#999999;font-size:X-Small;width:100%;border-collapse:collapse;">' + selectedHtml + '</table>'
+                    selectedHtml = MisUtils.table_to_html(new_selected_)
                     if Mail.connectedToMail:
                         threading.Thread(target=Mail.send_mail, args=(String['robbed_new_reports'], selectedHtml,)).start()
 
@@ -241,16 +238,17 @@ class Robber(object):
                 else:
                     break
 
-                if grade != (MisUtils.load_grade_cache() if MisUtils.check_grade_cache() else {}):
-                    output(grade)
-                    print('new grade')
-                    # if Mail.connectedToMail:
-                    #     threading.Thread(target=Mail.send_mail, args=(String['robbed_new_reports'], grade,)).start()
+                new_grade = [line for line in grade if line not in MisUtils.load_table(MisUtils.grade_cache_path)]
+                if new_grade:
+                    output(new_grade)
+                    MisUtils.dump_table(grade, MisUtils.grade_cache_path)
+                    if Mail.connectedToMail:
+                        new_grade.insert(0, ['课程', '课程学分', '选修学期', '成绩'])
+                        grade_html = MisUtils.table_to_html(new_grade)
+                        threading.Thread(target=Mail.send_mail, args=('Fetched new grade', grade_html,)).start()
 
                 else:
                     time.sleep(10)
-
-                MisUtils.dump_grade_cache(grade)
 
                 if not MisUtils.signal['grade']:
                     break
