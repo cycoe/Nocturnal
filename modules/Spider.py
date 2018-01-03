@@ -315,12 +315,12 @@ class Spider(object):
         while MisUtils.descAttempt():
             self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
             if self.response.status_code == 200:
-                self.output('Post class successfully')
+                print('Post class successfully')
                 break
             else:
-                self.output('Retrying...')
+                print('Retrying...')
         if not MisUtils.get_attempt():
-            self.output(Logger.log(String['max_attempts'], [String['re-login']], level=Logger.error))
+            print(Logger.log(String['max_attempts'], [String['re-login']], level=Logger.error))
             return False
 
         return True
@@ -477,9 +477,9 @@ class Spider(object):
 
     def getEnglishTestStatus(self):
 
-        htmlbody = BeautifulSoup(self.response.text, 'html.parser')
-        htmlbody = htmlbody.find_all('table', class_='GridBackColor')[0]
-        tempList = htmlbody.find_all('tr')
+        htmlBody = BeautifulSoup(self.response.text, 'html.parser')
+        htmlBody = htmlBody.find_all('table', class_='GridBackColor')[0]
+        tempList = htmlBody.find_all('tr')
         self.buttonId = re.findall('<a href=".*" id="(.*)?">.*</a>', str(tempList[1].find('a')))
         if tempList[1].find('img', border='0', alt='申请当前考试') is not None:
             return False

@@ -33,11 +33,8 @@ import threading
 #        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 #                      Buddha Bless, No Bug !
 
-def print_(content):
-    pass
 
-
-robber = Robber(print)
+robber = Robber(lambda x: None)
 
 
 def main():
