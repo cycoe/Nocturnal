@@ -155,6 +155,8 @@ def delete_class_key():
         return False
     while True:
         choice = input('Input the number  of the key to delete\n> ')
+        if not choice:
+            break
         try:
             choice = int(choice)
         except ValueError as e:
