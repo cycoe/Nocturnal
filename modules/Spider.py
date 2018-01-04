@@ -585,7 +585,7 @@ class Spider(object):
             elif re.search('退选当前课程', str(tempRow[-1])):
                 selected_.append(classRow)
             else:
-                selected_.append(classRow)
+                pass
 
         print(selected_)
         return selectable_, selected_
