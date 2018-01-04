@@ -60,7 +60,7 @@ class Spider(object):
 
         # self.buttonPattern = re.compile('<a.*id="(.*?)?".*><img.*>.*</a>')
         self.href_pattern = re.compile('href=".*?"')
-        self.buttonPattern = re.compile('dgData.{2}ctl\d+?.Link[bB]utton\d+?')
+        self.buttonPattern = re.compile('dgData\d{2}.{2}ctl\d+?.Link[bB]utton\d+?')
         self.removeTd = re.compile('<td.*>(.*)?</td>')
         self.viewStatePattern = re.compile('<.*name="__VIEWSTATE".*value="(.*)?".*/>')
         self.eventValidationPattern = re.compile('<.*name="__EVENTVALIDATION".*value="(.*)?".*/>')
@@ -103,7 +103,7 @@ class Spider(object):
         :returns: 页面的 __VIEWSTATE
         """
         VIEWSTATE = re.findall(self.viewStatePattern, self.response.text)
-        return VIEWSTATE if len(VIEWSTATE) > 0 else None
+        return VIEWSTATE[0] if len(VIEWSTATE) > 0 else None
 
     def getEVENTVALIDATION(self):
         """
@@ -112,7 +112,7 @@ class Spider(object):
         :returns: 页面的 __EVENTVALIDATION
         """
         EVENTVALIDATION = re.findall(self.eventValidationPattern, self.response.text)
-        return EVENTVALIDATION if len(EVENTVALIDATION) > 0 else None
+        return EVENTVALIDATION[0] if len(EVENTVALIDATION) > 0 else None
 
     def prepare(self,
                 referer=None,
@@ -178,7 +178,11 @@ class Spider(object):
 
         MisUtils.initAttempt()
         while MisUtils.descAttempt():
-            self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
+            try:
+                self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
+            except exceptions.ReadTimeout:
+                self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
+                continue
             self.VIEWSTATE = self.getVIEWSTATE()
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
@@ -203,7 +207,11 @@ class Spider(object):
 
         MisUtils.initAttempt()
         while MisUtils.descAttempt():
-            codeImg = self.session.send(prepareBody, timeout=MisUtils.timeout)  # 获取验证码图片
+            try:
+                codeImg = self.session.send(prepareBody, timeout=MisUtils.timeout)  # 获取验证码图片
+            except exceptions.ReadTimeout:
+                self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
+                continue
             if codeImg.status_code == 200:
                 break
             else:
@@ -244,7 +252,11 @@ class Spider(object):
 
         MisUtils.initAttempt()
         while MisUtils.descAttempt():
-            self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
+            try:
+                self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
+            except exceptions.ReadTimeout:
+                self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
+                continue
             if self.response.status_code == 200:
                 break
 
@@ -284,7 +296,11 @@ class Spider(object):
 
         MisUtils.initAttempt()
         while MisUtils.descAttempt():
-            self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
+            try:
+                self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
+            except exceptions.ReadTimeout:
+                self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
+                continue
             self.VIEWSTATE = self.getVIEWSTATE()
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
@@ -315,7 +331,11 @@ class Spider(object):
 
         MisUtils.initAttempt()
         while MisUtils.descAttempt():
-            self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
+            try:
+                self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
+            except exceptions.ReadTimeout:
+                self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
+                continue
             if self.response.status_code == 200:
                 print('Post class successfully')
                 break
@@ -338,7 +358,11 @@ class Spider(object):
 
         MisUtils.initAttempt()
         while MisUtils.descAttempt():
-            self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
+            try:
+                self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
+            except exceptions.ReadTimeout:
+                self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
+                continue
             self.VIEWSTATE = self.getVIEWSTATE()
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
@@ -362,7 +386,11 @@ class Spider(object):
 
         MisUtils.initAttempt()
         while MisUtils.descAttempt():
-            codeImg = self.session.send(prepareBody, timeout=MisUtils.timeout)  # 获取验证码图片
+            try:
+                codeImg = self.session.send(prepareBody, timeout=MisUtils.timeout)  # 获取验证码图片
+            except exceptions.ReadTimeout:
+                self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
+                continue
             if codeImg.status_code == 200:
                 break
             else:
@@ -398,7 +426,11 @@ class Spider(object):
 
         MisUtils.initAttempt()
         while MisUtils.descAttempt():
-            self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
+            try:
+                self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
+            except exceptions.ReadTimeout:
+                self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
+                continue
             self.VIEWSTATE = self.getVIEWSTATE()
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
@@ -444,7 +476,11 @@ class Spider(object):
                                    params=payload)
 
         while True:
-            self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
+            try:
+                self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
+            except exceptions.ReadTimeout:
+                self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
+                continue
             if self.response.status_code == 200:
                 break
             else:
@@ -452,14 +488,19 @@ class Spider(object):
 
         soup = BeautifulSoup(self.response.text, 'html.parser')
         with open('schedule.md', 'w') as fr:
-            fr.write(str(soup.find_all('table', class_='GridViewStyle')[0]))
+            schedule_html = soup.find_all('table', class_='GridViewStyle')
+            fr.write(str(schedule_html[0]) if schedule_html else '')
 
         return self
 
     def getEnglishTest(self):
 
         while True:
-            self.response = self.session.send(self.prepareGetEnglishTest(), timeout=MisUtils.timeout)
+            try:
+                self.response = self.session.send(self.prepareGetEnglishTest(), timeout=MisUtils.timeout)
+            except exceptions.ReadTimeout:
+                self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
+                continue
             self.VIEWSTATE = self.getVIEWSTATE()
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
@@ -470,25 +511,29 @@ class Spider(object):
     def postEnglishTest(self):
 
         while True:
-            self.response = self.session.send(self.preparePostEnglishTest(), timeout=MisUtils.timeout)
+            try:
+                self.response = self.session.send(self.preparePostEnglishTest(), timeout=MisUtils.timeout)
+            except exceptions.ReadTimeout:
+                self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
+                continue
             if self.response.status_code == 200:
                 self.output("Request english test successfully!")
                 break
             else:
                 self.output("Retrying...")
 
-    def getEnglishTestStatus(self):
-
-        htmlBody = BeautifulSoup(self.response.text, 'html.parser')
-        htmlBody = htmlBody.find_all('table', class_='GridBackColor')[0]
-        tempList = htmlBody.find_all('tr')
-        self.buttonId = re.findall('<a href=".*" id="(.*)?">.*</a>', str(tempList[1].find('a')))
-        if tempList[1].find('img', border='0', alt='申请当前考试') is not None:
-            return False
-        elif tempList[1].find('img', border='0', alt='取消考试申请') is not None:
-            return True
-        else:
-            return True
+    # def getEnglishTestStatus(self):
+    #
+    #     htmlBody = BeautifulSoup(self.response.text, 'html.parser')
+    #     htmlBody = htmlBody.find_all('table', class_='GridBackColor')[0]
+    #     tempList = htmlBody.find_all('tr')
+    #     self.buttonId = re.findall('<a href=".*" id="(.*)?">.*</a>', str(tempList[1].find('a')))
+    #     if tempList[1].find('img', border='0', alt='申请当前考试') is not None:
+    #         return False
+    #     elif tempList[1].find('img', border='0', alt='取消考试申请') is not None:
+    #         return True
+    #     else:
+    #         return True
 
     def fetchGrade(self):
         payload = {'xh': MisUtils.confDict['userName']}
@@ -501,7 +546,11 @@ class Spider(object):
 
         MisUtils.initAttempt()
         while MisUtils.descAttempt():
-            self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
+            try:
+                self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
+            except exceptions.ReadTimeout:
+                self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
+                continue
             if self.response.status_code == 200:
                 break
             else:
@@ -514,12 +563,17 @@ class Spider(object):
 
     def formatGradeList(self):
         htmlBody = BeautifulSoup(self.response.text, 'html.parser')
-        comp_grade = htmlBody.find_all('table', class_='GridViewStyle')[0]      # compulsory course grades
-        elect_grade = htmlBody.find_all('table', class_='GridViewStyle')[1]     # elective course grades
-
-        grade = comp_grade.find_all('tr', class_='GridViewRowStyle')
-        grade.extend(elect_grade.find_all('tr', class_='GridViewRowStyle'))
-        grade = [[re.findall(self.removeTd, str(item))[0] for item in grade_line.find_all('td')] for grade_line in grade]
+        htmlBody = htmlBody.find_all('table', class_='GridViewStyle')
+        if len(htmlBody) == 2:
+            # compulsory course grades
+            comp_grade = htmlBody[0]
+            # elective course grades
+            elect_grade = htmlBody[1]
+            grade = comp_grade.find_all('tr', class_='GridViewRowStyle')
+            grade.extend(elect_grade.find_all('tr', class_='GridViewRowStyle'))
+            grade = [[re.findall(self.removeTd, str(item))[0] for item in grade_line.find_all('td')] for grade_line in grade]
+        else:
+            grade = []
 
         return grade
 
@@ -533,10 +587,17 @@ class Spider(object):
         """
 
         htmlBody = BeautifulSoup(self.response.text, 'html.parser')
-        tempSelected_ = htmlBody.find_all('table', class_='GridBackColor')[0].find_all('tr', nowrap='nowrap')
-        tempSelectable_ = htmlBody.find_all('table', class_='GridBackColor')[1].find_all('tr', nowrap='nowrap')
+        htmlBody = htmlBody.find_all('table', class_='GridBackColor')
+
         selected_ = []
         selectable_ = []
+
+        if len(htmlBody) == 2:
+            tempSelected_ = htmlBody[0].find_all('tr', nowrap='nowrap')
+            tempSelectable_ = htmlBody[1].find_all('tr', nowrap='nowrap')
+
+        else:
+            return selected_, selectable_
 
         for tempRow in tempSelected_[1:]:
             tempRow = tempRow.find_all('td')
@@ -549,7 +610,8 @@ class Spider(object):
 
         for tempRow in tempSelectable_[1:]:
             tempRow = tempRow.find_all('td')
-            buttonId = re.findall(self.buttonPattern, str(tempRow[-1]))[0]
+            href = re.findall(self.href_pattern, str(tempRow[-1]))[0]
+            buttonId = re.findall(self.buttonPattern, href)[0]
             reportRow = [buttonId]
             for i in self.reportFilter:
                 item = re.findall(self.removeTd, str(tempRow[i]))
@@ -566,9 +628,10 @@ class Spider(object):
         htmlBody = BeautifulSoup(self.response.text, 'html.parser')
         selectable_ = []
         selected_ = []
-        
-        if htmlBody.find_all('table', class_='GridBackColor'):
-            tempTable_ = htmlBody.find_all('table', class_='GridBackColor')[0].find_all('tr', nowrap='nowrap')
+
+        htmlBody = htmlBody.find_all('table', class_='GridBackColor')
+        if htmlBody:
+            tempTable_ = htmlBody[0].find_all('tr', nowrap='nowrap')
         else:
             return selectable_, selected_
 
