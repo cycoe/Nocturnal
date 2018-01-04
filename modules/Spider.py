@@ -563,9 +563,13 @@ class Spider(object):
             fr.write(self.response.text)
 
         htmlBody = BeautifulSoup(self.response.text, 'html.parser')
-        tempTable_ = htmlBody.find_all('table', class_='GridBackColor')[0].find_all('tr', nowrap='nowrap')
         selectable_ = []
         selected_ = []
+        
+        if htmlBody.find_all('table', class_='GridBackColor'):
+            tempTable_ = htmlBody.find_all('table', class_='GridBackColor')[0].find_all('tr', nowrap='nowrap')
+        else:
+            return selectable_, selected_
 
         for tempRow in tempTable_:
             tempRow = tempRow.find_all('td')
