@@ -52,13 +52,14 @@ class Spider(object):
         # self.classifier = Classifier()
         # self.classifier.loadTrainingMat()
 
-        self.classFilter = [3, 4, 5, 6, 11, 12, 13, 15]
+        self.classFilter = [3, 4, 5, 6, 11, 12, 13]
         self.reportFilter = [0, 1, 3, 4, 5, 6, 7]
         self.VIEWSTATE = ''
         self.EVENTVALIDATION = ''
         self.response = None
 
-        self.buttonPattern = re.compile('<a.*href=".*?\'(.*?)?\'.*".*><img.*>.*</a>')
+        # self.buttonPattern = re.compile('<a.*href=".*?\'(.*?)?\'.*".*><img.*>.*</a>')
+        self.buttonPattern = re.compile('<a.*id="(.*?)?".*><img.*>.*</a>')
         self.removeTd = re.compile('<td.*>(.*)?</td>')
         self.viewStatePattern = re.compile('<.*name="__VIEWSTATE".*value="(.*)?".*/>')
         self.eventValidationPattern = re.compile('<.*name="__EVENTVALIDATION".*value="(.*)?".*/>')
@@ -566,9 +567,11 @@ class Spider(object):
         selectable_ = []
         selected_ = []
 
-        for tempRow in tempTable_[0:]:
+        for tempRow in tempTable_[:]:
             tempRow = tempRow.find_all('td')
             buttonId = re.findall(self.buttonPattern, str(tempRow[-1]))[0] if re.search(self.buttonPattern, str(tempRow[-1])) else ''
+            buttonId[6] = '$'
+            buttonId[12] = '$'
             classRow = [buttonId]
             for i in self.classFilter:
                 item = re.findall(self.removeTd, str(tempRow[i]))
@@ -581,7 +584,7 @@ class Spider(object):
             else:
                 selected_.append(classRow)
                 break
-        print(selected_)
+				
         return selectable_, selected_
 
         # tempList = htmlBody.find_all('tr', nowrap='nowrap')[:-1]

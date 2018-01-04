@@ -207,16 +207,16 @@ class Robber(object):
                         filter_selectable_.append(line)
 
                 if not filter_selectable_:
-                    self.output(Logger.log('No class to rob', subContent_=['exiting...'], level=Logger.error))
+                    print(Logger.log('No class to rob', subContent_=['exiting...'], level=Logger.error))
                     return True
 
                 button_id, wait = sort_class(filter_selectable_)
-                self.output(Logger.log('Robbing class...', level=Logger.warning))
+                print(Logger.log('Robbing class...', level=Logger.warning))
                 flag = self.spider.postClass(button_id)
                 if not flag:
                     break
                 if wait:
-                    self.output(Logger.log('dozing...', level=Logger.info))
+                    print(Logger.log('dozing...', level=Logger.info))
                     time.sleep(MisUtils.refreshSleep)
 
             self.clean()
