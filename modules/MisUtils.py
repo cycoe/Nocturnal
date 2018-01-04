@@ -28,7 +28,7 @@ class MisUtils(object):
     refreshSleep = getRandomTime(10)    # 刷新的间隔时间
     wechatPushSleep = getRandomTime(1)  # 发送两条微信消息之间的间隔
     animationSleep = 0.5                # 等待动画的刷新时间
-    timeout = 10                        # 连接超时时间
+    timeout = 300                       # 连接超时时间
     maxAttempt = 100					# 最大递归次数
     attempt = maxAttempt
 

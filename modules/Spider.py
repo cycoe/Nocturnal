@@ -52,7 +52,7 @@ class Spider(object):
         # self.classifier = Classifier()
         # self.classifier.loadTrainingMat()
 
-        self.classFilter = [3, 4, 5, 6, 11, 12]
+        self.classFilter = [3, 4, 5, 6, 11, 12, 13, 15]
         self.reportFilter = [0, 1, 3, 4, 5, 6, 7]
         self.VIEWSTATE = ''
         self.EVENTVALIDATION = ''
@@ -568,7 +568,7 @@ class Spider(object):
 
         for tempRow in tempTable_[0:]:
             tempRow = tempRow.find_all('td')
-            buttonId = re.findall(self.buttonPattern, str(tempRow[-1]))[0] if re.search(self.buttonPattern, str(tempRow[-1])) else ''
+            buttonId = re.findall(self.buttonPattern, str(tempRow[-2]))[0] if re.search(self.buttonPattern, str(tempRow[-2])) else ''
             classRow = [buttonId]
             for i in self.classFilter:
                 item = re.findall(self.removeTd, str(tempRow[i]))
@@ -579,8 +579,9 @@ class Spider(object):
             elif re.search('.*退选当前课程.*', str(tempRow)):
                 selected_.append(classRow)
             else:
+                selected_.append(classRow)
                 break
-
+        print(selected_)
         return selectable_, selected_
 
         # tempList = htmlBody.find_all('tr', nowrap='nowrap')[:-1]
@@ -644,20 +645,20 @@ class PasswordError(Exception):
         return self.errorInfo
 
 
-def print_vertify_code():
-    from PIL import Image
-    fullVector = []
-    img = Image.open('check.gif')
-    img = img.convert('RGBA')
-    imgWidth = img.size[0]
-    imgHeight = img.size[1]
-    pixData = img.load()
-    for j in range(imgHeight):
-        row = ''
-        for i in range(imgWidth):
-            if pixData[i, j][0] + pixData[i, j][1] + pixData[i, j][2] < 3 * 180:
-                row += '#'
-            else:
-                row += ' '
-        fullVector.append(row)
-    print('\n'.join(fullVector))
+# def print_vertify_code():
+#     from PIL import Image
+#     fullVector = []
+#     img = Image.open('check.gif')
+#     img = img.convert('RGBA')
+#     imgWidth = img.size[0]
+#     imgHeight = img.size[1]
+#     pixData = img.load()
+#     for j in range(imgHeight):
+#         row = ''
+#         for i in range(imgWidth):
+#             if pixData[i, j][0] + pixData[i, j][1] + pixData[i, j][2] < 3 * 180:
+#                 row += '#'
+#             else:
+#                 row += ' '
+#         fullVector.append(row)
+#     print('\n'.join(fullVector))
