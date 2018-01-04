@@ -58,8 +58,9 @@ class Spider(object):
         self.EVENTVALIDATION = ''
         self.response = None
 
-        # self.buttonPattern = re.compile('<a.*href=".*?\'(.*?)?\'.*".*><img.*>.*</a>')
-        self.buttonPattern = re.compile('<a.*id="(.*?)?".*><img.*>.*</a>')
+        # self.buttonPattern = re.compile('<a.*id="(.*?)?".*><img.*>.*</a>')
+        self.href_pattern = re.compile('href=".*?"')
+        self.buttonPattern = re.compile('dgData.{2}ctl\d+?.Link[bB]utton\d+?')
         self.removeTd = re.compile('<td.*>(.*)?</td>')
         self.viewStatePattern = re.compile('<.*name="__VIEWSTATE".*value="(.*)?".*/>')
         self.eventValidationPattern = re.compile('<.*name="__EVENTVALIDATION".*value="(.*)?".*/>')
@@ -573,14 +574,13 @@ class Spider(object):
 
         for tempRow in tempTable_:
             tempRow = tempRow.find_all('td')
-            buttonId = re.findall(self.buttonPattern, str(tempRow[-1]))[0] if re.search(self.buttonPattern, str(tempRow[-1])) else ''
-            if len(buttonId) == 24:
-                buttonId_ = buttonId[0:6] + '$' + buttonId[7:12] + '$' + buttonId[13:]
-            elif len(buttonId) == 25:
-                buttonId_ = buttonId[0:6] + '$' + buttonId[7:13] + '$' + buttonId[14:]
+            if re.search(self.href_pattern, str(tempRow[-1])):
+                href = re.findall(self.href_pattern, str(tempRow[-1]))[0]
+                buttonId = re.findall(self.buttonPattern, href)[0] if re.search(self.buttonPattern, href) else ''
             else:
-                buttonId_ = buttonId
-            classRow = [buttonId_]
+                buttonId = ''
+
+            classRow = [buttonId]
             for i in self.classFilter:
                 item = re.findall(self.removeTd, str(tempRow[i]))
                 classRow.append(item[0] if item else '')

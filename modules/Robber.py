@@ -10,6 +10,7 @@ from modules.Logger import Logger
 from modules.Mail import Mail
 from modules.MisUtils import MisUtils
 from modules.String import String
+from modules.ClassTable import ClassTable
 from modules.listUtils import filter_with_keys, sort_class
 
 
@@ -196,6 +197,9 @@ class Robber(object):
                     selectable_, selected_ = flag
                 else:
                     break
+
+                ClassTable.init_table()
+                ClassTable.create_table(selectable_)
 
                 class_key = MisUtils.load_table(MisUtils.class_cache_path)
                 temp_selectable_ = []
