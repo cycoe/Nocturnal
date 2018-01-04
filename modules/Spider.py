@@ -574,9 +574,9 @@ class Spider(object):
                 item = re.findall(self.removeTd, str(tempRow[i]))
                 classRow.append(item[0] if item else '')
 
-            if re.search('.*选择当前课程.*', str(tempRow)):
+            if re.search('选择当前课程', str(tempRow[-1])):
                 selectable_.append(classRow)
-            elif re.search('.*退选当前课程.*', str(tempRow)):
+            elif re.search('退选当前课程', str(tempRow[-1])):
                 selected_.append(classRow)
             else:
                 selected_.append(classRow)
