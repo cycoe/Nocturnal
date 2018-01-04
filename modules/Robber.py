@@ -217,7 +217,7 @@ class Robber(object):
                     break
                 if wait:
                     print(Logger.log('dozing...', level=Logger.info))
-                    time.sleep(MisUtils.refreshSleep)
+                    time.sleep(MisUtils.refreshSleep())
 
             self.clean()
             self.spider.open_session()

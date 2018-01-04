@@ -567,12 +567,11 @@ class Spider(object):
         selectable_ = []
         selected_ = []
 
-        for tempRow in tempTable_[:]:
+        for tempRow in tempTable_:
             tempRow = tempRow.find_all('td')
             buttonId = re.findall(self.buttonPattern, str(tempRow[-1]))[0] if re.search(self.buttonPattern, str(tempRow[-1])) else ''
-            buttonId[6] = '$'
-            buttonId[12] = '$'
-            classRow = [buttonId]
+            buttonId_ = buttonId[0:6] + '$' + buttonId[7:12] + '$' + buttonId[13:]
+            classRow = [buttonId_]
             for i in self.classFilter:
                 item = re.findall(self.removeTd, str(tempRow[i]))
                 classRow.append(item[0] if item else '')
@@ -583,8 +582,8 @@ class Spider(object):
                 selected_.append(classRow)
             else:
                 selected_.append(classRow)
-                break
-				
+
+        print(selected_)
         return selectable_, selected_
 
         # tempList = htmlBody.find_all('tr', nowrap='nowrap')[:-1]
