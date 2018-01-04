@@ -52,7 +52,7 @@ class Spider(object):
         # self.classifier = Classifier()
         # self.classifier.loadTrainingMat()
 
-        self.classFilter = [3, 4, 5, 6, 11, 12, 13]
+        self.classFilter = [3, 4, 5, 6, 11]
         self.reportFilter = [0, 1, 3, 4, 5, 6, 7]
         self.VIEWSTATE = ''
         self.EVENTVALIDATION = ''
@@ -574,7 +574,12 @@ class Spider(object):
         for tempRow in tempTable_:
             tempRow = tempRow.find_all('td')
             buttonId = re.findall(self.buttonPattern, str(tempRow[-1]))[0] if re.search(self.buttonPattern, str(tempRow[-1])) else ''
-            buttonId_ = buttonId[0:6] + '$' + buttonId[7:12] + '$' + buttonId[13:]
+            if len(buttonId) == 24:
+                buttonId_ = buttonId[0:6] + '$' + buttonId[7:12] + '$' + buttonId[13:]
+            elif len(buttonId) == 25:
+                buttonId_ = buttonId[0:6] + '$' + buttonId[7:13] + '$' + buttonId[14:]
+            else:
+                buttonId_ = buttonId
             classRow = [buttonId_]
             for i in self.classFilter:
                 item = re.findall(self.removeTd, str(tempRow[i]))
@@ -587,7 +592,6 @@ class Spider(object):
             else:
                 pass
 
-        print(selected_)
         return selectable_, selected_
 
         # tempList = htmlBody.find_all('tr', nowrap='nowrap')[:-1]

@@ -209,8 +209,10 @@ class Robber(object):
                 if not filter_selectable_:
                     print(Logger.log('No class to rob', subContent_=['exiting...'], level=Logger.error))
                     return True
+                print(filter_selectable_)
 
                 button_id, wait = sort_class(filter_selectable_)
+                print(button_id)
                 print(Logger.log('Robbing class...', level=Logger.warning))
                 flag = self.spider.postClass(button_id)
                 if not flag:

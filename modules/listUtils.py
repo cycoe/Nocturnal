@@ -44,8 +44,9 @@ def sort_class(selectable_):
     first_index = 0
     wait = True
     for index in range(len(selectable_)):
-        if selectable_[index][7] == '未满':
+        if selectable_[index][5] == '未满':
             first_index = index
             wait = False
+            break
 
     return selectable_[first_index][0], wait
