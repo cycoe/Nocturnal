@@ -42,13 +42,10 @@ def filter_with_keys(table_, key_):
 def sort_class(selectable_):
     random.shuffle(selectable_)
     first_index = 0
-    min_allowance = 500
     wait = True
     for index in range(len(selectable_)):
-        allowance = int(selectable_[index][5]) - int(selectable_[index][6])
-        if min_allowance > allowance > 0:
+        if selectable_[index][7] == '未满':
             first_index = index
-            min_allowance = allowance
             wait = False
 
     return selectable_[first_index][0], wait

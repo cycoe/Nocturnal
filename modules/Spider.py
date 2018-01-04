@@ -568,7 +568,7 @@ class Spider(object):
 
         for tempRow in tempTable_[0:]:
             tempRow = tempRow.find_all('td')
-            buttonId = re.findall(self.buttonPattern, str(tempRow[-2]))[0] if re.search(self.buttonPattern, str(tempRow[-2])) else ''
+            buttonId = re.findall(self.buttonPattern, str(tempRow[-1]))[0] if re.search(self.buttonPattern, str(tempRow[-1])) else ''
             classRow = [buttonId]
             for i in self.classFilter:
                 item = re.findall(self.removeTd, str(tempRow[i]))
