@@ -87,9 +87,9 @@ class Spider(object):
             'Connection': 'keep-alive',
             'Content-Type': 'application/x-www-form-urlencoded',
             'DNT': '1',
-            'Host': 'graduate.buct.edu.cn:8080',
+            'Host': UrlBean.jwglOriginUrl,
             'Upgrade-Insecure-Requests': '1',
-            'User-Agent': 'Mozilla/5.0 (X11;Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.79 Safari/537.36',
+            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
             'Referer': referer,
             'Content-Length': contentLength,
             'Origin': originHost,
@@ -182,8 +182,8 @@ class Spider(object):
             try:
                 self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
             except (exceptions.ReadTimeout, exceptions.ConnectionError) as e:
-                self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
-                Mail.send_mail('教务网连接失败', e)
+                self.output(Logger.log('Prepare login connection time out', ['Retrying'], Logger.warning))
+                #Mail.send_mail('教务网连接失败', "test")
                 continue
             self.VIEWSTATE = self.getVIEWSTATE()
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
@@ -212,8 +212,8 @@ class Spider(object):
             try:
                 codeImg = self.session.send(prepareBody, timeout=MisUtils.timeout)  # 获取验证码图片
             except (exceptions.ReadTimeout, exceptions.ConnectionError) as e:
-                self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
-                Mail.send_mail('教务网连接失败', e)
+                self.output(Logger.log('Fetch verification code connection time out', ['Retrying'], Logger.warning))
+                #Mail.send_mail('教务网连接失败', "test")
                 continue
             if codeImg.status_code == 200:
                 break
@@ -258,10 +258,13 @@ class Spider(object):
             try:
                 self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
             except (exceptions.ReadTimeout, exceptions.ConnectionError) as e:
-                self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
-                Mail.send_mail('教务网连接失败', e)
+                self.output(Logger.log('Login connection time out', ['Retrying'], Logger.warning))
+                #Mail.send_mail('教务网连接失败', "test")
+                print(e)
                 continue
-            if self.response.status_code == 200:
+            self.VIEWSTATE = self.getVIEWSTATE()
+            self.EVENTVALIDATION = self.getEVENTVALIDATION()
+            if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
                 break
 
         if not MisUtils.get_attempt():
@@ -304,7 +307,7 @@ class Spider(object):
                 self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
             except (exceptions.ReadTimeout, exceptions.ConnectionError) as e:
                 self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
-                Mail.send_mail('教务网连接失败', e)
+                #Mail.send_mail('教务网连接失败', "test")
                 continue
             self.VIEWSTATE = self.getVIEWSTATE()
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
@@ -340,7 +343,7 @@ class Spider(object):
                 self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
             except (exceptions.ReadTimeout, exceptions.ConnectionError) as e:
                 self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
-                Mail.send_mail('教务网连接失败', e)
+                #Mail.send_mail('教务网连接失败', "test")
                 continue
             if self.response.status_code == 200:
                 print('Post class successfully')
@@ -368,7 +371,7 @@ class Spider(object):
                 self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
             except (exceptions.ReadTimeout, exceptions.ConnectionError) as e:
                 self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
-                Mail.send_mail('教务网连接失败', e)
+                #Mail.send_mail('教务网连接失败', "test")
                 continue
             self.VIEWSTATE = self.getVIEWSTATE()
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
@@ -397,7 +400,7 @@ class Spider(object):
                 codeImg = self.session.send(prepareBody, timeout=MisUtils.timeout)  # 获取验证码图片
             except (exceptions.ReadTimeout, exceptions.ConnectionError) as e:
                 self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
-                Mail.send_mail('教务网连接失败', e)
+                #Mail.send_mail('教务网连接失败', "test")
                 continue
             if codeImg.status_code == 200:
                 break
@@ -438,7 +441,7 @@ class Spider(object):
                 self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
             except (exceptions.ReadTimeout, exceptions.ConnectionError) as e:
                 self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
-                Mail.send_mail('教务网连接失败', e)
+                #Mail.send_mail('教务网连接失败', "test")
                 continue
             self.VIEWSTATE = self.getVIEWSTATE()
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
@@ -489,7 +492,7 @@ class Spider(object):
                 self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
             except (exceptions.ReadTimeout, exceptions.ConnectionError) as e:
                 self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
-                Mail.send_mail('教务网连接失败', e)
+                #Mail.send_mail('教务网连接失败', "test")
                 continue
             if self.response.status_code == 200:
                 break
@@ -510,7 +513,7 @@ class Spider(object):
                 self.response = self.session.send(self.prepareGetEnglishTest(), timeout=MisUtils.timeout)
             except (exceptions.ReadTimeout, exceptions.ConnectionError) as e:
                 self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
-                Mail.send_mail('教务网连接失败', e)
+                #Mail.send_mail('教务网连接失败', "test")
                 continue
             self.VIEWSTATE = self.getVIEWSTATE()
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
@@ -526,7 +529,7 @@ class Spider(object):
                 self.response = self.session.send(self.preparePostEnglishTest(), timeout=MisUtils.timeout)
             except (exceptions.ReadTimeout, exceptions.ConnectionError) as e:
                 self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
-                Mail.send_mail('教务网连接失败', e)
+                #Mail.send_mail('教务网连接失败', "test")
                 continue
             if self.response.status_code == 200:
                 self.output("Request english test successfully!")
@@ -562,7 +565,7 @@ class Spider(object):
                 self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
             except (exceptions.ReadTimeout, exceptions.ConnectionError) as e:
                 self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
-                Mail.send_mail('教务网连接失败', e)
+                #Mail.send_mail('教务网连接失败', "test")
                 continue
             if self.response.status_code == 200:
                 break
