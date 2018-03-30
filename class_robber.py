@@ -9,6 +9,7 @@ from modules.MisUtils import MisUtils
 from modules.String import String
 import pyqrcode
 import threading
+import sys
 
 
 #
@@ -34,7 +35,10 @@ import threading
 #                      Buddha Bless, No Bug !
 
 
-robber = Robber(lambda x: None)
+if sys.argv[1:] and sys.argv[1] == "--debug":
+    robber = Robber(print)
+else:
+    robber = Robber(lambda x: None)
 
 
 def main():

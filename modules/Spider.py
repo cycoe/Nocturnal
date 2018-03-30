@@ -196,10 +196,14 @@ class Spider(object):
 
     def login(self, username, password):
         """
-        登录教务网
+        登录教务网的方法，登录的请求分为两步
+        :param username: 登录的用户名
+        :param password: 登录的密码
+        :return: 返回登录的状态码
         """
 
-        # 获取验证码
+        # 1. fetch verification code from a fixed address
+        # set up a prepare body for fetching verification code
         prepareBody = self.prepare(referer=UrlBean.jwglLoginUrl,
                                    originHost=None,
                                    method='GET',
@@ -207,13 +211,20 @@ class Spider(object):
                                    data=None,
                                    params=None)
 
+        # initiate a handler to hold a variable to record times of request
         MisUtils.initAttempt()
+
+        # set up a cycle to send fetching verification code request
+        # variable decreased by 1 before each cycle
         while MisUtils.descAttempt():
             try:
-                codeImg = self.session.send(prepareBody, timeout=MisUtils.timeout)  # 获取验证码图片
+                # fetch verification code
+                codeImg = self.session.send(prepareBody, timeout=MisUtils.timeout)
+            # catch read timeout and connection errors
             except (exceptions.ReadTimeout, exceptions.ConnectionError) as e:
                 self.output(Logger.log('Fetch verification code connection time out', ['Retrying'], Logger.warning))
                 #Mail.send_mail('教务网连接失败', "test")
+                self.output(e)
                 continue
             if codeImg.status_code == 200:
                 break
@@ -243,7 +254,7 @@ class Spider(object):
             '_ctl0:txtusername': username,
             '_ctl0:txtpassword': password,
             '_ctl0:txtyzm': verCode,
-            '_ctl0:ImageButton1.x': '43',
+            '_ctl0:ImageButton1.x': '49',
             '_ctl0:ImageButton1.y': '21',
         }
         prepareBody = self.prepare(referer=UrlBean.jwglLoginUrl,
@@ -264,8 +275,10 @@ class Spider(object):
                 continue
             self.VIEWSTATE = self.getVIEWSTATE()
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
-            if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
+            if self.response.status_code == 200:
                 break
+
+        self.output(self.response.url)
 
         if not MisUtils.get_attempt():
             self.output(Logger.log(String['max_attempts'], [String['server_unreachable']], level=Logger.error))
