@@ -13,18 +13,24 @@ from modules.String import String
 from modules.Mail import Mail
 
 
-def load_tag():
+def _load_tag():
+    """
+    a method to map a number or a letter to its ascii code,
+    and then change base to binary,
+    fill lost 0 before binary string up to 8-bit code vector,
+    and compose all of them up as a list
+
+    :return <list>tag_set: a tag set of all numbers and letters
+    """
     tag_set = []
+    # map numbers
     for index in range(48, 58):
-        tag = [int(item) for item in str(bin(index))[2:]]
-        if len(tag) < 7:
-            tag.insert(0, 0)
+        tag = [int(item) for item in str(bin(index))[2:].zfill(7)]
         tag_set.append(tag)
 
+    # map letters
     for index in range(65, 91):
-        tag = [int(item) for item in str(bin(index))[2:]]
-        if len(tag) < 7:
-            tag.insert(0, 0)
+        tag = [int(item) for item in str(bin(index))[2:].zfill(7)]
         tag_set.append(tag)
 
     return tag_set
@@ -46,7 +52,7 @@ class Spider(object):
         self.session = Session()    # 实例化 session 对象，用于 handle 整个会话
         self.output = output
         self.network = Network()
-        self.network.load_tag(load_tag()).set_structure([300, 200, 100, 7]).load_weight()
+        self.network.load_tag(_load_tag()).set_structure([300, 200, 100, 7]).load_weight()
 
         # 实例化验证码识别器对象
         # from modules.classifier import Classifier
@@ -220,12 +226,14 @@ class Spider(object):
             try:
                 # fetch verification code
                 codeImg = self.session.send(prepareBody, timeout=MisUtils.timeout)
+
             # catch read timeout and connection errors
             except (exceptions.ReadTimeout, exceptions.ConnectionError) as e:
                 self.output(Logger.log('Fetch verification code connection time out', ['Retrying'], Logger.warning))
-                #Mail.send_mail('教务网连接失败', "test")
-                self.output(e)
                 continue
+
+            # if the status code of verification code request equals 200,
+            # it means we fetch it successfully
             if codeImg.status_code == 200:
                 break
             else:
