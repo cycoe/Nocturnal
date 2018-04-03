@@ -8,7 +8,7 @@ class UrlBean(object):
     """
 
     jwglOriginUrl = "202.4.152.190:8080"  # origin host
-    jwglUrl = 'http://' + jwglOriginUrl
+    jwglUrl = "http://" + jwglOriginUrl
     verifyCodeUrl = jwglUrl + "/pyxx/PageTemplate/NsoftPage/yzm/IdentifyingCode.aspx"   # 验证码获取地址
     jwglLoginUrl = jwglUrl + "/pyxx/login.aspx"             # 教务网登录地址
     jwglLoginDoneUrl = jwglUrl + "/pyxx/Default.aspx"       # 教务网登录成功地址

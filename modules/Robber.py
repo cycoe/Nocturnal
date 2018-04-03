@@ -75,9 +75,9 @@ class Robber(object):
                 reInput = True
             elif result is Spider.WRONG_PASSWORD:
                 reInput = True
-            elif result is Spider.EMPTY_VERTIFY_CODE:
+            elif result is Spider.EMPTY_VERIFY_CODE:
                 pass
-            elif result is Spider.WRONG_VERTIFY_CODE:
+            elif result is Spider.WRONG_VERIFY_CODE:
                 pass
             elif result is Spider.LOGIN_SUCCESSFULLY:
                 MisUtils.dumpConfFile()

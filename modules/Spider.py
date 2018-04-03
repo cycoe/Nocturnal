@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+
 import re
 
 from requests import Session, Request, exceptions
@@ -10,6 +11,7 @@ from modules.MisUtils import MisUtils
 from modules.Network import Network
 from modules.img2Vector import img2Vector
 from modules.String import String
+from modules.Counter import Counter
 from modules.Mail import Mail
 
 
@@ -40,17 +42,24 @@ class Spider(object):
     """
     爬虫体
     """
+    
+    # results of requests
+    MAX_ATTEMPT = 0  # up to max attempts
+    NO_SUCH_A_USER = 1  # cannot find such a username
+    WRONG_PASSWORD = 2  # wrong password
+    EMPTY_VERIFY_CODE = 3  # commit an empty verification code
+    WRONG_VERIFY_CODE = 4  # commit a wrong verification code
+    LOGIN_SUCCESSFULLY = 5  # login successfully
 
-    MAX_ATTEMPT = 0
-    NO_SUCH_A_USER = 1
-    WRONG_PASSWORD = 2
-    EMPTY_VERTIFY_CODE = 3
-    WRONG_VERTIFY_CODE = 4
-    LOGIN_SUCCESSFULLY = 5
+    classFilter = [3, 4, 5, 6, 11]  # choose the corresponding column in the list from the class menu
+    reportFilter = [0, 1, 3, 4, 5, 6, 7]  # choose the corresponding column in the list from the report menu
 
     def __init__(self, output):
-        self.session = Session()    # 实例化 session 对象，用于 handle 整个会话
         self.output = output
+        self.session = Session()  # 实例化 session 对象，用于 handle 整个会话
+        Counter.set_max_loop(100)  # initiate counter max loop
+
+        # use a 300*200*100*7 network to classify verification code
         self.network = Network()
         self.network.load_tag(_load_tag()).set_structure([300, 200, 100, 7]).load_weight()
 
@@ -59,8 +68,7 @@ class Spider(object):
         # self.classifier = Classifier()
         # self.classifier.loadTrainingMat()
 
-        self.classFilter = [3, 4, 5, 6, 11]
-        self.reportFilter = [0, 1, 3, 4, 5, 6, 7]
+        # initiate common variables
         self.VIEWSTATE = ''
         self.EVENTVALIDATION = ''
         self.response = None
@@ -76,7 +84,7 @@ class Spider(object):
         self.session = Session()  # 实例化 session 对象，用于 handle 整个会话
 
     @staticmethod
-    def formatHeaders(referer=None, contentLength=None, originHost=None):
+    def _format_headers(referer=None, contentLength=None, originHost=None):
         """
         封装请求的 headers
 
@@ -139,43 +147,46 @@ class Spider(object):
         :param params: post 参数
         :return: prepare 对象
         """
-        headers = self.formatHeaders(referer=referer, originHost=originHost)
+        headers = self._format_headers(referer=referer, originHost=originHost)
         req = Request(method, url, headers=headers, data=data, params=params)
         return self.session.prepare_request(req)
 
-    def prepareFetchSchedule(self):
-        headers = self.formatHeaders(referer=UrlBean.leftMenuReferer)
-        payload = {'xh': MisUtils.confDict['userName']}
-        req = Request('GET', UrlBean.fetchScheduleUrl, headers=headers, params=payload)
-        return self.session.prepare_request(req)
-
-    def prepareGetEnglishTest(self):
-        headers = self.formatHeaders(referer=UrlBean.leftMenuReferer)
-        payload = {'xh': MisUtils.confDict['userName']}
-        req = Request('GET', UrlBean.englishTestUrl, headers=headers, params=payload)
-        return self.session.prepare_request(req)
-
-    def preparePostEnglishTest(self):
-        """
-        实例化登录 jwgl 需要的 request
-        __VIEWSTATE 和 __EVENTVALIDATION 可从网页源代码中获取
-        """
-        postData = {
-            '__EVENTTARGET': self.buttonId,
-            '__EVENTARGUMENT': '',
-            '__VIEWSTATE': self.VIEWSTATE,
-            '__EVENTVALIDATION': self.EVENTVALIDATION,
-            'WUCpyjhdy:HFpath': 'E:\gmis4.0\pyxx\pyxx\WordCells\djks.docx',
-            'WUCpyjhdy:HFfilename': '等级考试确认单',
-            'WUCpyjhdy:HFdatatype': '26',
-        }
-        headers = self.formatHeaders(referer=UrlBean.englishTestUrl + '?xh=' + MisUtils.confDict['userName'], originHost=UrlBean.jwglOriginUrl)
-        payload = {'xh': MisUtils.confDict['userName']}
-        req = Request('POST', UrlBean.englishTestUrl, headers=headers, data=postData, params=payload)
-        return self.session.prepare_request(req)
+    # def prepareFetchSchedule(self):
+    #     headers = self._format_headers(referer=UrlBean.leftMenuReferer)
+    #     payload = {'xh': MisUtils.confDict['userName']}
+    #     req = Request('GET', UrlBean.fetchScheduleUrl, headers=headers, params=payload)
+    #     return self.session.prepare_request(req)
+    #
+    # def prepareGetEnglishTest(self):
+    #     headers = self._format_headers(referer=UrlBean.leftMenuReferer)
+    #     payload = {'xh': MisUtils.confDict['userName']}
+    #     req = Request('GET', UrlBean.englishTestUrl, headers=headers, params=payload)
+    #     return self.session.prepare_request(req)
+    #
+    # def preparePostEnglishTest(self):
+    #     """
+    #     实例化登录 jwgl 需要的 request
+    #     __VIEWSTATE 和 __EVENTVALIDATION 可从网页源代码中获取
+    #     """
+    #     postData = {
+    #         '__EVENTTARGET': self.buttonId,
+    #         '__EVENTARGUMENT': '',
+    #         '__VIEWSTATE': self.VIEWSTATE,
+    #         '__EVENTVALIDATION': self.EVENTVALIDATION,
+    #         'WUCpyjhdy:HFpath': 'E:\gmis4.0\pyxx\pyxx\WordCells\djks.docx',
+    #         'WUCpyjhdy:HFfilename': '等级考试确认单',
+    #         'WUCpyjhdy:HFdatatype': '26',
+    #     }
+    #     headers = self._format_headers(referer=UrlBean.englishTestUrl + '?xh=' + MisUtils.confDict['userName'], originHost=UrlBean.jwglOriginUrl)
+    #     payload = {'xh': MisUtils.confDict['userName']}
+    #     req = Request('POST', UrlBean.englishTestUrl, headers=headers, data=postData, params=payload)
+    #     return self.session.prepare_request(req)
 
     def prepare_login(self):
-        # 在登录前请求一次登录页面，获取网页的隐藏表单数据
+        """
+        pre-fetch the login page, and get the 'VIEWSTATE' and 'EVENTVALIDATION' parameter
+        :return: the result of fetch request
+        """
         prepareBody = self.prepare(referer=None,
                                    originHost=None,
                                    method='GET',
@@ -183,20 +194,19 @@ class Spider(object):
                                    data=None,
                                    params=None)
 
-        MisUtils.initAttempt()
-        while MisUtils.descAttempt():
+        Counter.init_current_loop()
+        while Counter.loop():
             try:
                 self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
             except (exceptions.ReadTimeout, exceptions.ConnectionError) as e:
-                self.output(Logger.log('Prepare login connection time out', ['Retrying'], Logger.warning))
-                #Mail.send_mail('教务网连接失败', "test")
+                self.output(Logger.log('Prepare login connection time out', ['Retrying...'], Logger.warning))
                 continue
             self.VIEWSTATE = self.getVIEWSTATE()
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
             if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
                 break
             self.output(Logger.log(String['failed_fetch_login'], [String['retrying']], level=Logger.warning))
-        if not MisUtils.get_attempt():
+        if Counter.up_to_max():
             self.output(Logger.log(String['max_attempts'], [String['server_unreachable']], level=Logger.error))
             return Spider.MAX_ATTEMPT
 
@@ -255,7 +265,7 @@ class Spider(object):
         # self.output(verCode)
         # verCode = self.classifier.recognizer("check.gif")  # 识别验证码
 
-        # 发送登陆请求
+        # 2. 发送登陆请求
         postData = {
             '__VIEWSTATE': self.VIEWSTATE,
             '__EVENTVALIDATION': self.EVENTVALIDATION,
@@ -302,11 +312,11 @@ class Spider(object):
 
         elif re.search('请输入验证码', self.response.text):
             self.output(Logger.log(String['empty_vertify_code'], [String['retrying']], level=Logger.error))
-            return Spider.EMPTY_VERTIFY_CODE
+            return Spider.EMPTY_VERIFY_CODE
 
         elif re.search('验证码错误', self.response.text):
             self.output(Logger.log(String['wrong_vertify_code'], [String['retrying']], level=Logger.error))
-            return Spider.WRONG_VERTIFY_CODE
+            return Spider.WRONG_VERIFY_CODE
 
         else:
             self.output(Logger.log(String['login_successfully'], [String['username'] + MisUtils.confDict['userName']], level=Logger.error))
@@ -640,7 +650,7 @@ class Spider(object):
             tempRow = tempRow.find_all('td')
             # buttonId = re.findall(self.buttonPattern, str(tempRow[-1]))[0]
             reportRow = ['Selected']
-            for i in self.reportFilter:
+            for i in Spider.reportFilter:
                 item = re.findall(self.removeTd, str(tempRow[i]))
                 reportRow.append(item[0] if item else '')
             selected_.append(reportRow)
@@ -650,7 +660,7 @@ class Spider(object):
             href = re.findall(self.href_pattern, str(tempRow[-1]))[0]
             buttonId = re.findall(self.buttonPattern, href)[0]
             reportRow = [buttonId]
-            for i in self.reportFilter:
+            for i in Spider.reportFilter:
                 item = re.findall(self.removeTd, str(tempRow[i]))
                 reportRow.append(item[0] if item else '')
             selectable_.append(reportRow)
@@ -681,7 +691,7 @@ class Spider(object):
                 buttonId = ''
 
             classRow = [buttonId]
-            for i in self.classFilter:
+            for i in Spider.classFilter:
                 item = re.findall(self.removeTd, str(tempRow[i]))
                 classRow.append(item[0] if item else '')
 
