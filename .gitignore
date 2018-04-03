@@ -8,6 +8,7 @@ check.gif
 *.png
 dist
 build
+*~
 ############################################
 
 # Byte-compiled / optimized / DLL files
