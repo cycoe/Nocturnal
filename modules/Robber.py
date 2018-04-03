@@ -8,6 +8,7 @@ import threading
 from modules.Spider import Spider
 from modules.Logger import Logger
 from modules.Mail import Mail
+from modules.Config import Config
 from modules.MisUtils import MisUtils
 from modules.String import String
 from modules.ClassTable import ClassTable
@@ -55,22 +56,22 @@ class Robber(object):
 
     def login(self):
         self.spider.prepare_login()
-        if MisUtils.checkConfFile():
-            MisUtils.loadConfFile()
+        if Config.check_config_file():
+            Config.load_user_config()
 
         # 是否需要重新输入用户名和密码
-        if MisUtils.confDict['userName'] == '' or MisUtils.confDict['password'] == '':
+        if Config.user['userName'] == '' or Config.user['password'] == '':
             reInput = True
         else:
             reInput = False
 
         while True:
             if reInput:
-                MisUtils.confDict['userName'] = input("> " + String['username'])
-                MisUtils.confDict['password'] = input("> " + String['password'])
+                Config.user['userName'] = input("> " + String['username'])
+                Config.user['password'] = input("> " + String['password'])
                 reInput = False
 
-            result = self.spider.login(MisUtils.confDict['userName'], MisUtils.confDict['password'])
+            result = self.spider.login(Config.user['userName'], Config.user['password'])
             if result is Spider.NO_SUCH_A_USER:
                 reInput = True
             elif result is Spider.WRONG_PASSWORD:
@@ -80,7 +81,7 @@ class Robber(object):
             elif result is Spider.WRONG_VERIFY_CODE:
                 pass
             elif result is Spider.LOGIN_SUCCESSFULLY:
-                MisUtils.dumpConfFile()
+                Config.dump_user_config()
                 break
 
     # def wechatLogin(self):
@@ -96,12 +97,12 @@ class Robber(object):
         MisUtils.setEmailInfo()
         self.output(Logger.log(String['sending_a_test_mail'], subContent_=[
             String['check_in_trash_box'],
-            String['sender_mail_address'] + MisUtils.confDict['sender'],
+            String['sender_mail_address'] + Config.user['sender'],
             String['nickname'] + 'class_robber'
         ], level=Logger.info))
         Mail.send_mail(String['just_test_connection'], String['test_connection'])
-        if Mail.connectedToMail:
-            MisUtils.dumpConfFile()
+        if Mail.CONNECTED_TO_MAIL:
+            Config.dump_user_config()
 
     # @checkStatus(getLoginStatus, getWechatLoginStatus)
     # def pushToAllGroup(self, msg):

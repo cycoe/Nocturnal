@@ -4,7 +4,7 @@
 import pyqrcode
 from PIL import Image
 
-from .Configer import Config
+from .Config import Config
 
 
 class Qrcode(object):

@@ -7,12 +7,11 @@ from requests import Session, Request, exceptions
 from bs4 import BeautifulSoup
 from modules.UrlBean import UrlBean
 from modules.Logger import Logger
-from modules.MisUtils import MisUtils
+from modules.Config import Config
 from modules.Network import Network
 from modules.img2Vector import img2Vector
 from modules.String import String
 from modules.Counter import Counter
-from modules.Mail import Mail
 
 
 def _load_tag():
@@ -197,7 +196,7 @@ class Spider(object):
         Counter.init_current_loop()
         while Counter.loop():
             try:
-                self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
+                self.response = self.session.send(prepareBody, timeout=Config.connect_timeout)
             except (exceptions.ReadTimeout, exceptions.ConnectionError) as e:
                 self.output(Logger.log('Prepare login connection time out', ['Retrying...'], Logger.warning))
                 continue
@@ -228,14 +227,14 @@ class Spider(object):
                                    params=None)
 
         # initiate a handler to hold a variable to record times of request
-        MisUtils.initAttempt()
+        Counter.init_current_loop()
 
         # set up a cycle to send fetching verification code request
         # variable decreased by 1 before each cycle
-        while MisUtils.descAttempt():
+        while Counter.loop():
             try:
                 # fetch verification code
-                codeImg = self.session.send(prepareBody, timeout=MisUtils.timeout)
+                codeImg = self.session.send(prepareBody, timeout=Config.connect_timeout)
 
             # catch read timeout and connection errors
             except (exceptions.ReadTimeout, exceptions.ConnectionError) as e:
@@ -248,7 +247,7 @@ class Spider(object):
                 break
             else:
                 self.output(Logger.log(String['failed_fetch_vertify_code'], [String['retrying']], level=Logger.warning))
-        if not MisUtils.get_attempt():
+        if Counter.up_to_max():
             self.output(Logger.log(String['max_attempts'], [String['server_unreachable']], level=Logger.error))
             return Spider.MAX_ATTEMPT
 
@@ -282,14 +281,12 @@ class Spider(object):
                                    data=postData,
                                    params=None)
 
-        MisUtils.initAttempt()
-        while MisUtils.descAttempt():
+        Counter.init_current_loop()
+        while Counter.loop():
             try:
-                self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
+                self.response = self.session.send(prepareBody, timeout=Config.connect_timeout)
             except (exceptions.ReadTimeout, exceptions.ConnectionError) as e:
                 self.output(Logger.log('Login connection time out', ['Retrying'], Logger.warning))
-                #Mail.send_mail('教务网连接失败', "test")
-                print(e)
                 continue
             self.VIEWSTATE = self.getVIEWSTATE()
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
@@ -298,7 +295,7 @@ class Spider(object):
 
         self.output(self.response.url)
 
-        if not MisUtils.get_attempt():
+        if Counter.up_to_max():
             self.output(Logger.log(String['max_attempts'], [String['server_unreachable']], level=Logger.error))
             return Spider.MAX_ATTEMPT
 
@@ -319,12 +316,12 @@ class Spider(object):
             return Spider.WRONG_VERIFY_CODE
 
         else:
-            self.output(Logger.log(String['login_successfully'], [String['username'] + MisUtils.confDict['userName']], level=Logger.error))
+            self.output(Logger.log(String['login_successfully'], [String['username'] + Config.user['userName']], level=Logger.error))
             return Spider.LOGIN_SUCCESSFULLY
 
     def fetchClassList(self):
 
-        payload = {'xh': MisUtils.confDict['userName']}
+        payload = {'xh': Config.user['userName']}
         prepareBody = self.prepare(referer=UrlBean.leftMenuReferer,
                                    originHost=None,
                                    method='GET',
@@ -332,13 +329,12 @@ class Spider(object):
                                    data=None,
                                    params=payload)
 
-        MisUtils.initAttempt()
-        while MisUtils.descAttempt():
+        Counter.init_current_loop()
+        while Counter.loop():
             try:
-                self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
+                self.response = self.session.send(prepareBody, timeout=Config.connect_timeout)
             except (exceptions.ReadTimeout, exceptions.ConnectionError) as e:
                 self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
-                #Mail.send_mail('教务网连接失败', "test")
                 continue
             self.VIEWSTATE = self.getVIEWSTATE()
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
@@ -346,7 +342,7 @@ class Spider(object):
                 break
             else:
                 self.output(Logger.log('retrying fetching class list...', level=Logger.warning))
-        if not MisUtils.get_attempt():
+        if Counter.up_to_max():
             self.output(Logger.log(String['max_attempts'], [String['re-login']], level=Logger.error))
             return False
 
@@ -360,35 +356,34 @@ class Spider(object):
             '__VIEWSTATE': self.VIEWSTATE,
             '__EVENTVALIDATION': self.EVENTVALIDATION,
         }
-        payload = {'xh': MisUtils.confDict['userName']}
-        prepareBody = self.prepare(referer=UrlBean.fetchClassListUrl + '?xh=' + MisUtils.confDict['userName'],
+        payload = {'xh': Config.user['userName']}
+        prepareBody = self.prepare(referer=UrlBean.fetchClassListUrl + '?xh=' + Config.user['userName'],
                                    originHost=UrlBean.jwglOriginUrl,
                                    method='POST',
                                    url=UrlBean.fetchClassListUrl,
                                    data=postData,
                                    params=payload)
 
-        MisUtils.initAttempt()
-        while MisUtils.descAttempt():
+        Counter.init_current_loop()
+        while Counter.loop():
             try:
-                self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
+                self.response = self.session.send(prepareBody, timeout=Config.connect_timeout)
             except (exceptions.ReadTimeout, exceptions.ConnectionError) as e:
                 self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
-                #Mail.send_mail('教务网连接失败', "test")
                 continue
             if self.response.status_code == 200:
                 print('Post class successfully')
                 break
             else:
                 print('Retrying...')
-        if not MisUtils.get_attempt():
+        if Counter.up_to_max():
             print(Logger.log(String['max_attempts'], [String['re-login']], level=Logger.error))
             return False
 
         return True
 
     def fetchReportList(self):
-        payload = {'xh': MisUtils.confDict['userName']}
+        payload = {'xh': Config.user['userName']}
         prepareBody = self.prepare(referer=UrlBean.leftMenuReferer,
                                    originHost=None,
                                    method='GET',
@@ -396,13 +391,12 @@ class Spider(object):
                                    data=None,
                                    params=payload)
 
-        MisUtils.initAttempt()
-        while MisUtils.descAttempt():
+        Counter.init_current_loop()
+        while Counter.loop():
             try:
-                self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
+                self.response = self.session.send(prepareBody, timeout=Config.connect_timeout)
             except (exceptions.ReadTimeout, exceptions.ConnectionError) as e:
                 self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
-                #Mail.send_mail('教务网连接失败', "test")
                 continue
             self.VIEWSTATE = self.getVIEWSTATE()
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
@@ -410,7 +404,7 @@ class Spider(object):
                 break
             else:
                 self.output(Logger.log(String['failed_fetch_report'], [String['retrying']], level=Logger.warning))
-        if not MisUtils.get_attempt():
+        if Counter.up_to_max():
             self.output(Logger.log(String['max_attempts'], [String['re-login']], level=Logger.error))
             return False
 
@@ -425,19 +419,18 @@ class Spider(object):
                                    data=None,
                                    params=None)
 
-        MisUtils.initAttempt()
-        while MisUtils.descAttempt():
+        Counter.init_current_loop()
+        while Counter.loop():
             try:
-                codeImg = self.session.send(prepareBody, timeout=MisUtils.timeout)  # 获取验证码图片
+                codeImg = self.session.send(prepareBody, timeout=Config.connect_timeout)  # 获取验证码图片
             except (exceptions.ReadTimeout, exceptions.ConnectionError) as e:
                 self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
-                #Mail.send_mail('教务网连接失败', "test")
                 continue
             if codeImg.status_code == 200:
                 break
             else:
                 self.output(Logger.log(String['failed_fetch_vertify_code'], [String['retrying']], level=Logger.warning))
-        if not MisUtils.get_attempt():
+        if Counter.up_to_max():
             self.output(Logger.log(String['max_attempts'], [String['server_unreachable']], level=Logger.error))
             return False
 
@@ -458,21 +451,20 @@ class Spider(object):
             '__EVENTVALIDATION': self.EVENTVALIDATION,
             'txtyzm': verCode,
         }
-        payload = {'xh': MisUtils.confDict['userName']}
-        prepareBody = self.prepare(referer=UrlBean.fetchReportListUrl + '?xh=' + MisUtils.confDict['userName'],
+        payload = {'xh': Config.user['userName']}
+        prepareBody = self.prepare(referer=UrlBean.fetchReportListUrl + '?xh=' + Config.user['userName'],
                                    originHost=UrlBean.jwglOriginUrl,
                                    method='POST',
                                    url=UrlBean.fetchReportListUrl,
                                    data=postData,
                                    params=payload)
 
-        MisUtils.initAttempt()
-        while MisUtils.descAttempt():
+        Counter.init_current_loop()
+        while Counter.loop():
             try:
-                self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
+                self.response = self.session.send(prepareBody, timeout=Config.connect_timeout)
             except (exceptions.ReadTimeout, exceptions.ConnectionError) as e:
                 self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
-                #Mail.send_mail('教务网连接失败', "test")
                 continue
             self.VIEWSTATE = self.getVIEWSTATE()
             self.EVENTVALIDATION = self.getEVENTVALIDATION()
@@ -480,7 +472,7 @@ class Spider(object):
                 break
             else:
                 self.output(Logger.log(String['failed_post_report'], [String['retrying']], level=Logger.warning))
-        if not MisUtils.get_attempt():
+        if Counter.up_to_max():
             self.output(Logger.log(String['max_attempts'], [String['re-login']], level=Logger.error))
             return False
 
@@ -510,7 +502,7 @@ class Spider(object):
 
     def fetchSchedule(self):
 
-        payload = {'xh': MisUtils.confDict['userName']}
+        payload = {'xh': Config.user['userName']}
         prepareBody = self.prepare(referer=UrlBean.leftMenuReferer,
                                    originHost=None,
                                    method='GET',
@@ -520,10 +512,9 @@ class Spider(object):
 
         while True:
             try:
-                self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
+                self.response = self.session.send(prepareBody, timeout=Config.connect_timeout)
             except (exceptions.ReadTimeout, exceptions.ConnectionError) as e:
                 self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
-                #Mail.send_mail('教务网连接失败', "test")
                 continue
             if self.response.status_code == 200:
                 break
@@ -537,36 +528,36 @@ class Spider(object):
 
         return self
 
-    def getEnglishTest(self):
-
-        while True:
-            try:
-                self.response = self.session.send(self.prepareGetEnglishTest(), timeout=MisUtils.timeout)
-            except (exceptions.ReadTimeout, exceptions.ConnectionError) as e:
-                self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
-                #Mail.send_mail('教务网连接失败', "test")
-                continue
-            self.VIEWSTATE = self.getVIEWSTATE()
-            self.EVENTVALIDATION = self.getEVENTVALIDATION()
-            if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
-                break
-            else:
-                self.output("Retrying fetching English test view status...")
-
-    def postEnglishTest(self):
-
-        while True:
-            try:
-                self.response = self.session.send(self.preparePostEnglishTest(), timeout=MisUtils.timeout)
-            except (exceptions.ReadTimeout, exceptions.ConnectionError) as e:
-                self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
-                #Mail.send_mail('教务网连接失败', "test")
-                continue
-            if self.response.status_code == 200:
-                self.output("Request english test successfully!")
-                break
-            else:
-                self.output("Retrying...")
+    # def getEnglishTest(self):
+    #
+    #     while True:
+    #         try:
+    #             self.response = self.session.send(self.prepareGetEnglishTest(), timeout=Config.connect_timeout)
+    #         except (exceptions.ReadTimeout, exceptions.ConnectionError) as e:
+    #             self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
+    #             #Mail.send_mail('教务网连接失败', "test")
+    #             continue
+    #         self.VIEWSTATE = self.getVIEWSTATE()
+    #         self.EVENTVALIDATION = self.getEVENTVALIDATION()
+    #         if self.VIEWSTATE is not None and self.EVENTVALIDATION is not None:
+    #             break
+    #         else:
+    #             self.output("Retrying fetching English test view status...")
+    #
+    # def postEnglishTest(self):
+    #
+    #     while True:
+    #         try:
+    #             self.response = self.session.send(self.preparePostEnglishTest(), timeout=Config.connect_timeout)
+    #         except (exceptions.ReadTimeout, exceptions.ConnectionError) as e:
+    #             self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
+    #             #Mail.send_mail('教务网连接失败', "test")
+    #             continue
+    #         if self.response.status_code == 200:
+    #             self.output("Request english test successfully!")
+    #             break
+    #         else:
+    #             self.output("Retrying...")
 
     # def getEnglishTestStatus(self):
     #
@@ -582,7 +573,7 @@ class Spider(object):
     #         return True
 
     def fetchGrade(self):
-        payload = {'xh': MisUtils.confDict['userName']}
+        payload = {'xh': Config.user['userName']}
         prepareBody = self.prepare(referer=UrlBean.leftMenuReferer,
                                    originHost=UrlBean.jwglOriginUrl,
                                    method='GET',
@@ -590,19 +581,18 @@ class Spider(object):
                                    data=None,
                                    params=payload)
 
-        MisUtils.initAttempt()
-        while MisUtils.descAttempt():
+        Counter.init_current_loop()
+        while Counter.loop():
             try:
-                self.response = self.session.send(prepareBody, timeout=MisUtils.timeout)
+                self.response = self.session.send(prepareBody, timeout=Config.connect_timeout)
             except (exceptions.ReadTimeout, exceptions.ConnectionError) as e:
                 self.output(Logger.log('Connection time out', ['Retrying'], Logger.warning))
-                #Mail.send_mail('教务网连接失败', "test")
                 continue
             if self.response.status_code == 200:
                 break
             else:
                 self.output(Logger.log(String['failed_fetch_grade'], [String['retrying']], level=Logger.warning))
-        if not MisUtils.get_attempt():
+        if Counter.up_to_max():
             self.output(Logger.log(String['max_attempts'], [String['re-login']], level=Logger.error))
             return False
 

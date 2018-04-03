@@ -11,7 +11,7 @@ from modules.String import String
 
 class Mail(object):
 
-    connectedToMail = True
+    CONNECTED_TO_MAIL = True
     HAVE_SEND_A_MAIL = 1
     FAILED_SEND_EMAIL = 2
     CANNOT_HANDLE_DECODE = 3
@@ -56,3 +56,7 @@ class Mail(object):
             print(Logger.log(String['address_doesnt_exist'], Logger.error))
             Mail.connectedToMail = False
             return Mail.ADDRESS_DOESNT_EXIST
+
+    @staticmethod
+    def set_mail_info():
+        pass

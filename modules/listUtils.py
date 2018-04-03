@@ -4,6 +4,9 @@
 import re
 import random
 
+from modules.FileUtils import check_file_exists
+from modules.Config import Config
+
 
 def find_one_in_list(item_to_find_, list_):
     for item in item_to_find_:
@@ -51,3 +54,24 @@ def sort_class(selectable_):
             break
 
     return selectable_[first_index][0], wait
+
+
+def getSelected():
+    if check_file_exists(Config.file_name['report_blacklist']):
+        with open(Config.file_name['report_blacklist']) as fr:
+            return [selected.strip() for selected in fr.readlines()]
+    else:
+        return []
+
+
+def mergeSelected(newSelected_):
+    if check_file_exists(Config.file_name['report_blacklist']):
+        with open(Config.file_name['report_blacklist']) as fr:
+            oriSelected_ = [selected.strip() for selected in fr.readlines()]
+    else:
+        oriSelected_ = []
+    oriSelected_.extend(newSelected_)
+    oriSelected_ = set(oriSelected_)
+    with open(Config.file_name['report_blacklist'], 'w') as fr:
+        for oriSelected in oriSelected_:
+            fr.write(oriSelected + '\n')

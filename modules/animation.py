@@ -4,7 +4,7 @@
 import sys
 import time
 
-from .Configer import Config
+from .Config import Config
 
 
 def wait_animation(wait_method):
