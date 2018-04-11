@@ -29,9 +29,11 @@ class Config(object):
 
     # software running parameters
     report_refresh_relay = 10  # relay between report request
+    class_refresh_relay = 1  # relay between rob class request
+    grade_refresh_relay = 300  # relay between fetch grade request
     wechat_push_relay = 1  # relay between wechat notification
     animation_relay = 0.5  # relay between wait animation frame
-    machine_relay = 0.5  # relay between frames of status machine
+    machine_relay = 0.1  # relay between frames of status machine
     connect_timeout = 300  # timeout of request connection
     max_attempt = 100  # max request times before give up
 

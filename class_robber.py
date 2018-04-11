@@ -7,6 +7,11 @@ from modules.OutputFormater import OutputFormater
 from modules.Logger import Logger
 from modules.MisUtils import MisUtils
 from modules.String import String
+from modules.Config import Config
+from modules.Qrcode import Qrcode
+from modules.animation import wait_animation
+from modules.FileUtils import check_file_exists
+from modules.StatusHandler import StatusHandler
 import pyqrcode
 import threading
 import sys
@@ -39,6 +44,7 @@ if sys.argv[1:] and sys.argv[1] == "--debug":
     robber = Robber(print)
 else:
     robber = Robber(lambda x: None)
+robber.init_spider()
 
 
 def main():
@@ -65,15 +71,15 @@ def initArgvs():
 
 def cycle():
     while True:
-        command = input('[' + str(len([status for status in MisUtils.status.values() if status])) + '] >>> ')
+        command = input('[' + str(len([status for status in StatusHandler.status.values() if status])) + '] >>> ')
         if not ArgvsParser.run(command):
             print(Logger.log(String['wrong_argument'], level=Logger.warning))
 
 
 def outputWelcome():
     print(OutputFormater.table([
-        ['Class Robber ' + MisUtils.version],
-        ['By ' + MisUtils.author],
+        ['Class Robber ' + Config.version],
+        ['By ' + Config.author],
         ['Site: cycoe.cc'],
         ['GitHub: https://github.com/cycoe/class_robber'],
         ['License: MIT 3.0']
@@ -96,15 +102,15 @@ def outputHelp():
 
 
 def rob_report():
-    if not MisUtils.status['report']:
-        MisUtils.signal['report'] = True
+    if not StatusHandler.status['report']:
+        StatusHandler.signal['report'] = True
         robber.login()
         threading.Thread(target=robber.robReport, args=(lambda: None,)).start()
 
 
 def fetch_grade():
-    if not MisUtils.status['grade']:
-        MisUtils.signal['grade'] = True
+    if not StatusHandler.status['grade']:
+        StatusHandler.signal['grade'] = True
         robber.login()
         threading.Thread(target=robber.fetchGrade, args=(lambda: None, lambda x: None,)).start()
 
@@ -115,21 +121,21 @@ def rob_class():
 
 
 def stop_report():
-    MisUtils.signal['report'] = False
-    MisUtils.signal['grade'] = False
+    StatusHandler.signal['report'] = False
+    StatusHandler.signal['grade'] = False
     print(Logger.log('正在关闭所有后台任务... '), end='')
-    MisUtils.wait_animation(MisUtils.get_status)
+    wait_animation(StatusHandler.get_status('report'))
 
 
 def get_status():
-    process = list(MisUtils.status.keys())
-    status = ['running' if item else 'stop' for item in list(MisUtils.status.values())]
+    process = list(StatusHandler.status.keys())
+    status = ['running' if item else 'stop' for item in list(StatusHandler.status.values())]
     print(OutputFormater.table(list(zip(process, status)), gravity=OutputFormater.left, padding=2))
 
 
 def add_class_key():
     class_key = []
-    if MisUtils.check_file_exists(MisUtils.class_cache_path):
+    if check_file_exists(MisUtils.class_cache_path):
         class_key = MisUtils.load_table(MisUtils.class_cache_path)
     key_ = []
     for i in range(10):
@@ -180,10 +186,7 @@ def emailLogin():
 
 
 def donate():
-    wechatURI = pyqrcode.create(MisUtils.wechatURI)
-    alipayURI = pyqrcode.create(MisUtils.alipayURI)
-    wechatURI.png('wechat.png', scale=10)
-    alipayURI.png('alipay.png', scale=10)
+    Qrcode.create_qrcode_img()
     print(Logger.log(String['thanks_to_donate'], [
         '1. ' + String['alipay'],
         '2. ' + String['wechat'],
@@ -191,11 +194,11 @@ def donate():
     while True:
         choice = input('> ')
         if choice == '1':
-            MisUtils.show_qrcode('alipay.png')
+            Qrcode.show_qrcode(Config.file_name['wechat_qrcode_img'])
             print(Logger.log(String['thanks_to_support']))
             break
         elif choice == '2':
-            MisUtils.show_qrcode('wechat.png')
+            Qrcode.show_qrcode(Config.file_name['alipay_qrcode_img'])
             print(Logger.log(String['thanks_to_support']))
             break
         elif choice == '3':

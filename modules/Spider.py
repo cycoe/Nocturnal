@@ -100,7 +100,7 @@ class Spider(object):
             'Connection': 'keep-alive',
             'Content-Type': 'application/x-www-form-urlencoded',
             'DNT': '1',
-            'Host': UrlBean.jwglOriginUrl,
+            'Host': UrlBean.origin_host,
             'Upgrade-Insecure-Requests': '1',
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
             'Referer': referer,
@@ -176,7 +176,7 @@ class Spider(object):
     #         'WUCpyjhdy:HFfilename': '等级考试确认单',
     #         'WUCpyjhdy:HFdatatype': '26',
     #     }
-    #     headers = self._format_headers(referer=UrlBean.englishTestUrl + '?xh=' + MisUtils.confDict['userName'], originHost=UrlBean.jwglOriginUrl)
+    #     headers = self._format_headers(referer=UrlBean.englishTestUrl + '?xh=' + MisUtils.confDict['userName'], originHost=UrlBean.origin_host)
     #     payload = {'xh': MisUtils.confDict['userName']}
     #     req = Request('POST', UrlBean.englishTestUrl, headers=headers, data=postData, params=payload)
     #     return self.session.prepare_request(req)
@@ -275,7 +275,7 @@ class Spider(object):
             '_ctl0:ImageButton1.y': '21',
         }
         prepareBody = self.prepare(referer=UrlBean.jwglLoginUrl,
-                                   originHost=UrlBean.jwglOriginUrl,
+                                   originHost=UrlBean.origin_host,
                                    method='POST',
                                    url=UrlBean.jwglLoginUrl,
                                    data=postData,
@@ -358,7 +358,7 @@ class Spider(object):
         }
         payload = {'xh': Config.user['userName']}
         prepareBody = self.prepare(referer=UrlBean.fetchClassListUrl + '?xh=' + Config.user['userName'],
-                                   originHost=UrlBean.jwglOriginUrl,
+                                   originHost=UrlBean.origin_host,
                                    method='POST',
                                    url=UrlBean.fetchClassListUrl,
                                    data=postData,
@@ -453,7 +453,7 @@ class Spider(object):
         }
         payload = {'xh': Config.user['userName']}
         prepareBody = self.prepare(referer=UrlBean.fetchReportListUrl + '?xh=' + Config.user['userName'],
-                                   originHost=UrlBean.jwglOriginUrl,
+                                   originHost=UrlBean.origin_host,
                                    method='POST',
                                    url=UrlBean.fetchReportListUrl,
                                    data=postData,
@@ -484,7 +484,7 @@ class Spider(object):
         #     'myscrollheight': '0',
         # }
         # prepareBody = self.prepare(referer=UrlBean.reportDetailUrl,
-        #                            originHost=UrlBean.jwglOriginUrl,
+        #                            originHost=UrlBean.origin_host,
         #                            method='POST',
         #                            url=UrlBean.reportDetailUrl,
         #                            data=postData,
@@ -575,7 +575,7 @@ class Spider(object):
     def fetchGrade(self):
         payload = {'xh': Config.user['userName']}
         prepareBody = self.prepare(referer=UrlBean.leftMenuReferer,
-                                   originHost=UrlBean.jwglOriginUrl,
+                                   originHost=UrlBean.origin_host,
                                    method='GET',
                                    url=UrlBean.fetchGradeUrl,
                                    data=None,

@@ -2,13 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import random
-import time
-import os
 import re
-import sys
-import json
-import platform
-from PIL import Image
 from modules.Logger import Logger
 from modules.String import String
 
@@ -73,7 +67,7 @@ class MisUtils(object):
     #     'report': False,
     #     'grade': False,
     # }
-
+    #
     # @staticmethod
     # def get_status():
     #     result = False
