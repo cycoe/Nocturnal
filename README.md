@@ -3,6 +3,11 @@
 ### Statement
 **This spider is just coded by cycoe for python and ANN learning, I'm not responsible for any abuse.**
 
+### Todo
+- handle config with Config object, achieve hot update of configurations
+- complete state machine, handle the whole running
+- complete 3 consoles, command line, gui and wechat message
+
 ### dependencies
 | modules | use |
 |---------|-----|
