@@ -58,32 +58,3 @@ class Mail(object):
             print(Logger.log(String['address_doesnt_exist'], Logger.error))
             Mail.CONNECTED_TO_MAIL = False
             return Mail.ADDRESS_DOESNT_EXIST
-
-    @staticmethod
-    def setEmailInfo(input_method, output_method):
-        if Config.check_config_file():
-            Config.load_user_config()
-
-        for item in list(Config.user.keys())[2:]:
-            current = Config.user[item]
-            while True:
-                buffer = input_method(item, current)
-                if not buffer and current:
-                    break
-                elif re.search(Config.pattern[item], buffer):
-                    Config.user[item] = buffer
-                    break
-                else:
-                    output_method(String['check_spell'])
-
-        # for item in list(MisUtils.confDict.keys())[2:]:
-        #     current = MisUtils.confDict[item]
-        #     while True:
-        #         buffer = input('> ' + String[item] + '(' + String['current'] + ': ' + current + '): ')
-        #         if not buffer and current:
-        #             break
-        #         elif re.search(MisUtils.pattern[item], buffer):
-        #             MisUtils.confDict[item] = buffer
-        #             break
-        #         else:
-        #             print(Logger.log(String['check_spell'], level=Logger.warning))

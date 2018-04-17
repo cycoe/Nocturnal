@@ -10,18 +10,19 @@ from modules.Logger import Logger
 from modules.Mail import Mail
 from modules.listUtils import getSelected, mergeSelected, filter_with_keys, sort_class
 from modules.Config import Config
-from modules.MisUtils import MisUtils
 from modules.String import String
 from modules.ClassTable import ClassTable
 from modules.htmlUtils import table_to_html
 from modules.FileUtils import load_table, dump_table
 from modules.StatusHandler import StatusHandler
+from modules.DialogBox.InputBox import InputBox
 
 
 def wait_for_response(sleep_time, get_signal):
     """
     a method to return a random from 0 to sleep time
-    :param sleepTime:
+    :param get_signal:
+    :param sleep_time: time to sleep
     :return: <float> random time
     """
     frame = 1
@@ -260,6 +261,7 @@ class Robber(object):
 
     def __init__(self, output):
         self.output = output
+        self.spider = None
         StatusHandler.add_event('report', False, False)
         StatusHandler.add_event('grade', False, False)
 
@@ -278,10 +280,15 @@ class Robber(object):
         else:
             reInput = False
 
+        user_name_box = InputBox()
+        password_box = InputBox()
+        user_name_box.set_prompt(String['userName']).set_pattern('\d{10}').set_warning(String['user_name_formed'])
+        password_box.set_prompt(String['password'])
+
         while True:
             if reInput:
-                Config.user['userName'] = input("> " + String['username'])
-                Config.user['password'] = input("> " + String['password'])
+                Config.user['userName'] = user_name_box.show()
+                Config.user['password'] = password_box.show()
                 reInput = False
 
             result = self.spider.login(Config.user['userName'], Config.user['password'])
@@ -307,13 +314,24 @@ class Robber(object):
 
     def emailLogin(self):
         self.output(Logger.log(String['change_mail']))
-        Mail.setEmailInfo(lambda item, current: input('> ' + String[item] + '(' + String['current'] + ': ' + current + '): '), print)
+        Config.load_user_config()
+
+        for item in list(Config.user.keys())[2:]:
+            current = Config.user[item]
+            inputBox = InputBox()
+            inputBox.set_prompt(String[item] + '(' + String['current'] + ': ' + current + ')')
+            inputBox.set_pattern(Config.pattern[item])
+            inputBox.set_default_output(Config.user[item])
+            Config.user[item] = inputBox.show()
+            del inputBox
+
         self.output(Logger.log(String['sending_a_test_mail'], subContent_=[
             String['check_in_trash_box'],
             String['sender_mail_address'] + Config.user['sender'],
             String['nickname'] + 'class_robber'
         ], level=Logger.info))
         Mail.send_mail(String['just_test_connection'], String['test_connection'])
+
         if Mail.CONNECTED_TO_MAIL:
             Config.dump_user_config()
 
@@ -396,7 +414,7 @@ class Robber(object):
             self.spider.open_session()
             result = self.spider.login(Config.user['userName'], Config.user['password'])
             if result is Spider.NO_SUCH_A_USER or result is Spider.WRONG_PASSWORD:
-                MisUtils.status['report'] = False
+                StatusHandler.status['report'] = False
                 self.clean()
                 break
         callback()

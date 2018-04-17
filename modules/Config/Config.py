@@ -58,7 +58,7 @@ class Config(object):
         'sender': '.+@.+(\..+)+',
         'sender_password': '.*',
         'sender_host': 'smtp(\..+)+',
-        'sender_port': '\d+',
+        'sender_port': '\d{1, 5}',
     }
 
     # @staticmethod

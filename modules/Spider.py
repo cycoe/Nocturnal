@@ -316,7 +316,7 @@ class Spider(object):
             return Spider.WRONG_VERIFY_CODE
 
         else:
-            self.output(Logger.log(String['login_successfully'], [String['username'] + Config.user['userName']], level=Logger.error))
+            self.output(Logger.log(String['login_successfully'], [String['userName'] + Config.user['userName']], level=Logger.error))
             return Spider.LOGIN_SUCCESSFULLY
 
     def fetchClassList(self):

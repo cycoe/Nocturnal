@@ -12,6 +12,7 @@ class ArgvsParser(object):
             ArgvsParser.argvsDict[command]()
         except KeyError:
             return False
+
         return True
 
     @staticmethod

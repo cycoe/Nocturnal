@@ -12,7 +12,6 @@ from modules.Qrcode import Qrcode
 from modules.animation import wait_animation
 from modules.FileUtils import check_file_exists
 from modules.StatusHandler import StatusHandler
-import pyqrcode
 import threading
 import sys
 
@@ -157,6 +156,7 @@ def list_class_key():
     print('======================')
     return class_key
 
+
 def delete_class_key():
     class_key = list_class_key()
     if not class_key:
@@ -180,6 +180,7 @@ def delete_class_key():
             continue
 
     return True
+
 
 def emailLogin():
     robber.emailLogin()

@@ -15,6 +15,7 @@
 | `Numpy` | for matrix and generating feature library |
 | `re` | for regular expression |
 | `BeautifulSoup` | for html parser |
+| `pyqrcode` | deal with qrcode |
 
 ### install
 1. install python environment, follow [this](https://www.python.org)

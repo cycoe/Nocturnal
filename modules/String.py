@@ -8,9 +8,8 @@ String = {
     'failed_fetch_login': '抓取登录页面数据失败',
     'max_attempts': '达到最大重试次数',
     'server_unreachable': '可能是远程服务器不可用',
-    'username': '学号: ',
-    'userName': '学号: ',
-    'password': '密码: ',
+    'userName': '学号',
+    'password': '密码',
     'failed_fetch_vertify_code': '抓取验证码失败',
     'retrying': '正在重试...',
     'no_such_a_user': '用户名不存在',
@@ -58,4 +57,5 @@ String = {
     'address_doesnt_exist': '邮件地址或主机不存在',
     'change_mail': '默认的发送邮箱 (class_robber@cycoe.cc) 有一定的概率导致邮件发送失败，请设置自己的邮箱进行发送',
     'current': '当前',
+    'user_name_formed': 'User name must be formed with 10 numbers!',
 }
