@@ -23,6 +23,7 @@ class Config(object):
         'report_blacklist': 'blacklist.cache',  # file path of report blacklist
         'grade_cache': 'grade.cache',  # cache file of fetched grade
         'class_key_cache': 'class.cache',  # file to store keywords of selecting class
+        'encrypt_key_path': 'encrypt.key',
         'wechat_qrcode_img': 'wechat.png',
         'alipay_qrcode_img': 'alipay.png',
     }
@@ -40,6 +41,9 @@ class Config(object):
     # uri of donate qrcode
     wechat_uri = 'wxp://f2f0PYx27X0CWU1yiBhSKeHHgYzfA27iOicM'
     alipay_uri = 'HTTPS://QR.ALIPAY.COM/FKX01669SBV7NA4ALTVPE8'
+
+    # encrypt key
+    encrypt_key = '123456'
 
     # user parameters
     user = {

@@ -1,13 +1,16 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import hashlib
 import sys
 import threading
+import uuid
 
 from modules.animation import wait_animation
 from modules.ArgvsParser import ArgvsParser
 from modules.Config import Config
-from modules.FileUtils import check_file_exists, dump_table, load_table
+from modules.FileUtils import (check_file_exists, dump_table, load_string,
+                               dump_string, load_table)
 from modules.Logger import Logger
 from modules.MisUtils import MisUtils
 from modules.OutputFormater import OutputFormater
@@ -48,6 +51,7 @@ robber.init_spider()
 
 def main():
     outputWelcome()
+    decrypt()
     initArgvs()
     outputHelp()
     cycle()
@@ -91,7 +95,7 @@ def outputHelp():
         ['command', 'abbr.', 'description'],
         ['help', 'h', 'print helps'],
         ['emailLogin', 'el', 'login email to send notification'],
-        ['grade', 'g', 'grade fetching mode']
+        ['grade', 'g', 'grade fetching mode'],
         ['report', 'r', 'report robbing mode'],
         ['class', 'c', 'class robbing mode'],
         ['add', 'a', 'add keys for class robbing'],
@@ -221,6 +225,36 @@ def quit_():
     print(Logger.log(String['site_cleaning'], [
           String['exiting']], level=Logger.error))
     exit(0)
+
+
+def get_mac():
+    node = uuid.getnode()
+    mac = uuid.UUID(int=node).hex[-12:]
+    return mac
+
+
+def decrypt():
+    mac = get_mac()
+    full_string = mac + Config.encrypt_key
+    hash_md5 = hashlib.md5(full_string.encode('utf-8')).hexdigest()
+
+    if check_file_exists(Config.file_name['encrypt_key_path']):
+        my_md5 = load_string(Config.file_name['encrypt_key_path'])
+        if my_md5 == hash_md5:
+            print('密钥验证正确！欢迎使用！')
+            return True
+
+    while True:
+        my_md5 = input('请输入加密密钥: ')
+        my_md5 = my_md5.strip()
+        if my_md5 == hash_md5:
+            print('密钥验证正确！欢迎使用！')
+            dump_string(my_md5, Config.file_name['encrypt_key_path'])
+            break
+        else:
+            print('密钥错误！')
+
+    return True
 
 
 if __name__ == "__main__":
