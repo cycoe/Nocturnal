@@ -428,8 +428,8 @@ class Robber(object):
                 else:
                     break
 
-                ClassTable.init_table()
-                ClassTable.create_table(selectable_)
+                # ClassTable.init_table()
+                # ClassTable.create_table(selectable_)
 
                 class_key = load_table(Config.file_name['class_key_cache'])
                 temp_selectable_ = []
@@ -441,7 +441,7 @@ class Robber(object):
                         filter_selectable_.append(line)
 
                 if not filter_selectable_:
-                    print(Logger.log('No class to rob', subContent_=['exiting...'], level=Logger.error))
+                    print(Logger.log('没有课程可抢', subContent_=['正在退出...'], level=Logger.error))
                     return True
                 print(filter_selectable_)
 

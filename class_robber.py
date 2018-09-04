@@ -1,20 +1,20 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from modules.Robber import Robber
+import sys
+import threading
+
+from modules.animation import wait_animation
 from modules.ArgvsParser import ArgvsParser
-from modules.OutputFormater import OutputFormater
+from modules.Config import Config
+from modules.FileUtils import check_file_exists, dump_table, load_table
 from modules.Logger import Logger
 from modules.MisUtils import MisUtils
-from modules.String import String
-from modules.Config import Config
+from modules.OutputFormater import OutputFormater
 from modules.Qrcode import Qrcode
-from modules.animation import wait_animation
-from modules.FileUtils import check_file_exists
+from modules.Robber import Robber
 from modules.StatusHandler import StatusHandler
-import threading
-import sys
-
+from modules.String import String
 
 #
 #                            _ooOoo_
@@ -70,7 +70,8 @@ def initArgvs():
 
 def cycle():
     while True:
-        command = input('[' + str(len([status for status in StatusHandler.status.values() if status])) + '] >>> ')
+        command = input(
+            '[' + str(len([status for status in StatusHandler.status.values() if status])) + '] >>> ')
         if not ArgvsParser.run(command):
             print(Logger.log(String['wrong_argument'], level=Logger.warning))
 
@@ -90,6 +91,7 @@ def outputHelp():
         ['command', 'abbr.', 'description'],
         ['help', 'h', 'print helps'],
         ['emailLogin', 'el', 'login email to send notification'],
+        ['grade', 'g', 'grade fetching mode']
         ['report', 'r', 'report robbing mode'],
         ['class', 'c', 'class robbing mode'],
         ['add', 'a', 'add keys for class robbing'],
@@ -111,7 +113,8 @@ def fetch_grade():
     if not StatusHandler.status['grade']:
         StatusHandler.signal['grade'] = True
         robber.login()
-        threading.Thread(target=robber.fetchGrade, args=(lambda: None, lambda x: None,)).start()
+        threading.Thread(target=robber.fetchGrade, args=(
+            lambda: None, lambda x: None,)).start()
 
 
 def rob_class():
@@ -128,14 +131,16 @@ def stop_report():
 
 def get_status():
     process = list(StatusHandler.status.keys())
-    status = ['running' if item else 'stop' for item in list(StatusHandler.status.values())]
-    print(OutputFormater.table(list(zip(process, status)), gravity=OutputFormater.left, padding=2))
+    status = ['running' if item else 'stop' for item in list(
+        StatusHandler.status.values())]
+    print(OutputFormater.table(list(zip(process, status)),
+                               gravity=OutputFormater.left, padding=2))
 
 
 def add_class_key():
     class_key = []
-    if check_file_exists(MisUtils.class_cache_path):
-        class_key = MisUtils.load_table(MisUtils.class_cache_path)
+    if check_file_exists(Config.file_name['class_key_cache']):
+        class_key = load_table(Config.file_name['class_key_cache'])
     key_ = []
     for i in range(10):
         key = input('please input {}th key\n> '.format(str(i + 1)))
@@ -144,15 +149,16 @@ def add_class_key():
         else:
             break
     class_key.append(key_)
-    MisUtils.dump_table(class_key, MisUtils.class_cache_path)
+    dump_table(class_key, Config.file_name['class_key_cache'])
 
 
 def list_class_key():
     class_key = [[]]
-    if MisUtils.check_file_exists(MisUtils.class_cache_path):
-        class_key = MisUtils.load_table(MisUtils.class_cache_path)
+    if check_file_exists(Config.file_name['class_key_cache']):
+        class_key = load_table(Config.file_name['class_key_cache'])
     print('======================')
-    print('\n'.join(['<{}> '.format(str(index + 1)) + ', '.join(class_key[index]) for index in range(len(class_key))]))
+    print('\n'.join(['<{}> '.format(str(index + 1)) +
+                     ', '.join(class_key[index]) for index in range(len(class_key))]))
     print('======================')
     return class_key
 
@@ -173,7 +179,7 @@ def delete_class_key():
             continue
         if 0 < choice <= len(class_key):
             del class_key[int(choice) - 1]
-            MisUtils.dump_table(class_key, MisUtils.class_cache_path)
+            dump_table(class_key, Config.file_name['class_key_cache'])
             break
         else:
             print('Index out of range!')
@@ -189,8 +195,8 @@ def emailLogin():
 def donate():
     Qrcode.create_qrcode_img()
     print(Logger.log(String['thanks_to_donate'], [
-        '1. ' + String['alipay'],
-        '2. ' + String['wechat'],
+        '1. ' + String['wechat'],
+        '2. ' + String['alipay'],
         '3. ' + String['not_now']]))
     while True:
         choice = input('> ')
@@ -212,7 +218,8 @@ def donate():
 def quit_():
     stop_report()
     robber.clean()
-    print(Logger.log(String['site_cleaning'], [String['exiting']], level=Logger.error))
+    print(Logger.log(String['site_cleaning'], [
+          String['exiting']], level=Logger.error))
     exit(0)
 
 
