@@ -1,5 +1,5 @@
 ############### my ignores #################
-#*.pkl
+*.pkl
 *.log
 *.conf
 *.cache
