@@ -241,10 +241,10 @@ def decrypt():
     if check_file_exists(Config.file_name['encrypt_key_path']):
         my_md5 = load_string(Config.file_name['encrypt_key_path'])
         if my_md5 == hash_md5:
-            print('密钥验证正确！欢迎使用！')
+            print('\n密钥验证正确！欢迎使用！')
             return True
 
-    print('你的 id 为 {}。请将 id 发给开发者获取解锁密钥'.format(mac))
+    print('\n你的 id 为 {}。请将 id 发给开发者以获取解锁密钥'.format(mac))
     Qrcode.create_qrcode_img()
     Qrcode.show_qrcode(Config.file_name['wechat_mine_qrcode_img'])
     while True:
