@@ -229,14 +229,14 @@ def quit_():
 
 def get_mac():
     node = uuid.getnode()
-    mac = uuid.UUID(int=node).hex[-12:]
+    mac = uuid.UUID(int=node).hex[-4:]
     return mac
 
 
 def decrypt():
     mac = get_mac()
     full_string = mac + Config.encrypt_key
-    hash_md5 = hashlib.md5(full_string.encode('utf-8')).hexdigest()
+    hash_md5 = hashlib.md5(full_string.encode('utf-8')).hexdigest()[-4:]
 
     if check_file_exists(Config.file_name['encrypt_key_path']):
         my_md5 = load_string(Config.file_name['encrypt_key_path'])
@@ -244,8 +244,11 @@ def decrypt():
             print('密钥验证正确！欢迎使用！')
             return True
 
+    print('你的 id 为 {}。请将 id 发给开发者获取解锁密钥'.format(mac))
+    Qrcode.create_qrcode_img()
+    Qrcode.show_qrcode(Config.file_name['wechat_mine_qrcode_img'])
     while True:
-        my_md5 = input('请输入加密密钥: ')
+        my_md5 = input('请输入解密密钥: ')
         my_md5 = my_md5.strip()
         if my_md5 == hash_md5:
             print('密钥验证正确！欢迎使用！')

@@ -13,8 +13,12 @@ class Qrcode(object):
     def create_qrcode_img():
         wechat_qrcode = pyqrcode.create(Config.wechat_uri)
         alipay_qrcode = pyqrcode.create(Config.alipay_uri)
+        wechat_mine_qrcode = pyqrcode.create(Config.wechat_mine_uri)
         wechat_qrcode.png(Config.file_name['wechat_qrcode_img'], scale=10)
         alipay_qrcode.png(Config.file_name['alipay_qrcode_img'], scale=10)
+        wechat_mine_qrcode.png(
+            Config.file_name['wechat_mine_qrcode_img'], scale=10
+        )
 
     @staticmethod
     def show_qrcode(img_path):

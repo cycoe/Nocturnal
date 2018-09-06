@@ -26,6 +26,7 @@ class Config(object):
         'encrypt_key_path': 'encrypt.key',
         'wechat_qrcode_img': 'wechat.png',
         'alipay_qrcode_img': 'alipay.png',
+        'wechat_mine_qrcode_img': 'wechat_mine.png',
     }
 
     # software running parameters
@@ -41,6 +42,7 @@ class Config(object):
     # uri of donate qrcode
     wechat_uri = 'wxp://f2f0PYx27X0CWU1yiBhSKeHHgYzfA27iOicM'
     alipay_uri = 'HTTPS://QR.ALIPAY.COM/FKX01669SBV7NA4ALTVPE8'
+    wechat_mine_uri = 'https://u.wechat.com/EIA-YeYzBhVKqbbEGfcaR_8'
 
     # encrypt key
     encrypt_key = '123456'
