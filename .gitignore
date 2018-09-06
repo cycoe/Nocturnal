@@ -1,5 +1,5 @@
 ############### my ignores #################
-*.html
+#*.pkl
 *.log
 *.conf
 *.cache
