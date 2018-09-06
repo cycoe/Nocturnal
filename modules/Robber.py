@@ -428,6 +428,10 @@ class Robber(object):
                 else:
                     break
 
+                if not selectable_:
+                    print(Logger.log('没有课程可抢', subContent_=['正在退出...'], level=Logger.error))
+                    return True
+
                 # ClassTable.init_table()
                 # ClassTable.create_table(selectable_)
 
@@ -440,9 +444,14 @@ class Robber(object):
                     if line not in filter_selectable_:
                         filter_selectable_.append(line)
 
-                if not filter_selectable_:
-                    print(Logger.log('没有课程可抢', subContent_=['正在退出...'], level=Logger.error))
-                    return True
+                if filter_selectable_:
+                    pass
+                else:
+                    filter_selectable_ = selectable_
+
+                print('已选课程如下：')
+                print(selected_)
+                print('待选课程如下：')
                 print(filter_selectable_)
 
                 button_id, wait = sort_class(filter_selectable_)

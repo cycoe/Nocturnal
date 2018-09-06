@@ -24,10 +24,10 @@ def is_same_neighbor(list_):
 
 def filter_with_keys(table_, key_):
     filter_table_ = table_[:]
+    previous_table_ = filter_table_
     for key in key_:
-        ori_table_ = filter_table_[:]
         filter_table_ = []
-        for line in ori_table_:
+        for line in previous_table_:
             flag = False
             for item in line:
                 if re.search(key, item):
@@ -37,14 +37,18 @@ def filter_with_keys(table_, key_):
                 filter_table_.append(line)
 
         if not filter_table_:
-            filter_table_ = ori_table_[:]
+            if key_.index(key) == 0:
+                filter_table_ = []
+            else:
+                filter_table_ = previous_table_[:]
             break
+
+        previous_table_ = filter_table_[:]
 
     return filter_table_
 
 
 def sort_class(selectable_):
-    random.shuffle(selectable_)
     first_index = 0
     wait = True
     for index in range(len(selectable_)):

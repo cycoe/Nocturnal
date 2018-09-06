@@ -41,7 +41,7 @@ class Spider(object):
     """
     爬虫体
     """
-    
+
     # results of requests
     MAX_ATTEMPT = 0  # up to max attempts
     NO_SUCH_A_USER = 1  # cannot find such a username
@@ -300,11 +300,11 @@ class Spider(object):
             return Spider.MAX_ATTEMPT
 
         if re.search('用户名不存在', self.response.text):
-            self.output(Logger.log(String['no_such_a_user'], [String['clean_password']], level=Logger.error))
+            print(Logger.log(String['no_such_a_user'], [String['clean_password']], level=Logger.error))
             return Spider.NO_SUCH_A_USER
 
         elif re.search('密码错误', self.response.text):
-            self.output(Logger.log(String['wrong_password'], [String['clean_password']], level=Logger.error))
+            print(Logger.log(String['wrong_password'], [String['clean_password']], level=Logger.error))
             return Spider.WRONG_PASSWORD
 
         elif re.search('请输入验证码', self.response.text):
