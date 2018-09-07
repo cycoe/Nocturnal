@@ -9,6 +9,8 @@ check.gif
 dist
 build
 *~
+grade.html
+class.html
 ############################################
 
 # Byte-compiled / optimized / DLL files
