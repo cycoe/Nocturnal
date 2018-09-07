@@ -3,6 +3,7 @@
 *.log
 *.conf
 *.cache
+*.key
 .idea
 check.gif
 *.png
