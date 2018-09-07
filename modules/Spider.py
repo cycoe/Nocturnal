@@ -674,9 +674,10 @@ class Spider(object):
 
         for tempRow in tempTable_:
             tempRow = tempRow.find_all('td')
+            print(tempRow)
             if re.search(self.href_pattern, str(tempRow[-1])):
                 href = re.findall(self.href_pattern, str(tempRow[-1]))[0]
-                buttonId = re.findall(self.buttonPattern, href)[0] if re.search(self.buttonPattern, href) else ''
+                buttonId = re.findall('dgData.{2}ctl\d+?.Link[bB]utton\d+?', href)[0] if re.search('dgData.{2}ctl\d+?.Link[bB]utton\d+?', href) else ''
             else:
                 buttonId = ''
 
