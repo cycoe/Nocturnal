@@ -74,7 +74,7 @@ class Spider(object):
 
         # self.buttonPattern = re.compile('<a.*id="(.*?)?".*><img.*>.*</a>')
         self.href_pattern = re.compile('href=".*?"')
-        self.buttonPattern = re.compile('dgData\d{2}.{2}ctl\d+?.Link[bB]utton\d+?')
+        self.buttonPattern = re.compile('dgData\d*?.{2}ctl\d+?.Link[bB]utton\d+?')
         self.removeTd = re.compile('<td.*>(.*)?</td>')
         self.viewStatePattern = re.compile('<.*name="__VIEWSTATE".*value="(.*)?".*/>')
         self.eventValidationPattern = re.compile('<.*name="__EVENTVALIDATION".*value="(.*)?".*/>')
@@ -476,28 +476,6 @@ class Spider(object):
             self.output(Logger.log(String['max_attempts'], [String['re-login']], level=Logger.error))
             return False
 
-        # postData = {
-        #     '__EVENTTARGET': 'lbsq',
-        #     '__EVENTARGUMENT': '',
-        #     '__VIEWSTATE': self.VIEWSTATE,
-        #     '__EVENTVALIDATION': self.EVENTVALIDATION,
-        #     'myscrollheight': '0',
-        # }
-        # prepareBody = self.prepare(referer=UrlBean.reportDetailUrl,
-        #                            originHost=UrlBean.origin_host,
-        #                            method='POST',
-        #                            url=UrlBean.reportDetailUrl,
-        #                            data=postData,
-        #                            params=None)
-        #
-        # MisUtils.initAttempt()
-        # while MisUtils.descAttempt():
-        #     self.response = self.session.send(prepareBody)
-        #     if self.response.status_code == 200:
-        #         break
-        #     else:
-        #         self.output(Logger.log('Retrying posting report request...', level=Logger.warning))
-
         return True
 
     def fetchSchedule(self):
@@ -677,7 +655,9 @@ class Spider(object):
             print(tempRow)
             if re.search(self.href_pattern, str(tempRow[-1])):
                 href = re.findall(self.href_pattern, str(tempRow[-1]))[0]
-                buttonId = re.findall('dgData.{2}ctl\d+?.Link[bB]utton\d+?', href)[0] if re.search('dgData.{2}ctl\d+?.Link[bB]utton\d+?', href) else ''
+                buttonId = re.findall(
+                    self.buttonPattern, href
+                )[0] if re.search(self.buttonPattern, href) else ''
             else:
                 buttonId = ''
 
