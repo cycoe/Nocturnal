@@ -49,11 +49,13 @@ def filter_with_keys(table_, key_):
 
 
 def sort_class(selectable_):
-    first_index = 0
+    selectable_num = len(selectable_)
+    first_index = random.randint(0, selectable_num - 1)
     wait = True
-    for index in range(len(selectable_)):
-        if selectable_[index][5] == '未满':
-            first_index = index
+    for index in range(first_index, first_index + selectable_num):
+        new_index = index % selectable_num
+        if selectable_[new_index][5] == '未满':
+            first_index = new_index
             wait = False
             break
 
