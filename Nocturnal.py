@@ -65,10 +65,11 @@ def initArgvs():
     ArgvsParser.connect(['list', 'l'], list_class_key)
     ArgvsParser.connect(['delete', 'de'], delete_class_key)
     ArgvsParser.connect(['class', 'c'], rob_class)
+    ArgvsParser.connect(['logout', 'lo'], logout)
     ArgvsParser.connect(['quit', 'q'], quit_)
     ArgvsParser.connect(['emailLogin', 'el'], emailLogin)
     ArgvsParser.connect(['donate', 'd'], donate)
-    ArgvsParser.connect(['stop'], stop_report)
+    ArgvsParser.connect(['stop_tasks', 'st'], stop_tasks)
     ArgvsParser.connect(['status', 's'], get_status)
 
 
@@ -102,8 +103,19 @@ def outputHelp():
         ['delete', 'de', 'delete keys for class robbing'],
         ['list', 'l', 'list keys for class robbing'],
         ['donate', 'd', 'support developer a cup of coffee'],
+        ['logout', 'lo', 'user logout'],
         ['quit', 'q', 'quit robber']
     ], gravity=OutputFormater.center, padding=2))
+
+
+def logout():
+    Config.load_user_config()
+    Config.user['userName'] = ''
+    Config.user['password'] = ''
+    Config.dump_user_config()
+    stop_tasks()
+    robber.clean()
+    print(Logger.log('注销成功！', ['请重新登录']))
 
 
 def rob_report():
@@ -126,7 +138,7 @@ def rob_class():
     robber.rob_class()
 
 
-def stop_report():
+def stop_tasks():
     StatusHandler.signal['report'] = False
     StatusHandler.signal['grade'] = False
     print(Logger.log('正在关闭所有后台任务... '), end='')
@@ -220,7 +232,7 @@ def donate():
 
 
 def quit_():
-    stop_report()
+    stop_tasks()
     robber.clean()
     print(Logger.log(String['site_cleaning'], [
           String['exiting']], level=Logger.error))

@@ -519,5 +519,3 @@ class Robber(object):
 
     def clean(self):
         self.spider.clean()
-
-
