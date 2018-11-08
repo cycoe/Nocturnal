@@ -83,10 +83,10 @@ def cycle():
 
 def outputWelcome():
     print(OutputFormater.table([
-        ['Class Robber ' + Config.version],
+        ['Nocturnal ' + Config.version],
         ['By ' + Config.author],
-        ['Site: cycoe.cc'],
-        ['GitHub: https://github.com/cycoe/class_robber'],
+        ['Site: www.cycoe.cc'],
+        ['GitHub: https://github.com/cycoe/Nocturnal'],
         ['License: MIT 3.0']
     ], padding=5, horizontalSpacer=False))
 
